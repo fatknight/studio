@@ -22,6 +22,8 @@ export type Member = {
   familyName?: string;
   subGroups?: string[];
   avatarUrl: string;
+  zone: string;
+  ward: string;
 };
 
 export const members: Member[] = [
@@ -45,6 +47,8 @@ export const members: Member[] = [
     familyName: 'Doe Family',
     subGroups: ['Sunday School', 'Choir'],
     avatarUrl: 'https://placehold.co/128x128.png',
+    zone: 'North Zone',
+    ward: 'Ward 1',
   },
   {
     id: '2',
@@ -65,6 +69,8 @@ export const members: Member[] = [
     familyName: 'Smith Family',
     subGroups: ['Youth League'],
     avatarUrl: 'https://placehold.co/128x128.png',
+    zone: 'North Zone',
+    ward: 'Ward 2',
   },
   {
     id: '3',
@@ -81,6 +87,8 @@ export const members: Member[] = [
     familyName: 'Jones Family',
     subGroups: ['Men\'s Fellowship'],
     avatarUrl: 'https://placehold.co/128x128.png',
+    zone: 'South Zone',
+    ward: 'Ward 1',
   },
   {
     id: '4',
@@ -99,6 +107,8 @@ export const members: Member[] = [
     familyName: 'Johnson Family',
     subGroups: ['Sunday School Teacher'],
     avatarUrl: 'https://placehold.co/128x128.png',
+    zone: 'South Zone',
+    ward: 'Ward 2',
   },
     {
     id: '5',
@@ -118,6 +128,8 @@ export const members: Member[] = [
     familyName: 'Williams Family',
     subGroups: ['Pastoral Council'],
     avatarUrl: 'https://placehold.co/128x128.png',
+    zone: 'East Zone',
+    ward: 'Ward 1',
   },
   {
     id: '6',
@@ -133,6 +145,8 @@ export const members: Member[] = [
     family: [],
     familyName: 'Brown Family',
     avatarUrl: 'https://placehold.co/128x128.png',
+    zone: 'East Zone',
+    ward: 'Ward 2',
   },
   {
     id: '7',
@@ -154,6 +168,8 @@ export const members: Member[] = [
     familyName: 'Davis Family',
     subGroups: ['Choir', 'Men\'s Fellowship'],
     avatarUrl: 'https://placehold.co/128x128.png',
+    zone: 'West Zone',
+    ward: 'Ward 1',
   },
   {
     id: '8',
@@ -172,6 +188,8 @@ export const members: Member[] = [
     ],
     familyName: 'Miller Family',
     avatarUrl: 'https://placehold.co/128x128.png',
+    zone: 'West Zone',
+    ward: 'Ward 2',
   },
   {
     id: '9',
@@ -188,6 +206,8 @@ export const members: Member[] = [
     familyName: 'Wilson Family',
     subGroups: ['Youth League'],
     avatarUrl: 'https://placehold.co/128x128.png',
+    zone: 'North Zone',
+    ward: 'Ward 3',
   },
   {
     id: '10',
@@ -209,6 +229,8 @@ export const members: Member[] = [
     familyName: 'Moore Family',
     subGroups: ['Sunday School Teacher', 'Charity Wing'],
     avatarUrl: 'https://placehold.co/128x128.png',
+    zone: 'South Zone',
+    ward: 'Ward 3',
   },
     {
     id: '11',
@@ -224,6 +246,8 @@ export const members: Member[] = [
     family: [],
     familyName: 'Taylor Family',
     avatarUrl: 'https://placehold.co/128x128.png',
+    zone: 'East Zone',
+    ward: 'Ward 3',
   },
   {
     id: '12',
@@ -244,5 +268,14 @@ export const members: Member[] = [
     familyName: 'Anderson Family',
     subGroups: ['Youth League', 'Choir'],
     avatarUrl: 'https://placehold.co/128x128.png',
+    zone: 'West Zone',
+    ward: 'Ward 3',
   }
 ];
+
+export const zones = [
+    { name: 'North Zone', wards: ['Ward 1', 'Ward 2', 'Ward 3', 'Ward 4', 'Ward 5'] },
+    { name: 'South Zone', wards: ['Ward 1', 'Ward 2', 'Ward 3', 'Ward 4', 'Ward 5'] },
+    { name: 'East Zone', wards: ['Ward 1', 'Ward 2', 'Ward 3', 'Ward 4', 'Ward 5'] },
+    { name: 'West Zone', wards: ['Ward 1', 'Ward 2', 'Ward 3', 'Ward 4', 'Ward 5'] },
+]

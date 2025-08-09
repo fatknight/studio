@@ -18,6 +18,10 @@ export function SearchInput() {
         } else {
             params.delete("query");
         }
+        // Keep the current view
+        if (!params.has('view')) {
+            params.set('view', 'directory');
+        }
         replace(`${pathname}?${params.toString()}`);
     }, 300);
 

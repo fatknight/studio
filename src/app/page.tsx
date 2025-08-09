@@ -10,7 +10,7 @@ export default function Home() {
         <Card className="grid grid-cols-1 md:grid-cols-2 shadow-2xl">
           <div className="relative hidden md:flex h-full min-h-[550px] flex-col justify-between overflow-hidden rounded-l-lg border-r bg-primary/20 p-10 text-primary-foreground">
              <Image
-                src="https://placehold.co/800x1200.png"
+                src="/st-mary.png"
                 alt="Image of St. Mary"
                 fill
                 className="absolute inset-0 z-0 object-cover opacity-20"

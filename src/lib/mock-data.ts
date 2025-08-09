@@ -11,6 +11,7 @@ export type Member = {
   name: string;
   email: string;
   phone: string;
+  password?: string;
   address: string;
   status: 'Active' | 'Inactive';
   joinDate: string; // Will be repurposed for Home Parish for now, can be removed later
@@ -32,6 +33,7 @@ export const members: Member[] = [
     name: 'John Doe',
     email: 'john.doe@example.com',
     phone: '555-0101',
+    password: 'password123',
     address: '123 Maple St, Anytown, USA',
     status: 'Active',
     joinDate: '2018-03-15',
@@ -55,6 +57,7 @@ export const members: Member[] = [
     name: 'Jane Smith',
     email: 'jane.smith@example.com',
     phone: '555-0102',
+    password: 'password123',
     address: '456 Oak Ave, Anytown, USA',
     status: 'Active',
     joinDate: '2019-07-22',
@@ -77,6 +80,7 @@ export const members: Member[] = [
     name: 'Peter Jones',
     email: 'peter.jones@example.com',
     phone: '555-0103',
+    password: 'password123',
     address: '789 Pine Ln, Anytown, USA',
     status: 'Inactive',
     joinDate: '2017-01-30',
@@ -95,6 +99,7 @@ export const members: Member[] = [
     name: 'Mary Johnson',
     email: 'mary.johnson@example.com',
     phone: '555-0104',
+    password: 'password123',
     address: '101 Birch Rd, Anytown, USA',
     status: 'Active',
     joinDate: '2020-11-01',
@@ -115,6 +120,7 @@ export const members: Member[] = [
     name: 'David Williams',
     email: 'david.williams@example.com',
     phone: '555-0105',
+    password: 'password123',
     address: '212 Cedar Blvd, Anytown, USA',
     status: 'Active',
     joinDate: '2021-02-14',
@@ -136,6 +142,7 @@ export const members: Member[] = [
     name: 'Linda Brown',
     email: 'linda.brown@example.com',
     phone: '555-0106',
+    password: 'password123',
     address: '333 Elm St, Anytown, USA',
     status: 'Active',
     joinDate: '2016-06-10',
@@ -153,6 +160,7 @@ export const members: Member[] = [
     name: 'James Davis',
     email: 'james.davis@example.com',
     phone: '555-0107',
+    password: 'password123',
     address: '444 Spruce Way, Anytown, USA',
     status: 'Active',
     joinDate: '2022-08-19',
@@ -176,6 +184,7 @@ export const members: Member[] = [
     name: 'Barbara Miller',
     email: 'barbara.miller@example.com',
     phone: '555-0108',
+    password: 'password123',
     address: '555 Willow Creek, Anytown, USA',
     status: 'Inactive',
     joinDate: '2015-04-12',
@@ -196,6 +205,7 @@ export const members: Member[] = [
     name: 'Michael Wilson',
     email: 'michael.wilson@example.com',
     phone: '555-0109',
+    password: 'password123',
     address: '666 Redwood Pkwy, Anytown, USA',
     status: 'Active',
     joinDate: '2023-01-05',
@@ -214,6 +224,7 @@ export const members: Member[] = [
     name: 'Elizabeth Moore',
     email: 'elizabeth.moore@example.com',
     phone: '555-0110',
+    password: 'password123',
     address: '777 Aspen Grove, Anytown, USA',
     status: 'Active',
     joinDate: '2018-09-30',
@@ -237,6 +248,7 @@ export const members: Member[] = [
     name: 'Charles Taylor',
     email: 'charles.taylor@example.com',
     phone: '555-0111',
+    password: 'password123',
     address: '888 Sequoia Trail, Anytown, USA',
     status: 'Active',
     joinDate: '2019-05-25',
@@ -254,6 +266,7 @@ export const members: Member[] = [
     name: 'Jessica Anderson',
     email: 'jessica.anderson@example.com',
     phone: '555-0112',
+    password: 'password123',
     address: '999 Cypress Ct, Anytown, USA',
     status: 'Active',
     joinDate: '2020-03-17',

@@ -18,9 +18,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { LogIn } from "lucide-react";
+import { members } from "@/lib/mock-data";
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email." }),
+  phone: z.string().min(1, { message: "Please enter a valid phone number." }),
   password: z.string().min(1, { message: "Password is required." }),
 });
 
@@ -32,20 +33,32 @@ export function LoginForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      phone: "",
       password: "",
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    // Simulate API call
+    
+    const authenticatedMember = members.find(
+      (member) => member.phone === values.phone && member.password === values.password
+    );
+
     setTimeout(() => {
-      toast({
-        title: "Login Successful",
-        description: `Welcome back, ${values.email}!`,
-      });
-      router.push("/members");
+      if (authenticatedMember) {
+        toast({
+          title: "Login Successful",
+          description: `Welcome back, ${authenticatedMember.name}!`,
+        });
+        router.push("/members");
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: "Invalid phone number or password. Please try again.",
+        });
+      }
       setIsLoading(false);
     }, 1000);
   }
@@ -55,12 +68,12 @@ export function LoginForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
-          name="email"
+          name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Phone Number</FormLabel>
               <FormControl>
-                <Input placeholder="member@example.com" {...field} />
+                <Input placeholder="555-0101" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -42,7 +42,7 @@ export default function Home() {
             </CardHeader>
             <CardHeader className="p-0 mb-6 text-left">
               <CardTitle className="text-2xl font-headline tracking-tight">Member Login</CardTitle>
-              <CardDescription>Enter your credentials to access the directory.</CardDescription>
+              <CardDescription>Enter your phone number and password to access the directory.</CardDescription>
             </CardHeader>
             <CardContent className="p-0">
               <LoginForm />

@@ -3,7 +3,7 @@ import { notFound, redirect } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Mail, Phone, Home, Calendar, Users, User, Link as LinkIcon, ArrowLeft, Map, Gift, HeartHandshake, MapPin } from 'lucide-react';
+import { Mail, Phone, Home, Calendar, Users, User, Link as LinkIcon, ArrowLeft, Map, Gift, HeartHandshake, MapPin, Tag } from 'lucide-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -17,20 +17,21 @@ const WhatsAppIcon = () => (
 );
 
 
-const DetailItem = ({ icon: Icon, label, value, action }: { icon: React.ElementType, label: string, value?: string | string[], action?: React.ReactNode }) => {
-    if (!value) return null;
+const DetailItem = ({ icon: Icon, label, value, action, children }: { icon: React.ElementType, label: string, value?: string | string[], action?: React.ReactNode, children?: React.ReactNode }) => {
+    if (!value && !children) return null;
     return (
         <div className="flex items-start gap-4">
             <Icon className="h-5 w-5 text-muted-foreground mt-1" />
             <div className="flex-1">
                 <p className="text-sm font-medium text-muted-foreground">{label}</p>
-                {Array.isArray(value) ? (
+                {value && (Array.isArray(value) ? (
                     <ul className="list-disc pl-5">
                         {value.map((item, index) => <li key={index} className="text-base font-semibold">{item}</li>)}
                     </ul>
                 ) : (
                     <p className="text-base font-semibold">{value}</p>
-                )}
+                ))}
+                {children}
             </div>
             {action}
         </div>
@@ -68,10 +69,9 @@ export default async function MemberDetailPage({ params }: { params: { id: strin
                 </CardHeader>
                 <CardContent className="p-6">
                     <Tabs defaultValue="personal" className="w-full">
-                        <TabsList className="grid w-full grid-cols-3">
+                        <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger value="personal"><User className="mr-2 h-4 w-4" />Personal Details</TabsTrigger>
                             <TabsTrigger value="family"><Users className="mr-2 h-4 w-4" />Family Details</TabsTrigger>
-                            <TabsTrigger value="groups"><Users className="mr-2 h-4 w-4" />Sub-Groups</TabsTrigger>
                         </TabsList>
                         <TabsContent value="personal" className="mt-6">
                             <div className="space-y-6">
@@ -94,6 +94,17 @@ export default async function MemberDetailPage({ params }: { params: { id: strin
                                 <DetailItem icon={Gift} label="Birthday" value={member.birthday ? format(new Date(member.birthday), 'MMMM d') : undefined} />
                                 <DetailItem icon={HeartHandshake} label="Wedding Day" value={member.weddingDay ? format(new Date(member.weddingDay), 'MMMM d, yyyy') : undefined} />
                                 <DetailItem icon={Calendar} label="Home Parish" value={member.homeParish} />
+                                <DetailItem icon={Tag} label="Sub-Groups">
+                                    <div className="flex flex-wrap gap-2 mt-1">
+                                        {member.subGroups && member.subGroups.length > 0 ? (
+                                            member.subGroups.map((group, index) => (
+                                                <Badge key={index} variant="secondary" className="text-base py-1 px-3">{group}</Badge>
+                                            ))
+                                        ) : (
+                                            <p className="text-base font-semibold text-muted-foreground">Not a member of any sub-groups.</p>
+                                        )}
+                                    </div>
+                                </DetailItem>
                             </div>
                         </TabsContent>
                         <TabsContent value="family" className="mt-6">
@@ -108,17 +119,6 @@ export default async function MemberDetailPage({ params }: { params: { id: strin
                                         <p className="text-muted-foreground">No family details available.</p>
                                     )}
                                 </div>
-                            </div>
-                        </TabsContent>
-                        <TabsContent value="groups" className="mt-6">
-                            <div className="flex flex-wrap gap-2">
-                                {member.subGroups && member.subGroups.length > 0 ? (
-                                    member.subGroups.map((group, index) => (
-                                        <Badge key={index} variant="secondary" className="text-base py-1 px-3">{group}</Badge>
-                                    ))
-                                ) : (
-                                    <p className="text-muted-foreground">Not a member of any sub-groups.</p>
-                                )}
                             </div>
                         </TabsContent>
                     </Tabs>

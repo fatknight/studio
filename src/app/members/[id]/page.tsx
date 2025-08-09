@@ -58,7 +58,6 @@ const FamilyMemberCard = ({ member }: { member: FamilyMember }) => (
                 <div className="flex items-start">
                     <Tag className="inline-block mr-2 h-4 w-4 text-muted-foreground mt-1" />
                     <div className="flex flex-wrap gap-1">
-                        <span className="font-semibold mr-1">Groups:</span>
                         {member.subGroups.map((group, index) => (
                            <Badge key={index} variant="secondary">{group}</Badge>
                         ))}
@@ -125,7 +124,7 @@ export default async function MemberDetailPage({ params }: { params: { id: strin
                                 <DetailItem icon={Gift} label="Birthday" value={member.birthday ? format(new Date(member.birthday), 'MMMM d') : undefined} />
                                 <DetailItem icon={HeartHandshake} label="Wedding Day" value={member.weddingDay ? format(new Date(member.weddingDay), 'MMMM d, yyyy') : undefined} />
                                 <DetailItem icon={Calendar} label="Home Parish" value={member.homeParish} />
-                                <DetailItem icon={Tag} label="Sub-Groups">
+                                <DetailItem icon={Tag} label="">
                                     <div className="flex flex-wrap gap-2 mt-1">
                                         {member.subGroups && member.subGroups.length > 0 ? (
                                             member.subGroups.map((group, index) => (

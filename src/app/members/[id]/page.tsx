@@ -50,9 +50,21 @@ const FamilyMemberCard = ({ member }: { member: FamilyMember }) => (
                 <CardDescription>{member.relation}</CardDescription>
             </div>
         </CardHeader>
-        <CardContent className="space-y-2 text-sm">
+        <CardContent className="space-y-4 text-sm pt-4">
             {member.birthday && <p><Gift className="inline-block mr-2 h-4 w-4 text-muted-foreground" /> Birthday: {format(new Date(member.birthday), 'MMMM d')}</p>}
             {member.phone && member.phone !== "N/A" && <p><Phone className="inline-block mr-2 h-4 w-4 text-muted-foreground" /> Phone: {member.phone}</p>}
+            {member.homeParish && <p><Calendar className="inline-block mr-2 h-4 w-4 text-muted-foreground" /> Home Parish: {member.homeParish}</p>}
+            {member.subGroups && member.subGroups.length > 0 && (
+                <div className="flex items-start">
+                    <Tag className="inline-block mr-2 h-4 w-4 text-muted-foreground mt-1" />
+                    <div className="flex flex-wrap gap-1">
+                        <span className="font-semibold mr-1">Groups:</span>
+                        {member.subGroups.map((group, index) => (
+                           <Badge key={index} variant="secondary">{group}</Badge>
+                        ))}
+                    </div>
+                </div>
+            )}
         </CardContent>
     </Card>
 )

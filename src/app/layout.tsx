@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'Verity Directory',
+  title: 'Cathedral Family',
   description: 'A church members directory.',
 };
 

@@ -19,7 +19,7 @@ export default function Home() {
               />
             <div className="relative z-10 flex items-center gap-2 text-2xl font-bold text-primary font-headline">
               <Church className="h-8 w-8" />
-              Verity Directory
+              Cathedral Family
             </div>
              <div className="relative z-10 mt-auto">
               <blockquote className="space-y-2">
@@ -34,7 +34,7 @@ export default function Home() {
             <CardHeader className="p-0 mb-6 text-center md:hidden">
               <div className="flex items-center justify-center gap-2 text-2xl font-bold text-primary font-headline">
                 <Church className="h-8 w-8" />
-                Verity Directory
+                Cathedral Family
               </div>
             </CardHeader>
             <CardHeader className="p-0 mb-6 text-left">

@@ -5,11 +5,16 @@ export type Member = {
   phone: string;
   address: string;
   status: 'Active' | 'Inactive';
-  joinDate: string;
+  joinDate: string; // Will be repurposed for Home Parish for now, can be removed later
+  homeParish: string;
+  nativeDistrict: string;
+  birthday?: string;
+  weddingDay?: string;
   family: {
     spouse?: string;
     children?: string[];
   };
+  subGroups?: string[];
   avatarUrl: string;
 };
 
@@ -22,10 +27,15 @@ export const members: Member[] = [
     address: '123 Maple St, Anytown, USA',
     status: 'Active',
     joinDate: '2018-03-15',
+    homeParish: 'St. Peter\'s Cathedral',
+    nativeDistrict: 'Kottayam',
+    birthday: '1985-05-20',
+    weddingDay: '2010-06-12',
     family: {
       spouse: 'Jane Doe',
       children: ['Jimmy Doe', 'Jenny Doe'],
     },
+    subGroups: ['Sunday School', 'Choir'],
     avatarUrl: 'https://placehold.co/128x128.png',
   },
   {
@@ -36,10 +46,15 @@ export const members: Member[] = [
     address: '456 Oak Ave, Anytown, USA',
     status: 'Active',
     joinDate: '2019-07-22',
+    homeParish: 'St. Mary\'s Basilica',
+    nativeDistrict: 'Ernakulam',
+    birthday: '1990-09-15',
+    weddingDay: '2015-10-20',
     family: {
       spouse: 'John Smith',
       children: ['Jake Smith'],
     },
+    subGroups: ['Youth League'],
     avatarUrl: 'https://placehold.co/128x128.png',
   },
   {
@@ -50,7 +65,11 @@ export const members: Member[] = [
     address: '789 Pine Ln, Anytown, USA',
     status: 'Inactive',
     joinDate: '2017-01-30',
+    homeParish: 'St. George\'s Church',
+    nativeDistrict: 'Thrissur',
+    birthday: '1982-01-10',
     family: {},
+    subGroups: ['Men\'s Fellowship'],
     avatarUrl: 'https://placehold.co/128x128.png',
   },
   {
@@ -61,9 +80,13 @@ export const members: Member[] = [
     address: '101 Birch Rd, Anytown, USA',
     status: 'Active',
     joinDate: '2020-11-01',
+    homeParish: 'St. Peter\'s Cathedral',
+    nativeDistrict: 'Pathanamthitta',
+    birthday: '1995-03-25',
     family: {
       children: ['Chris Johnson'],
     },
+    subGroups: ['Sunday School Teacher'],
     avatarUrl: 'https://placehold.co/128x128.png',
   },
     {
@@ -74,9 +97,14 @@ export const members: Member[] = [
     address: '212 Cedar Blvd, Anytown, USA',
     status: 'Active',
     joinDate: '2021-02-14',
+    homeParish: 'St. Mary\'s Basilica',
+    nativeDistrict: 'Alappuzha',
+    birthday: '1978-11-05',
+    weddingDay: '2005-02-14',
     family: {
       spouse: 'Susan Williams',
     },
+    subGroups: ['Pastoral Council'],
     avatarUrl: 'https://placehold.co/128x128.png',
   },
   {
@@ -87,6 +115,9 @@ export const members: Member[] = [
     address: '333 Elm St, Anytown, USA',
     status: 'Active',
     joinDate: '2016-06-10',
+    homeParish: 'St. George\'s Church',
+    nativeDistrict: 'Idukki',
+    birthday: '1965-07-30',
     family: {},
     avatarUrl: 'https://placehold.co/128x128.png',
   },
@@ -98,10 +129,15 @@ export const members: Member[] = [
     address: '444 Spruce Way, Anytown, USA',
     status: 'Active',
     joinDate: '2022-08-19',
+    homeParish: 'St. Peter\'s Cathedral',
+    nativeDistrict: 'Kollam',
+    birthday: '1980-04-01',
+    weddingDay: '2008-08-20',
     family: {
       spouse: 'Patricia Davis',
       children: ['Robert Davis', 'Jennifer Davis'],
     },
+    subGroups: ['Choir', 'Men\'s Fellowship'],
     avatarUrl: 'https://placehold.co/128x128.png',
   },
   {
@@ -112,6 +148,10 @@ export const members: Member[] = [
     address: '555 Willow Creek, Anytown, USA',
     status: 'Inactive',
     joinDate: '2015-04-12',
+    homeParish: 'St. Mary\'s Basilica',
+    nativeDistrict: 'Thiruvananthapuram',
+    birthday: '1975-02-12',
+    weddingDay: '2000-05-15',
     family: {
       spouse: 'Richard Miller',
     },
@@ -125,7 +165,11 @@ export const members: Member[] = [
     address: '666 Redwood Pkwy, Anytown, USA',
     status: 'Active',
     joinDate: '2023-01-05',
+    homeParish: 'St. George\'s Church',
+    nativeDistrict: 'Palakkad',
+    birthday: '1992-06-18',
     family: {},
+    subGroups: ['Youth League'],
     avatarUrl: 'https://placehold.co/128x128.png',
   },
   {
@@ -136,10 +180,15 @@ export const members: Member[] = [
     address: '777 Aspen Grove, Anytown, USA',
     status: 'Active',
     joinDate: '2018-09-30',
+    homeParish: 'St. Peter\'s Cathedral',
+    nativeDistrict: 'Kozhikode',
+    birthday: '1988-12-25',
+    weddingDay: '2012-01-22',
     family: {
       spouse: 'William Moore',
       children: ['Jessica Moore', 'Daniel Moore'],
     },
+    subGroups: ['Sunday School Teacher', 'Charity Wing'],
     avatarUrl: 'https://placehold.co/128x128.png',
   },
     {
@@ -150,6 +199,9 @@ export const members: Member[] = [
     address: '888 Sequoia Trail, Anytown, USA',
     status: 'Active',
     joinDate: '2019-05-25',
+    homeParish: 'St. Mary\'s Basilica',
+    nativeDistrict: 'Wayanad',
+    birthday: '1986-10-10',
     family: {},
     avatarUrl: 'https://placehold.co/128x128.png',
   },
@@ -161,10 +213,15 @@ export const members: Member[] = [
     address: '999 Cypress Ct, Anytown, USA',
     status: 'Active',
     joinDate: '2020-03-17',
+    homeParish: 'St. George\'s Church',
+    nativeDistrict: 'Kannur',
+    birthday: '1991-08-08',
+    weddingDay: '2018-02-18',
     family: {
       spouse: 'Thomas Anderson',
       children: ['Sarah Anderson'],
     },
+    subGroups: ['Youth League', 'Choir'],
     avatarUrl: 'https://placehold.co/128x128.png',
   }
 ];

@@ -14,6 +14,7 @@ export type Member = {
     spouse?: string;
     children?: string[];
   };
+  familyName?: string;
   subGroups?: string[];
   avatarUrl: string;
 };
@@ -35,6 +36,7 @@ export const members: Member[] = [
       spouse: 'Jane Doe',
       children: ['Jimmy Doe', 'Jenny Doe'],
     },
+    familyName: 'Doe Family',
     subGroups: ['Sunday School', 'Choir'],
     avatarUrl: 'https://placehold.co/128x128.png',
   },
@@ -54,6 +56,7 @@ export const members: Member[] = [
       spouse: 'John Smith',
       children: ['Jake Smith'],
     },
+    familyName: 'Smith Family',
     subGroups: ['Youth League'],
     avatarUrl: 'https://placehold.co/128x128.png',
   },
@@ -69,6 +72,7 @@ export const members: Member[] = [
     nativeDistrict: 'Thrissur',
     birthday: '1982-01-10',
     family: {},
+    familyName: 'Jones Family',
     subGroups: ['Men\'s Fellowship'],
     avatarUrl: 'https://placehold.co/128x128.png',
   },
@@ -86,6 +90,7 @@ export const members: Member[] = [
     family: {
       children: ['Chris Johnson'],
     },
+    familyName: 'Johnson Family',
     subGroups: ['Sunday School Teacher'],
     avatarUrl: 'https://placehold.co/128x128.png',
   },
@@ -104,6 +109,7 @@ export const members: Member[] = [
     family: {
       spouse: 'Susan Williams',
     },
+    familyName: 'Williams Family',
     subGroups: ['Pastoral Council'],
     avatarUrl: 'https://placehold.co/128x128.png',
   },
@@ -119,6 +125,7 @@ export const members: Member[] = [
     nativeDistrict: 'Idukki',
     birthday: '1965-07-30',
     family: {},
+    familyName: 'Brown Family',
     avatarUrl: 'https://placehold.co/128x128.png',
   },
   {
@@ -137,6 +144,7 @@ export const members: Member[] = [
       spouse: 'Patricia Davis',
       children: ['Robert Davis', 'Jennifer Davis'],
     },
+    familyName: 'Davis Family',
     subGroups: ['Choir', 'Men\'s Fellowship'],
     avatarUrl: 'https://placehold.co/128x128.png',
   },
@@ -155,6 +163,7 @@ export const members: Member[] = [
     family: {
       spouse: 'Richard Miller',
     },
+    familyName: 'Miller Family',
     avatarUrl: 'https://placehold.co/128x128.png',
   },
   {
@@ -169,6 +178,7 @@ export const members: Member[] = [
     nativeDistrict: 'Palakkad',
     birthday: '1992-06-18',
     family: {},
+    familyName: 'Wilson Family',
     subGroups: ['Youth League'],
     avatarUrl: 'https://placehold.co/128x128.png',
   },
@@ -188,6 +198,7 @@ export const members: Member[] = [
       spouse: 'William Moore',
       children: ['Jessica Moore', 'Daniel Moore'],
     },
+    familyName: 'Moore Family',
     subGroups: ['Sunday School Teacher', 'Charity Wing'],
     avatarUrl: 'https://placehold.co/128x128.png',
   },
@@ -203,6 +214,7 @@ export const members: Member[] = [
     nativeDistrict: 'Wayanad',
     birthday: '1986-10-10',
     family: {},
+    familyName: 'Taylor Family',
     avatarUrl: 'https://placehold.co/128x128.png',
   },
   {
@@ -221,6 +233,7 @@ export const members: Member[] = [
       spouse: 'Thomas Anderson',
       children: ['Sarah Anderson'],
     },
+    familyName: 'Anderson Family',
     subGroups: ['Youth League', 'Choir'],
     avatarUrl: 'https://placehold.co/128x128.png',
   }

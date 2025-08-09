@@ -64,7 +64,7 @@ export default async function MemberDetailPage({ params }: { params: { id: strin
                     </Avatar>
                     <div>
                         <CardTitle className="font-headline text-3xl">{member.name}</CardTitle>
-                        <p className="text-lg text-muted-foreground">{member.email}</p>
+                        <p className="text-lg text-muted-foreground">{member.familyName}</p>
                     </div>
                 </CardHeader>
                 <CardContent className="p-6">

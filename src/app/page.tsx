@@ -8,20 +8,24 @@ export default function Home() {
     <main className="flex min-h-screen w-full items-center justify-center bg-background p-4">
       <div className="w-full max-w-4xl">
         <Card className="grid grid-cols-1 md:grid-cols-2 shadow-2xl">
-          <div className="relative hidden md:flex h-full min-h-[550px] flex-col justify-between overflow-hidden rounded-l-lg border-r bg-primary/20 p-10 text-primary-foreground">
-             <Image
-                src="/st-mary.png"
-                alt="Image of St. Mary"
-                fill
-                className="absolute inset-0 z-0 object-cover opacity-20"
-                data-ai-hint="St Mary"
-              />
-            <div className="relative z-10 flex items-center gap-2 text-2xl font-bold text-primary font-headline">
+          <div className="relative hidden md:flex h-full min-h-[550px] flex-col justify-between overflow-hidden rounded-l-lg border-r bg-primary/10 p-10 text-primary-foreground">
+             <div className="absolute inset-0 z-0 bg-primary/20 opacity-50"></div>
+             <div className="relative z-10 flex items-center gap-2 text-2xl font-bold text-primary font-headline">
               <Church className="h-8 w-8" />
               Cathedral Family
             </div>
-             <div className="relative z-10 mt-auto">
-              <blockquote className="space-y-2">
+            <div className="relative z-10 flex justify-center items-center flex-grow">
+               <Image
+                  src="/st-mary.png"
+                  alt="Image of St. Mary"
+                  width={400}
+                  height={300}
+                  className="rounded-lg shadow-2xl object-cover"
+                  data-ai-hint="St Mary"
+                />
+            </div>
+             <div className="relative z-10">
+              <blockquote className="space-y-2 text-center">
                 <p className="text-lg text-primary">
                   &ldquo;A central place for our community to connect and grow together in faith.&rdquo;
                 </p>

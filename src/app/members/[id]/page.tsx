@@ -7,6 +7,7 @@ import { Mail, Phone, Home, Calendar, Users, User, Link as LinkIcon, ArrowLeft }
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 
 const DetailItem = ({ icon: Icon, label, value }: { icon: React.ElementType, label: string, value?: string | string[] }) => {
   if (!value) return null;
@@ -70,13 +71,18 @@ export default async function MemberDetailPage({ params }: { params: { id: strin
               </div>
             </TabsContent>
             <TabsContent value="family" className="mt-6">
-               <div className="space-y-6">
-                {member.family.spouse && <DetailItem icon={User} label="Spouse" value={member.family.spouse} />}
-                {member.family.children && member.family.children.length > 0 && <DetailItem icon={Users} label="Children" value={member.family.children} />}
-                {!member.family.spouse && (!member.family.children || member.family.children.length === 0) && (
-                  <p className="text-muted-foreground">No family details available.</p>
-                )}
-              </div>
+              <div className="space-y-8">
+                <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+                  <Image src="https://placehold.co/600x400.png" alt="Family photo" layout="fill" objectFit="cover" data-ai-hint="family photo" />
+                </div>
+                <div className="space-y-6">
+                  {member.family.spouse && <DetailItem icon={User} label="Spouse" value={member.family.spouse} />}
+                  {member.family.children && member.family.children.length > 0 && <DetailItem icon={Users} label="Children" value={member.family.children} />}
+                  {!member.family.spouse && (!member.family.children || member.family.children.length === 0) && (
+                    <p className="text-muted-foreground">No family details available.</p>
+                  )}
+                </div>
+               </div>
             </TabsContent>
           </Tabs>
         </CardContent>

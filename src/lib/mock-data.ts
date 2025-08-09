@@ -42,7 +42,7 @@ export const members: Member[] = [
     nativeDistrict: 'N/A',
     family: [],
     familyName: 'Admin',
-    avatarUrl: 'https://placehold.co/128x128/EBF4FA/3E6680.png',
+    avatarUrl: 'https://placehold.co/128x128/333333/FFFFFF.png',
     zone: '',
     ward: '',
     role: 'Admin',
@@ -61,9 +61,9 @@ export const members: Member[] = [
     birthday: '1985-05-20',
     weddingDay: '2010-06-12',
     family: [
-      { relation: 'Spouse', name: 'Jane Doe', birthday: '1988-04-12', phone: '555-0113', avatarUrl: 'https://placehold.co/128x128/EBF4FA/3E6680.png' },
-      { relation: 'Child', name: 'Jimmy Doe', birthday: '2012-01-15', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/EBF4FA/3E6680.png' },
-      { relation: 'Child', name: 'Jenny Doe', birthday: '2014-07-22', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/EBF4FA/3E6680.png' },
+      { relation: 'Spouse', name: 'Jane Doe', birthday: '1988-04-12', phone: '555-0113', avatarUrl: 'https://placehold.co/128x128/FADADD/8B0000.png' },
+      { relation: 'Child', name: 'Jimmy Doe', birthday: '2012-01-15', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/E0FFFF/008080.png' },
+      { relation: 'Child', name: 'Jenny Doe', birthday: '2014-07-22', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/FFFACD/FFD700.png' },
     ],
     familyName: 'Doe Family',
     subGroups: ['Sunday School', 'Choir'],
@@ -86,8 +86,8 @@ export const members: Member[] = [
     birthday: '1990-09-15',
     weddingDay: '2015-10-20',
     family: [
-      { relation: 'Spouse', name: 'John Smith', birthday: '1989-11-30', phone: '555-0114', avatarUrl: 'https://placehold.co/128x128/A3E4D7/2E86C1.png'},
-      { relation: 'Child', name: 'Jake Smith', birthday: '2018-06-01', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/A3E4D7/2E86C1.png' }
+      { relation: 'Spouse', name: 'John Smith', birthday: '1989-11-30', phone: '555-0114', avatarUrl: 'https://placehold.co/128x128/C1E1C1/006400.png'},
+      { relation: 'Child', name: 'Jake Smith', birthday: '2018-06-01', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/C1E1C1/006400.png' }
     ],
     familyName: 'Smith Family',
     subGroups: ['Youth League'],
@@ -129,7 +129,7 @@ export const members: Member[] = [
     nativeDistrict: 'Pathanamthitta',
     birthday: '1995-03-25',
     family: [
-       { relation: 'Child', name: 'Chris Johnson', birthday: '2020-05-20', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/D7BDE2/5B2C6F.png' }
+       { relation: 'Child', name: 'Chris Johnson', birthday: '2020-05-20', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/E6E6FA/483D8B.png' }
     ],
     familyName: 'Johnson Family',
     subGroups: ['Sunday School Teacher'],
@@ -152,7 +152,7 @@ export const members: Member[] = [
     birthday: '1978-11-05',
     weddingDay: '2005-02-14',
     family: [
-      { relation: 'Spouse', name: 'Susan Williams', birthday: '1980-02-20', phone: '555-0115', avatarUrl: 'https://placehold.co/128x128/FAD7A0/AF601A.png' }
+      { relation: 'Spouse', name: 'Susan Williams', birthday: '1980-02-20', phone: '555-0115', avatarUrl: 'https://placehold.co/128x128/FFDAB9/A0522D.png' }
     ],
     familyName: 'Williams Family',
     subGroups: ['Pastoral Council'],
@@ -194,9 +194,9 @@ export const members: Member[] = [
     birthday: '1980-04-01',
     weddingDay: '2008-08-20',
     family: [
-      { relation: 'Spouse', name: 'Patricia Davis', birthday: '1982-08-20', phone: '555-0116', avatarUrl: 'https://placehold.co/128x128/AED6F1/1B4F72.png' },
-      { relation: 'Child', name: 'Robert Davis', birthday: '2010-10-10', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/AED6F1/1B4F72.png' },
-      { relation: 'Child', name: 'Jennifer Davis', birthday: '2012-12-12', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/AED6F1/1B4F72.png' },
+      { relation: 'Spouse', name: 'Patricia Davis', birthday: '1982-08-20', phone: '555-0116', avatarUrl: 'https://placehold.co/128x128/B0E0E6/4682B4.png' },
+      { relation: 'Child', name: 'Robert Davis', birthday: '2010-10-10', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/B0E0E6/4682B4.png' },
+      { relation: 'Child', name: 'Jennifer Davis', birthday: '2012-12-12', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/B0E0E6/4682B4.png' },
     ],
     familyName: 'Davis Family',
     subGroups: ['Choir', 'Men\'s Fellowship'],
@@ -219,7 +219,7 @@ export const members: Member[] = [
     birthday: '1975-02-12',
     weddingDay: '2000-05-15',
     family: [
-      { relation: 'Spouse', name: 'Richard Miller', birthday: '1974-01-01', phone: '555-0117', avatarUrl: 'https://placehold.co/128x128/F5CBA7/7E5109.png' }
+      { relation: 'Spouse', name: 'Richard Miller', birthday: '1974-01-01', phone: '555-0117', avatarUrl: 'https://placehold.co/128x128/F08080/800000.png' }
     ],
     familyName: 'Miller Family',
     avatarUrl: 'https://placehold.co/128x128/F5CBA7/7E5109.png',
@@ -261,9 +261,9 @@ export const members: Member[] = [
     birthday: '1988-12-25',
     weddingDay: '2012-01-22',
     family: [
-        { relation: 'Spouse', name: 'William Moore', birthday: '1987-11-11', phone: '555-0118', avatarUrl: 'https://placehold.co/128x128/A9DFBF/145A32.png' },
-        { relation: 'Child', name: 'Jessica Moore', birthday: '2014-02-02', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/A9DFBF/145A32.png' },
-        { relation: 'Child', name: 'Daniel Moore', birthday: '2016-03-03', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/A9DFBF/145A32.png' }
+        { relation: 'Spouse', name: 'William Moore', birthday: '1987-11-11', phone: '555-0118', avatarUrl: 'https://placehold.co/128x128/D8BFD8/4B0082.png' },
+        { relation: 'Child', name: 'Jessica Moore', birthday: '2014-02-02', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/D8BFD8/4B0082.png' },
+        { relation: 'Child', name: 'Daniel Moore', birthday: '2016-03-03', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/D8BFD8/4B0082.png' }
     ],
     familyName: 'Moore Family',
     subGroups: ['Sunday School Teacher', 'Charity Wing'],
@@ -305,8 +305,8 @@ export const members: Member[] = [
     birthday: '1991-08-08',
     weddingDay: '2018-02-18',
     family: [
-        { relation: 'Spouse', name: 'Thomas Anderson', birthday: '1990-01-01', phone: '555-0119', avatarUrl: 'https://placehold.co/128x128/85C1E9/21618C.png' },
-        { relation: 'Child', name: 'Sarah Anderson', birthday: '2020-10-10', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/85C1E9/21618C.png' }
+        { relation: 'Spouse', name: 'Thomas Anderson', birthday: '1990-01-01', phone: '555-0119', avatarUrl: 'https://placehold.co/128x128/FFC0CB/800000.png' },
+        { relation: 'Child', name: 'Sarah Anderson', birthday: '2020-10-10', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/FFC0CB/800000.png' }
     ],
     familyName: 'Anderson Family',
     subGroups: ['Youth League', 'Choir'],

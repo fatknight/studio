@@ -11,11 +11,11 @@ export default function Home() {
           <div className="relative hidden h-full min-h-[550px] flex-col justify-between overflow-hidden rounded-l-lg border-r bg-primary/20 p-10 text-primary-foreground md:flex">
              <Image
                 src="https://placehold.co/800x1200.png"
-                alt="Church building"
+                alt="Image of St. Mary"
                 layout="fill"
                 objectFit="cover"
                 className="absolute inset-0 z-0 opacity-20"
-                data-ai-hint="church building"
+                data-ai-hint="St Mary"
               />
             <div className="relative z-10 flex items-center gap-2 text-2xl font-bold text-primary font-headline">
               <Church className="h-8 w-8" />

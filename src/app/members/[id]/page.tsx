@@ -1,6 +1,6 @@
-import { members, type Member } from '@/lib/mock-data';
+import { members, type Member, type FamilyMember } from '@/lib/mock-data';
 import { notFound, redirect } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Mail, Phone, Home, Calendar, Users, User, Link as LinkIcon, ArrowLeft, Map, Gift, HeartHandshake, MapPin, Tag } from 'lucide-react';
@@ -37,6 +37,25 @@ const DetailItem = ({ icon: Icon, label, value, action, children }: { icon: Reac
         </div>
     );
 };
+
+const FamilyMemberCard = ({ member }: { member: FamilyMember }) => (
+    <Card>
+        <CardHeader className="flex flex-row items-center gap-4">
+             <Avatar className="h-16 w-16 border">
+                <AvatarImage src={member.avatarUrl} alt={member.name} data-ai-hint="person" />
+                <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+            </Avatar>
+            <div>
+                <CardTitle>{member.name}</CardTitle>
+                <CardDescription>{member.relation}</CardDescription>
+            </div>
+        </CardHeader>
+        <CardContent className="space-y-2 text-sm">
+            {member.birthday && <p><Gift className="inline-block mr-2 h-4 w-4 text-muted-foreground" /> Birthday: {format(new Date(member.birthday), 'MMMM d')}</p>}
+            {member.phone && member.phone !== "N/A" && <p><Phone className="inline-block mr-2 h-4 w-4 text-muted-foreground" /> Phone: {member.phone}</p>}
+        </CardContent>
+    </Card>
+)
 
 
 export default async function MemberDetailPage({ params }: { params: { id: string } }) {
@@ -112,11 +131,13 @@ export default async function MemberDetailPage({ params }: { params: { id: strin
                                 <div className="relative aspect-video w-full overflow-hidden rounded-lg">
                                     <Image src="https://placehold.co/600x400.png" alt="Family photo" layout="fill" objectFit="cover" data-ai-hint="family photo" />
                                 </div>
-                                <div className="space-y-6">
-                                    {member.family.spouse && <DetailItem icon={User} label="Spouse" value={member.family.spouse} />}
-                                    {member.family.children && member.family.children.length > 0 && <DetailItem icon={Users} label="Children" value={member.family.children} />}
-                                    {!member.family.spouse && (!member.family.children || member.family.children.length === 0) && (
-                                        <p className="text-muted-foreground">No family details available.</p>
+                                 <div className="grid gap-4 md:grid-cols-2">
+                                    {member.family.length > 0 ? (
+                                        member.family.map((familyMember) => (
+                                            <FamilyMemberCard key={familyMember.name} member={familyMember} />
+                                        ))
+                                    ) : (
+                                        <p className="text-muted-foreground col-span-2">No family details available.</p>
                                     )}
                                 </div>
                             </div>

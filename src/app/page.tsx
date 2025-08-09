@@ -14,12 +14,24 @@ export default function Home() {
               <Church className="h-8 w-8" />
               Cathedral Family
             </div>
-            <div className="relative z-10 flex justify-center items-center flex-grow">
+             <div className="relative z-10 mt-6 block md:hidden">
+              <blockquote className="space-y-2 text-center">
+                 <Image
+                  src="/st-mary.png"
+                  alt="Image of St. Mary"
+                  width={300}
+                  height={150}
+                  className="rounded-lg shadow-2xl object-cover mx-auto"
+                  data-ai-hint="St Mary"
+                />
+              </blockquote>
+            </div>
+            <div className="relative z-10 hidden md:flex justify-center items-center flex-grow">
                <Image
                   src="/st-mary.png"
                   alt="Image of St. Mary"
-                  width={400}
-                  height={300}
+                  width={300}
+                  height={150}
                   className="rounded-lg shadow-2xl object-cover"
                   data-ai-hint="St Mary"
                 />
@@ -42,7 +54,7 @@ export default function Home() {
             </CardHeader>
             <CardHeader className="p-0 mb-6 text-left">
               <CardTitle className="text-2xl font-headline tracking-tight">Member Login</CardTitle>
-              <CardDescription>Enter your phone number and password to access the directory.</CardDescription>
+              <CardDescription>Enter your username and password to access the directory.</CardDescription>
             </CardHeader>
             <CardContent className="p-0">
               <LoginForm />
@@ -53,3 +65,5 @@ export default function Home() {
     </main>
   );
 }
+
+    

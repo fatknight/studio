@@ -21,7 +21,7 @@ import { LogIn } from "lucide-react";
 import { members } from "@/lib/mock-data";
 
 const formSchema = z.object({
-  phone: z.string().min(1, { message: "Please enter a valid phone number." }),
+  phone: z.string().min(1, { message: "Please enter a valid username." }),
   password: z.string().min(1, { message: "Password is required." }),
 });
 
@@ -51,7 +51,12 @@ export function LoginForm() {
           title: "Login Successful",
           description: `Welcome back, ${authenticatedMember.name}!`,
         });
-        router.push("/members");
+        if (authenticatedMember.role === 'Admin') {
+          // Redirect admin to a specific dashboard if needed, for now redirecting to members page
+          router.push("/members");
+        } else {
+          router.push("/members");
+        }
       } else {
         toast({
           variant: "destructive",
@@ -71,9 +76,9 @@ export function LoginForm() {
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone Number</FormLabel>
+              <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="555-0101" {...field} />
+                <Input placeholder="Username" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -105,3 +110,5 @@ export function LoginForm() {
     </Form>
   );
 }
+
+    

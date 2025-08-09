@@ -25,9 +25,28 @@ export type Member = {
   avatarUrl: string;
   zone: string;
   ward: string;
+  role?: 'Admin' | 'Member';
 };
 
 export const members: Member[] = [
+  {
+    id: 'admin',
+    name: 'Admin User',
+    email: 'admin@example.com',
+    phone: 'admin',
+    password: 'adminpassword',
+    address: 'N/A',
+    status: 'Active',
+    joinDate: '',
+    homeParish: 'N/A',
+    nativeDistrict: 'N/A',
+    family: [],
+    familyName: 'Admin',
+    avatarUrl: 'https://placehold.co/128x128/EBF4FA/3E6680.png',
+    zone: '',
+    ward: '',
+    role: 'Admin',
+  },
   {
     id: '1',
     name: 'John Doe',
@@ -51,6 +70,7 @@ export const members: Member[] = [
     avatarUrl: 'https://placehold.co/128x128/EBF4FA/3E6680.png',
     zone: 'North Zone',
     ward: 'Ward 1',
+    role: 'Member',
   },
   {
     id: '2',
@@ -74,6 +94,7 @@ export const members: Member[] = [
     avatarUrl: 'https://placehold.co/128x128/A3E4D7/2E86C1.png',
     zone: 'North Zone',
     ward: 'Ward 2',
+    role: 'Member',
   },
   {
     id: '3',
@@ -93,6 +114,7 @@ export const members: Member[] = [
     avatarUrl: 'https://placehold.co/128x128/F5B7B1/922B21.png',
     zone: 'South Zone',
     ward: 'Ward 1',
+    role: 'Member',
   },
   {
     id: '4',
@@ -114,6 +136,7 @@ export const members: Member[] = [
     avatarUrl: 'https://placehold.co/128x128/D7BDE2/5B2C6F.png',
     zone: 'South Zone',
     ward: 'Ward 2',
+    role: 'Member',
   },
     {
     id: '5',
@@ -136,6 +159,7 @@ export const members: Member[] = [
     avatarUrl: 'https://placehold.co/128x128/FAD7A0/AF601A.png',
     zone: 'East Zone',
     ward: 'Ward 1',
+    role: 'Member',
   },
   {
     id: '6',
@@ -154,6 +178,7 @@ export const members: Member[] = [
     avatarUrl: 'https://placehold.co/128x128/ABEBC6/196F3D.png',
     zone: 'East Zone',
     ward: 'Ward 2',
+    role: 'Member',
   },
   {
     id: '7',
@@ -178,6 +203,7 @@ export const members: Member[] = [
     avatarUrl: 'https://placehold.co/128x128/AED6F1/1B4F72.png',
     zone: 'West Zone',
     ward: 'Ward 1',
+    role: 'Member',
   },
   {
     id: '8',
@@ -199,6 +225,7 @@ export const members: Member[] = [
     avatarUrl: 'https://placehold.co/128x128/F5CBA7/7E5109.png',
     zone: 'West Zone',
     ward: 'Ward 2',
+    role: 'Member',
   },
   {
     id: '9',
@@ -218,6 +245,7 @@ export const members: Member[] = [
     avatarUrl: 'https://placehold.co/128x128/E6B0AA/641E16.png',
     zone: 'North Zone',
     ward: 'Ward 3',
+    role: 'Member',
   },
   {
     id: '10',
@@ -242,6 +270,7 @@ export const members: Member[] = [
     avatarUrl: 'https://placehold.co/128x128/A9DFBF/145A32.png',
     zone: 'South Zone',
     ward: 'Ward 3',
+    role: 'Member',
   },
     {
     id: '11',
@@ -260,6 +289,7 @@ export const members: Member[] = [
     avatarUrl: 'https://placehold.co/128x128/F4D03F/7D6608.png',
     zone: 'East Zone',
     ward: 'Ward 3',
+    role: 'Member',
   },
   {
     id: '12',
@@ -283,6 +313,7 @@ export const members: Member[] = [
     avatarUrl: 'https://placehold.co/128x128/85C1E9/21618C.png',
     zone: 'West Zone',
     ward: 'Ward 3',
+    role: 'Member',
   }
 ];
 
@@ -292,3 +323,5 @@ export const zones = [
     { name: 'East Zone', wards: ['Ward 1', 'Ward 2', 'Ward 3', 'Ward 4', 'Ward 5'] },
     { name: 'West Zone', wards: ['Ward 1', 'Ward 2', 'Ward 3', 'Ward 4', 'Ward 5'] },
 ]
+
+    

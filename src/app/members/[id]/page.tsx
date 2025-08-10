@@ -121,8 +121,8 @@ export default async function MemberDetailPage({ params }: { params: { id: strin
                                     </a>
                                 } />
                                 <DetailItem icon={MapPin} label="Native District" value={member.nativeDistrict} />
-                                <DetailItem icon={Gift} label="Birthday" value={member.birthday ? format(new Date(member.birthday), 'MMMM d, yyyy') : undefined} />
-                                <DetailItem icon={HeartHandshake} label="Wedding Day" value={member.weddingDay ? format(new Date(member.weddingDay), 'MMMM d, yyyy') : undefined} />
+                                <DetailItem icon={Gift} label="Birthday" value={member.birthday ? format(new Date(member.birthday), 'MMMM d') : undefined} />
+                                <DetailItem icon={HeartHandshake} label="Wedding Day" value={member.weddingDay ? format(new Date(member.weddingDay), 'MMMM d') : undefined} />
                                 <DetailItem icon={Calendar} label="Home Parish" value={member.homeParish} />
                                 <DetailItem icon={Tag} label="">
                                     <div className="flex flex-wrap gap-2 mt-1">

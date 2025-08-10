@@ -85,11 +85,11 @@ export const members: Member[] = [
     joinDate: '2019-07-22',
     homeParish: 'St. Mary\'s Basilica',
     nativeDistrict: 'Ernakulam',
-    birthday: '1990-09-15',
-    weddingDay: '2015-10-20',
+    birthday: '1990-08-15',
+    weddingDay: '2015-08-',
     family: [
       { relation: 'Spouse', name: 'John Smith', birthday: '1989-11-30', phone: '555-0114', avatarUrl: 'https://placehold.co/128x128/D6EAF8/2E86C1.png', homeParish: 'St. Mary\'s Basilica', subGroups: ['Men\'s Fellowship'] },
-      { relation: 'Child', name: 'Jake Smith', birthday: '2018-06-01', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/D1F2EB/138D75.png', homeParish: 'St. Mary\'s Basilica' }
+      { relation: 'Child', name: 'Jake Smith', birthday: '2018-06-01', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/D1F2EB/138D75.png', homeParish: 'St. Mary\'s Basilica', subGroups: ['Sunday School'] }
     ],
     familyName: 'Smith Family',
     subGroups: ['Youth League'],

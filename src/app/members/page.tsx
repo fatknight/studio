@@ -18,6 +18,7 @@ const DirectoryView = ({ searchParams }: { searchParams?: { query?: string; page
   const pageSize = 10;
 
   let filteredMembers = members.filter((member) =>
+    member.id !== 'admin' &&
     (member.name.toLowerCase().includes(query.toLowerCase()) ||
     member.email.toLowerCase().includes(query.toLowerCase()) ||
     (member.familyName && member.familyName.toLowerCase().includes(query.toLowerCase())))
@@ -56,6 +57,7 @@ const CelebrationsView = () => {
     const nextSevenDays = addDays(today, 7);
 
     const upcomingEvents = members
+        .filter(member => member.id !== 'admin')
         .flatMap(member => {
             const events = [];
             if (member.birthday) {

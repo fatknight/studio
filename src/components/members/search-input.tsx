@@ -18,20 +18,17 @@ export function SearchInput() {
         } else {
             params.delete("query");
         }
-        // Keep the current view
-        if (!params.has('view')) {
-            params.set('view', 'directory');
-        }
+        
         replace(`${pathname}?${params.toString()}`);
     }, 300);
 
     return (
-        <div className="relative">
+        <div className="relative flex-grow">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
                 type="search"
                 placeholder="Search by name, email, or family..."
-                className="pl-10 w-full md:w-1/2 lg:w-1/3"
+                className="pl-10 w-full"
                 onChange={(e) => handleSearch(e.target.value)}
                 defaultValue={searchParams.get('query')?.toString()}
             />

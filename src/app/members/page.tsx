@@ -59,11 +59,21 @@ const CelebrationsView = () => {
         .flatMap(member => {
             const events = [];
             if (member.birthday) {
-                events.push({ type: 'Birthday', date: member.birthday, member });
+                events.push({ type: 'Birthday', date: member.birthday, person: member, isFamilyMember: false, headOfFamily: member });
             }
-            if (member.weddingDay) {
-                events.push({ type: 'Wedding', date: member.weddingDay, member });
+            if (member.maritalStatus === 'Married' && member.weddingDay) {
+                events.push({ type: 'Wedding', date: member.weddingDay, person: member, isFamilyMember: false, headOfFamily: member });
             }
+
+            member.family.forEach(familyMember => {
+                if (familyMember.birthday) {
+                    events.push({ type: 'Birthday', date: familyMember.birthday, person: familyMember, isFamilyMember: true, headOfFamily: member });
+                }
+                if (familyMember.maritalStatus === 'Married' && familyMember.weddingDay) {
+                    events.push({ type: 'Wedding', date: familyMember.weddingDay, person: familyMember, isFamilyMember: true, headOfFamily: member });
+                }
+            });
+            
             return events;
         })
         .map(event => {
@@ -88,16 +98,19 @@ const CelebrationsView = () => {
         <div className="space-y-4">
             {upcomingEvents.length > 0 ? (
                 upcomingEvents.map((event, index) => (
-                    <Link key={`${event.member.id}-${event.type}-${index}`} href={`/members/${event.member.id}`} className="block">
+                    <Link key={`${event.person.name}-${event.type}-${index}`} href={`/members/${event.headOfFamily.id}`} className="block">
                         <div className="flex items-center justify-between gap-4 p-3 rounded-lg border hover:bg-muted transition-colors">
                             <div className="flex items-center gap-4">
                                 <Avatar className="h-12 w-12">
-                                    <AvatarImage src={event.member.avatarUrl} alt={event.member.name} data-ai-hint="person" />
-                                    <AvatarFallback>{event.member.name.charAt(0)}</AvatarFallback>
+                                    <AvatarImage src={event.person.avatarUrl} alt={event.person.name} data-ai-hint="person" />
+                                    <AvatarFallback>{event.person.name.charAt(0)}</AvatarFallback>
                                 </Avatar>
                                 <div>
-                                    <p className="font-semibold text-lg">{event.member.name}</p>
-                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                    <p className="font-semibold text-lg">{event.person.name}</p>
+                                    {event.isFamilyMember && (
+                                        <p className="text-sm text-muted-foreground">{event.person.relation} of {event.headOfFamily.name}</p>
+                                    )}
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                                         {event.type === 'Birthday' ? <Gift className="h-4 w-4" /> : <HeartHandshake className="h-4 w-4" />}
                                         <span>{event.type} Anniversary</span>
                                     </div>

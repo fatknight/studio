@@ -126,7 +126,6 @@ export default async function MemberDetailPage({ params }: { params: { id: strin
                                 } />
                                 <DetailItem icon={MapPin} label="Native District" value={member.nativeDistrict} />
                                 <DetailItem icon={Gift} label="Birthday" value={member.birthday ? format(new Date(member.birthday), 'MMMM d') : undefined} />
-                                <DetailItem icon={Heart} label="Marital Status" value={member.maritalStatus} />
                                 {member.maritalStatus === 'Married' && member.weddingDay && (
                                     <DetailItem icon={HeartHandshake} label="Wedding Day" value={format(new Date(member.weddingDay), 'MMMM d')} />
                                 )}

@@ -20,6 +20,7 @@ export type Member = {
   homeParish: string;
   nativeDistrict: string;
   birthday?: string;
+  maritalStatus: 'Single' | 'Married' | 'Divorced' | 'Widowed';
   weddingDay?: string;
   family: FamilyMember[];
   familyName?: string;
@@ -42,6 +43,7 @@ export const members: Member[] = [
     joinDate: '',
     homeParish: 'N/A',
     nativeDistrict: 'N/A',
+    maritalStatus: 'Single',
     family: [],
     familyName: 'Admin',
     avatarUrl: 'https://placehold.co/128x128/A3E4D7/2E86C1.png',
@@ -61,6 +63,7 @@ export const members: Member[] = [
     homeParish: 'St. Peter\'s Cathedral',
     nativeDistrict: 'Kottayam',
     birthday: '1985-05-20',
+    maritalStatus: 'Married',
     weddingDay: '2010-06-12',
     family: [
       { relation: 'Spouse', name: 'Jane Doe', birthday: '1988-04-12', phone: '555-0113', avatarUrl: 'https://placehold.co/128x128/D5F5E3/1E8449.png', homeParish: 'St. Peter\'s Cathedral', subGroups: ['Choir'] },
@@ -86,7 +89,8 @@ export const members: Member[] = [
     homeParish: 'St. Mary\'s Basilica',
     nativeDistrict: 'Ernakulam',
     birthday: '1990-08-15',
-    weddingDay: '2015-08-',
+    maritalStatus: 'Married',
+    weddingDay: '2015-08-14',
     family: [
       { relation: 'Spouse', name: 'John Smith', birthday: '1989-11-30', phone: '555-0114', avatarUrl: 'https://placehold.co/128x128/D6EAF8/2E86C1.png', homeParish: 'St. Mary\'s Basilica', subGroups: ['Men\'s Fellowship'] },
       { relation: 'Child', name: 'Jake Smith', birthday: '2018-06-01', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/D1F2EB/138D75.png', homeParish: 'St. Mary\'s Basilica', subGroups: ['Sunday School'] }
@@ -110,6 +114,7 @@ export const members: Member[] = [
     homeParish: 'St. George\'s Church',
     nativeDistrict: 'Thrissur',
     birthday: '1982-01-10',
+    maritalStatus: 'Single',
     family: [],
     familyName: 'Jones Family',
     subGroups: ['Men\'s Fellowship'],
@@ -130,6 +135,7 @@ export const members: Member[] = [
     homeParish: 'St. Peter\'s Cathedral',
     nativeDistrict: 'Pathanamthitta',
     birthday: '1995-03-25',
+    maritalStatus: 'Single',
     family: [
        { relation: 'Child', name: 'Chris Johnson', birthday: '2020-05-20', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/E6E6FA/483D8B.png' }
     ],
@@ -152,6 +158,7 @@ export const members: Member[] = [
     homeParish: 'St. Mary\'s Basilica',
     nativeDistrict: 'Alappuzha',
     birthday: '1978-11-05',
+    maritalStatus: 'Married',
     weddingDay: '2005-02-14',
     family: [
       { relation: 'Spouse', name: 'Susan Williams', birthday: '1980-02-20', phone: '555-0115', avatarUrl: 'https://placehold.co/128x128/FFDAB9/A0522D.png', homeParish: 'St. Mary\'s Basilica' }
@@ -175,6 +182,7 @@ export const members: Member[] = [
     homeParish: 'St. George\'s Church',
     nativeDistrict: 'Idukki',
     birthday: '1965-07-30',
+    maritalStatus: 'Widowed',
     family: [],
     familyName: 'Brown Family',
     avatarUrl: 'https://placehold.co/128x128/ABEBC6/196F3D.png',
@@ -194,6 +202,7 @@ export const members: Member[] = [
     homeParish: 'St. Peter\'s Cathedral',
     nativeDistrict: 'Kollam',
     birthday: '1980-04-01',
+    maritalStatus: 'Married',
     weddingDay: '2008-08-20',
     family: [
       { relation: 'Spouse', name: 'Patricia Davis', birthday: '1982-08-20', phone: '555-0116', avatarUrl: 'https://placehold.co/128x128/B0E0E6/4682B4.png', homeParish: 'St. Peter\'s Cathedral', subGroups: ['Charity Wing'] },
@@ -219,6 +228,7 @@ export const members: Member[] = [
     homeParish: 'St. Mary\'s Basilica',
     nativeDistrict: 'Thiruvananthapuram',
     birthday: '1975-02-12',
+    maritalStatus: 'Married',
     weddingDay: '2000-05-15',
     family: [
       { relation: 'Spouse', name: 'Richard Miller', birthday: '1974-01-01', phone: '555-0117', avatarUrl: 'https://placehold.co/128x128/F08080/800000.png', homeParish: 'St. Mary\'s Basilica' }
@@ -241,6 +251,7 @@ export const members: Member[] = [
     homeParish: 'St. George\'s Church',
     nativeDistrict: 'Palakkad',
     birthday: '1992-06-18',
+    maritalStatus: 'Single',
     family: [],
     familyName: 'Wilson Family',
     subGroups: ['Youth League'],
@@ -261,6 +272,7 @@ export const members: Member[] = [
     homeParish: 'St. Peter\'s Cathedral',
     nativeDistrict: 'Kozhikode',
     birthday: '1988-12-25',
+    maritalStatus: 'Married',
     weddingDay: '2012-01-22',
     family: [
         { relation: 'Spouse', name: 'William Moore', birthday: '1987-11-11', phone: '555-0118', avatarUrl: 'https://placehold.co/128x128/D8BFD8/4B0082.png', homeParish: 'St. Peter\'s Cathedral' },
@@ -286,6 +298,7 @@ export const members: Member[] = [
     homeParish: 'St. Mary\'s Basilica',
     nativeDistrict: 'Wayanad',
     birthday: '1986-10-10',
+    maritalStatus: 'Single',
     family: [],
     familyName: 'Taylor Family',
     avatarUrl: 'https://placehold.co/128x128/F4D03F/7D6608.png',
@@ -305,6 +318,7 @@ export const members: Member[] = [
     homeParish: 'St. George\'s Church',
     nativeDistrict: 'Kannur',
     birthday: '1991-08-08',
+    maritalStatus: 'Married',
     weddingDay: '2018-02-18',
     family: [
         { relation: 'Spouse', name: 'Thomas Anderson', birthday: '1990-01-01', phone: '555-0119', avatarUrl: 'https://placehold.co/128x128/FFC0CB/800000.png', homeParish: 'St. George\'s Church', subGroups: ['Men\'s Fellowship'] },

@@ -3,7 +3,7 @@ import { notFound, redirect } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Mail, Phone, Home, Calendar, Users, User, Link as LinkIcon, ArrowLeft, Map, Gift, HeartHandshake, MapPin, Tag } from 'lucide-react';
+import { Mail, Phone, Home, Calendar, Users, User, Link as LinkIcon, ArrowLeft, Map, Gift, HeartHandshake, MapPin, Tag, Heart } from 'lucide-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -122,7 +122,10 @@ export default async function MemberDetailPage({ params }: { params: { id: strin
                                 } />
                                 <DetailItem icon={MapPin} label="Native District" value={member.nativeDistrict} />
                                 <DetailItem icon={Gift} label="Birthday" value={member.birthday ? format(new Date(member.birthday), 'MMMM d') : undefined} />
-                                <DetailItem icon={HeartHandshake} label="Wedding Day" value={member.weddingDay ? format(new Date(member.weddingDay), 'MMMM d') : undefined} />
+                                <DetailItem icon={Heart} label="Marital Status" value={member.maritalStatus} />
+                                {member.maritalStatus === 'Married' && member.weddingDay && (
+                                    <DetailItem icon={HeartHandshake} label="Wedding Day" value={format(new Date(member.weddingDay), 'MMMM d')} />
+                                )}
                                 <DetailItem icon={Calendar} label="Home Parish" value={member.homeParish} />
                                 <DetailItem icon={Tag} label="">
                                     <div className="flex flex-wrap gap-2 mt-1">

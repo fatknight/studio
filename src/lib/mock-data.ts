@@ -6,6 +6,8 @@ export type FamilyMember = {
   avatarUrl?: string;
   homeParish?: string;
   subGroups?: string[];
+  maritalStatus?: 'Single' | 'Married' | 'Divorced' | 'Widowed';
+  weddingDay?: string;
 };
 
 export type Member = {
@@ -66,7 +68,7 @@ export const members: Member[] = [
     maritalStatus: 'Married',
     weddingDay: '2010-06-12',
     family: [
-      { relation: 'Spouse', name: 'Jane Doe', birthday: '1988-04-12', phone: '555-0113', avatarUrl: 'https://placehold.co/128x128/D5F5E3/1E8449.png', homeParish: 'St. Peter\'s Cathedral', subGroups: ['Choir'] },
+      { relation: 'Spouse', name: 'Jane Doe', birthday: '1988-04-12', phone: '555-0113', avatarUrl: 'https://placehold.co/128x128/D5F5E3/1E8449.png', homeParish: 'St. Peter\'s Cathedral', subGroups: ['Choir'], maritalStatus: 'Married', weddingDay: '2010-06-12' },
       { relation: 'Child', name: 'Jimmy Doe', birthday: '2012-01-15', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/E8DAEF/884EA0.png', homeParish: 'St. Peter\'s Cathedral', subGroups: ['Altar Servers'] },
       { relation: 'Child', name: 'Jenny Doe', birthday: '2014-07-22', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/FDEBD0/D35400.png', homeParish: 'St. Peter\'s Cathedral', subGroups: ['Sunday School'] },
     ],
@@ -92,7 +94,7 @@ export const members: Member[] = [
     maritalStatus: 'Married',
     weddingDay: '2015-08-14',
     family: [
-      { relation: 'Spouse', name: 'John Smith', birthday: '1989-11-30', phone: '555-0114', avatarUrl: 'https://placehold.co/128x128/D6EAF8/2E86C1.png', homeParish: 'St. Mary\'s Basilica', subGroups: ['Men\'s Fellowship'] },
+      { relation: 'Spouse', name: 'John Smith', birthday: '1989-11-30', phone: '555-0114', avatarUrl: 'https://placehold.co/128x128/D6EAF8/2E86C1.png', homeParish: 'St. Mary\'s Basilica', subGroups: ['Men\'s Fellowship'], maritalStatus: 'Married', weddingDay: '2015-08-14' },
       { relation: 'Child', name: 'Jake Smith', birthday: '2018-06-01', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/D1F2EB/138D75.png', homeParish: 'St. Mary\'s Basilica', subGroups: ['Sunday School'] }
     ],
     familyName: 'Smith Family',
@@ -161,7 +163,7 @@ export const members: Member[] = [
     maritalStatus: 'Married',
     weddingDay: '2005-02-14',
     family: [
-      { relation: 'Spouse', name: 'Susan Williams', birthday: '1980-02-20', phone: '555-0115', avatarUrl: 'https://placehold.co/128x128/FFDAB9/A0522D.png', homeParish: 'St. Mary\'s Basilica' }
+      { relation: 'Spouse', name: 'Susan Williams', birthday: '1980-02-20', phone: '555-0115', avatarUrl: 'https://placehold.co/128x128/FFDAB9/A0522D.png', homeParish: 'St. Mary\'s Basilica', maritalStatus: 'Married', weddingDay: '2005-02-14' }
     ],
     familyName: 'Williams Family',
     subGroups: ['Pastoral Council'],
@@ -205,7 +207,7 @@ export const members: Member[] = [
     maritalStatus: 'Married',
     weddingDay: '2008-08-20',
     family: [
-      { relation: 'Spouse', name: 'Patricia Davis', birthday: '1982-08-20', phone: '555-0116', avatarUrl: 'https://placehold.co/128x128/B0E0E6/4682B4.png', homeParish: 'St. Peter\'s Cathedral', subGroups: ['Charity Wing'] },
+      { relation: 'Spouse', name: 'Patricia Davis', birthday: '1982-08-20', phone: '555-0116', avatarUrl: 'https://placehold.co/128x128/B0E0E6/4682B4.png', homeParish: 'St. Peter\'s Cathedral', subGroups: ['Charity Wing'], maritalStatus: 'Married', weddingDay: '2008-08-20' },
       { relation: 'Child', name: 'Robert Davis', birthday: '2010-10-10', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/B0E0E6/4682B4.png', homeParish: 'St. Peter\'s Cathedral' },
       { relation: 'Child', name: 'Jennifer Davis', birthday: '2012-12-12', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/B0E0E6/4682B4.png', homeParish: 'St. Peter\'s Cathedral' },
     ],
@@ -231,7 +233,7 @@ export const members: Member[] = [
     maritalStatus: 'Married',
     weddingDay: '2000-05-15',
     family: [
-      { relation: 'Spouse', name: 'Richard Miller', birthday: '1974-01-01', phone: '555-0117', avatarUrl: 'https://placehold.co/128x128/F08080/800000.png', homeParish: 'St. Mary\'s Basilica' }
+      { relation: 'Spouse', name: 'Richard Miller', birthday: '1974-01-01', phone: '555-0117', avatarUrl: 'https://placehold.co/128x128/F08080/800000.png', homeParish: 'St. Mary\'s Basilica', maritalStatus: 'Married', weddingDay: '2000-05-15' }
     ],
     familyName: 'Miller Family',
     avatarUrl: 'https://placehold.co/128x128/F5CBA7/7E5109.png',
@@ -275,7 +277,7 @@ export const members: Member[] = [
     maritalStatus: 'Married',
     weddingDay: '2012-01-22',
     family: [
-        { relation: 'Spouse', name: 'William Moore', birthday: '1987-11-11', phone: '555-0118', avatarUrl: 'https://placehold.co/128x128/D8BFD8/4B0082.png', homeParish: 'St. Peter\'s Cathedral' },
+        { relation: 'Spouse', name: 'William Moore', birthday: '1987-11-11', phone: '555-0118', avatarUrl: 'https://placehold.co/128x128/D8BFD8/4B0082.png', homeParish: 'St. Peter\'s Cathedral', maritalStatus: 'Married', weddingDay: '2012-01-22' },
         { relation: 'Child', name: 'Jessica Moore', birthday: '2014-02-02', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/D8BFD8/4B0082.png', homeParish: 'St. Peter\'s Cathedral' },
         { relation: 'Child', name: 'Daniel Moore', birthday: '2016-03-03', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/D8BFD8/4B0082.png', homeParish: 'St. Peter\'s Cathedral' }
     ],
@@ -321,7 +323,7 @@ export const members: Member[] = [
     maritalStatus: 'Married',
     weddingDay: '2018-02-18',
     family: [
-        { relation: 'Spouse', name: 'Thomas Anderson', birthday: '1990-01-01', phone: '555-0119', avatarUrl: 'https://placehold.co/128x128/FFC0CB/800000.png', homeParish: 'St. George\'s Church', subGroups: ['Men\'s Fellowship'] },
+        { relation: 'Spouse', name: 'Thomas Anderson', birthday: '1990-01-01', phone: '555-0119', avatarUrl: 'https://placehold.co/128x128/FFC0CB/800000.png', homeParish: 'St. George\'s Church', subGroups: ['Men\'s Fellowship'], maritalStatus: 'Married', weddingDay: '2018-02-18' },
         { relation: 'Child', name: 'Sarah Anderson', birthday: '2020-10-10', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/FFC0CB/800000.png', homeParish: 'St. George\'s Church' }
     ],
     familyName: 'Anderson Family',

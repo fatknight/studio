@@ -11,15 +11,20 @@ import {
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import type { Member } from '@/lib/mock-data';
+import type { Member, FamilyMember } from '@/lib/mock-data';
 import { Button } from '../ui/button';
-import { ChevronLeft, ChevronRight, MapPin, Phone } from 'lucide-react';
+import { ChevronLeft, ChevronRight, MapPin, Phone, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+type MemberWithMatchingFamily = Member & {
+  matchingFamilyMembers?: FamilyMember[];
+}
+
 type MembersTableProps = {
-  members: Member[];
+  members: (Member | MemberWithMatchingFamily)[];
   totalPages: number;
   currentPage: number;
+  selectedSubgroup?: string;
 };
 
 const WhatsAppIcon = () => (
@@ -28,7 +33,7 @@ const WhatsAppIcon = () => (
     </svg>
 );
 
-export function MembersTable({ members, totalPages, currentPage }: MembersTableProps) {
+export function MembersTable({ members, totalPages, currentPage, selectedSubgroup }: MembersTableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -71,7 +76,15 @@ export function MembersTable({ members, totalPages, currentPage }: MembersTableP
                     <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                 </TableCell>
-                <TableCell className="font-medium">{member.name}</TableCell>
+                <TableCell className="font-medium">
+                  <div>{member.name}</div>
+                  {'matchingFamilyMembers' in member && member.matchingFamilyMembers && member.matchingFamilyMembers.length > 0 && (
+                    <div className="text-xs text-muted-foreground mt-1 flex items-center">
+                      <Users className="h-3 w-3 mr-1" />
+                      Also in {selectedSubgroup}: {member.matchingFamilyMembers.map(fm => fm.name).join(', ')}
+                    </div>
+                  )}
+                </TableCell>
                 <TableCell className="hidden md:table-cell text-muted-foreground">{member.email}</TableCell>
                 <TableCell className="hidden sm:table-cell text-muted-foreground">{member.phone}</TableCell>
                 <TableCell className="text-right">

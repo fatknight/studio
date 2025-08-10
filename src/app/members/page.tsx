@@ -1,4 +1,4 @@
-import { members, type Member, zones } from '@/lib/mock-data';
+import { members, type Member, zones, FamilyMember } from '@/lib/mock-data';
 import { MembersTable } from '@/components/members/members-table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SearchInput } from '@/components/members/search-input';
@@ -9,6 +9,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format, isWithinInterval, addDays, getDayOfYear, getYear, parseISO, setYear } from 'date-fns';
 import { FilterMenu } from '@/components/members/filter-menu';
 
+type MemberWithMatchingFamily = Member & {
+  matchingFamilyMembers?: FamilyMember[];
+}
 
 const DirectoryView = ({ searchParams }: { searchParams?: { query?: string; page?: string; zone?: string; ward?: string; subgroup?: string;} }) => {
   const query = searchParams?.query || '';
@@ -38,11 +41,14 @@ const DirectoryView = ({ searchParams }: { searchParams?: { query?: string; page
         const inMemberSubgroups = member.subGroups?.includes(selectedSubgroup);
         const inFamilySubgroups = member.family?.some(f => f.subGroups?.includes(selectedSubgroup));
         return inMemberSubgroups || inFamilySubgroups;
+    }).map(member => {
+        const matchingFamilyMembers = member.family?.filter(f => f.subGroups?.includes(selectedSubgroup));
+        return { ...member, matchingFamilyMembers };
     });
   }
 
 
-  const paginatedMembers: Member[] = filteredMembers.slice(
+  const paginatedMembers: (Member | MemberWithMatchingFamily)[] = filteredMembers.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
@@ -55,7 +61,7 @@ const DirectoryView = ({ searchParams }: { searchParams?: { query?: string; page
         <SearchInput />
         <FilterMenu />
       </div>
-      <MembersTable members={paginatedMembers} currentPage={currentPage} totalPages={totalPages} />
+      <MembersTable members={paginatedMembers} currentPage={currentPage} totalPages={totalPages} selectedSubgroup={selectedSubgroup} />
     </>
   )
 }

@@ -326,7 +326,7 @@ export const members: Member[] = [
     family: [
         { relation: 'Spouse', name: 'Lisha Elizabeth Shaji', birthday: '1990-05-25', phone: '9449835249', avatarUrl: 'https://placehold.co/128x128/FFC0CB/800000.png', subGroups: ['Choir'], maritalStatus: 'Married', weddingDay: '2016-11-06' },
         { relation: 'Daughter', name: 'Bryanna Mary Cheruvathur', birthday: '2019-03-28', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/FFC0CB/800000.png', subGroups: ['Sunday School'], maritalStatus: 'Single' },
-        { relation: 'Mother', name: 'Meens Ippurukutty', birthday: '1990-05-25', phone: '9449835249', avatarUrl: 'https://placehold.co/128x128/FFC0CB/800000.png', subGroups: ['Choir'], maritalStatus: 'Widowed', weddingDay: '1979-01-15' }
+        { relation: 'Mother', name: 'Meena Ippurukutty', birthday: '1990-05-25', phone: '9449835249', avatarUrl: 'https://placehold.co/128x128/FFC0CB/800000.png', subGroups: ['Choir'], maritalStatus: 'Widowed', weddingDay: '1979-01-15' }
     ],
     familyName: 'Anderson Family',
     subGroups: ['Youth League', 'Choir'],

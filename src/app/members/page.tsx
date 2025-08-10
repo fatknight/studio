@@ -3,7 +3,7 @@ import { MembersTable } from '@/components/members/members-table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SearchInput } from '@/components/members/search-input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { List, Cake, Filter } from 'lucide-react';
+import { List, Cake, Filter, Gift, HeartHandshake } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format, isWithinInterval, addDays, getDayOfYear, getYear, parseISO, setYear } from 'date-fns';
@@ -49,59 +49,69 @@ const DirectoryView = ({ searchParams }: { searchParams?: { query?: string; page
   )
 }
 
-const BirthdayView = () => {
+const CelebrationsView = () => {
     const today = new Date();
     const currentYear = getYear(today);
     const todayDayOfYear = getDayOfYear(today);
+    const nextSevenDays = addDays(today, 7);
 
-    const upcomingBirthdays = members
-        .map(member => {
-            if (!member.birthday) return null;
-            const birthdayDate = parseISO(member.birthday);
-            
-            let currentYearBirthday = setYear(birthdayDate, currentYear);
-            
-            if (getDayOfYear(currentYearBirthday) < todayDayOfYear) {
-                currentYearBirthday = setYear(birthdayDate, currentYear + 1);
+    const upcomingEvents = members
+        .flatMap(member => {
+            const events = [];
+            if (member.birthday) {
+                events.push({ type: 'Birthday', date: member.birthday, member });
+            }
+            if (member.weddingDay) {
+                events.push({ type: 'Wedding', date: member.weddingDay, member });
+            }
+            return events;
+        })
+        .map(event => {
+            const eventDate = parseISO(event.date);
+            let currentYearEventDate = setYear(eventDate, currentYear);
+
+            if (getDayOfYear(currentYearEventDate) < todayDayOfYear) {
+                currentYearEventDate = setYear(eventDate, currentYear + 1);
             }
             
             return {
-                ...member,
-                currentYearBirthday
+                ...event,
+                currentYearEventDate
             };
         })
-        .filter((member): member is Member & { currentYearBirthday: Date } => {
-            if (!member) return false;
-            const nextSevenDays = addDays(today, 7);
-            return isWithinInterval(member.currentYearBirthday, { start: today, end: nextSevenDays });
+        .filter(event => {
+            return isWithinInterval(event.currentYearEventDate, { start: today, end: nextSevenDays });
         })
-        .sort((a, b) => getDayOfYear(a.currentYearBirthday) - getDayOfYear(b.currentYearBirthday));
+        .sort((a, b) => getDayOfYear(a.currentYearEventDate) - getDayOfYear(b.currentYearEventDate));
 
     return (
         <div className="space-y-4">
-            {upcomingBirthdays.length > 0 ? (
-                upcomingBirthdays.map(member => (
-                    <Link key={member.id} href={`/members/${member.id}`} className="block">
+            {upcomingEvents.length > 0 ? (
+                upcomingEvents.map((event, index) => (
+                    <Link key={`${event.member.id}-${event.type}-${index}`} href={`/members/${event.member.id}`} className="block">
                         <div className="flex items-center justify-between gap-4 p-3 rounded-lg border hover:bg-muted transition-colors">
                             <div className="flex items-center gap-4">
                                 <Avatar className="h-12 w-12">
-                                    <AvatarImage src={member.avatarUrl} alt={member.name} data-ai-hint="person" />
-                                    <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+                                    <AvatarImage src={event.member.avatarUrl} alt={event.member.name} data-ai-hint="person" />
+                                    <AvatarFallback>{event.member.name.charAt(0)}</AvatarFallback>
                                 </Avatar>
                                 <div>
-                                    <p className="font-semibold text-lg">{member.name}</p>
-                                    <p className="text-sm text-muted-foreground">{member.familyName}</p>
+                                    <p className="font-semibold text-lg">{event.member.name}</p>
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                        {event.type === 'Birthday' ? <Gift className="h-4 w-4" /> : <HeartHandshake className="h-4 w-4" />}
+                                        <span>{event.type} Anniversary</span>
+                                    </div>
                                 </div>
                             </div>
                             <div className="text-right">
-                                <p className="font-semibold text-primary">{format(member.currentYearBirthday, 'MMMM d')}</p>
-                                <p className="text-xs text-muted-foreground">{format(member.currentYearBirthday, 'EEEE')}</p>
+                                <p className="font-semibold text-primary">{format(event.currentYearEventDate, 'MMMM d')}</p>
+                                <p className="text-xs text-muted-foreground">{format(event.currentYearEventDate, 'EEEE')}</p>
                             </div>
                         </div>
                     </Link>
                 ))
             ) : (
-                <p className="text-muted-foreground p-4 text-center">No upcoming birthdays this week.</p>
+                <p className="text-muted-foreground p-4 text-center">No upcoming celebrations this week.</p>
             )}
         </div>
     );
@@ -133,13 +143,13 @@ export default async function MembersPage({
           <Tabs defaultValue={view} className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="directory"><List className="mr-2 h-4 w-4" />Directory</TabsTrigger>
-              <TabsTrigger value="birthdays"><Cake className="mr-2 h-4 w-4" />Birthdays</TabsTrigger>
+              <TabsTrigger value="celebrations"><Cake className="mr-2 h-4 w-4" />Celebrations</TabsTrigger>
             </TabsList>
             <TabsContent value="directory" className="mt-6">
               <DirectoryView searchParams={searchParams} />
             </TabsContent>
-            <TabsContent value="birthdays" className="mt-6">
-              <BirthdayView />
+            <TabsContent value="celebrations" className="mt-6">
+              <CelebrationsView />
             </TabsContent>
           </Tabs>
         </CardContent>

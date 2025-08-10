@@ -98,7 +98,7 @@ const CelebrationsView = () => {
         <div className="space-y-4">
             {upcomingEvents.length > 0 ? (
                 upcomingEvents.map((event, index) => (
-                    <Link key={`${event.person.name}-${event.type}-${index}`} href={`/members/${event.headOfFamily.id}`} className="block">
+                    <Link key={index} href={`/members/${event.headOfFamily.id}`} className="block">
                         <div className="flex items-center justify-between gap-4 p-3 rounded-lg border hover:bg-muted transition-colors">
                             <div className="flex items-center gap-4">
                                 <Avatar className="h-12 w-12">

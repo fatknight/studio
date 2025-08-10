@@ -95,9 +95,9 @@ export const members: Member[] = [
     weddingDay: '2015-08-14',
     family: [
       { relation: 'Spouse', name: 'John Smith', birthday: '1989-11-30', phone: '555-0114', avatarUrl: 'https://placehold.co/128x128/D6EAF8/2E86C1.png', homeParish: 'St. Mary\'s Basilica', subGroups: ['Men\'s Fellowship'], maritalStatus: 'Married', weddingDay: '2015-08-14' },
-      { relation: 'Son', name: 'Jake Smith', birthday: '2018-06-01', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/D1F2EB/138D75.png', homeParish: 'St. Mary\'s Basilica', subGroups: ['Sunday School'], maritalStatus: 'Married', weddingDay: '2016-08-12' },
-      { relation: 'Daughter-in-law', name: 'Jake Smith', birthday: '2018-06-01', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/D1F2EB/138D75.png', homeParish: 'St. Mary\'s Basilica', subGroups: ['Sunday School'], maritalStatus: 'Married', weddingDay: '2016-08-12' },
-      { relation: 'Mother', name: 'Jill Smith', birthday: '2018-06-01', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/D1F2EB/138D75.png', homeParish: 'St. Mary\'s Basilica', subGroups: ['Sunday School'], maritalStatus: 'Married', weddingDay: '2016-08-16' }
+      { relation: 'Son', name: 'Jake Smith', birthday: '2018-06-01', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/D1F2EB/138D75.png', homeParish: 'St. Mary\'s Basilica', subGroups: ['Sunday School'], maritalStatus: 'Single' },
+      { relation: 'Daughter-in-law', name: 'Jake Smith', birthday: '2018-06-01', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/D1F2EB/138D75.png', homeParish: 'St. Mary\'s Basilica', subGroups: ['Sunday School'], maritalStatus: 'Single' },
+      { relation: 'Mother', name: 'Jill Smith', birthday: '1965-02-10', phone: 'N/A', avatarUrl: 'https://placehold.co/128x128/F5EEF8/6C3483.png', homeParish: 'St. Mary\'s Basilica', maritalStatus: 'Widowed' }
     ],
     familyName: 'Smith Family',
     subGroups: ['Youth League'],

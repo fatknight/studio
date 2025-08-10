@@ -149,8 +149,8 @@ export default async function MemberDetailPage({ params }: { params: { id: strin
                                 </div>
                                  <div className="grid gap-4 md:grid-cols-2">
                                     {member.family.length > 0 ? (
-                                        member.family.map((familyMember) => (
-                                            <FamilyMemberCard key={familyMember.name} member={familyMember} />
+                                        member.family.map((familyMember, index) => (
+                                            <FamilyMemberCard key={index} member={familyMember} />
                                         ))
                                     ) : (
                                         <p className="text-muted-foreground col-span-2">No family details available.</p>

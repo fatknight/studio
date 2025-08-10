@@ -6,12 +6,12 @@ import { getAuth } from "firebase/auth";
 // TODO: Replace the following with your app's Firebase project configuration
 // See: https://firebase.google.com/docs/web/learn-more#config-object
 const firebaseConfig = {
-  apiKey: "TODO: Add your API key",
-  authDomain: "TODO: Add your auth domain",
-  projectId: "TODO: Add your project ID",
-  storageBucket: "TODO: Add your storage bucket",
-  messagingSenderId: "TODO: Add your messaging sender ID",
-  appId: "TODO: Add your app ID"
+  apiKey: "AIzaSyAXyI-rMJ2FJiVZfdibxYZfM7PenFHLcpY",
+  authDomain: "verity-directory.firebaseapp.com",
+  projectId: "verity-directory",
+  storageBucket: "verity-directory.firebasestorage.app",
+  messagingSenderId: "389378794700",
+  appId: "1:389378794700:web:3d036b3cea58c6f9e48e69"
 };
 
 // Initialize Firebase

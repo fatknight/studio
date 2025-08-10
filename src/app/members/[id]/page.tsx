@@ -56,7 +56,6 @@ const FamilyMemberCard = ({ member }: { member: FamilyMember }) => (
             {member.maritalStatus === 'Married' && member.weddingDay && (
                 <p><HeartHandshake className="inline-block mr-2 h-4 w-4 text-muted-foreground" /> Wedding Day: {format(new Date(member.weddingDay), 'MMMM d')}</p>
             )}
-            {member.homeParish && <p><Calendar className="inline-block mr-2 h-4 w-4 text-muted-foreground" /> Home Parish: {member.homeParish}</p>}
             {member.subGroups && member.subGroups.length > 0 && (
                 <div className="flex items-start">
                     <Tag className="inline-block mr-2 h-4 w-4 text-muted-foreground mt-1" />

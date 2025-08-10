@@ -81,7 +81,7 @@ export function MembersTable({ members, totalPages, currentPage, selectedSubgrou
                   {'matchingFamilyMembers' in member && member.matchingFamilyMembers && member.matchingFamilyMembers.length > 0 && (
                     <div className="text-xs text-muted-foreground mt-1 flex items-center">
                       <Users className="h-3 w-3 mr-1" />
-                      Also in {selectedSubgroup}: {member.matchingFamilyMembers.map(fm => fm.name).join(', ')}
+                      {selectedSubgroup}: {member.matchingFamilyMembers.map(fm => fm.name).join(', ')}
                     </div>
                   )}
                 </TableCell>

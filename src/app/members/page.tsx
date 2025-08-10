@@ -10,11 +10,12 @@ import { format, isWithinInterval, addDays, getDayOfYear, getYear, parseISO, set
 import { FilterMenu } from '@/components/members/filter-menu';
 
 
-const DirectoryView = ({ searchParams }: { searchParams?: { query?: string; page?: string; zone?: string; ward?: string; } }) => {
+const DirectoryView = ({ searchParams }: { searchParams?: { query?: string; page?: string; zone?: string; ward?: string; subgroup?: string;} }) => {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
   const selectedZone = searchParams?.zone || 'all';
   const selectedWard = searchParams?.ward || 'all';
+  const selectedSubgroup = searchParams?.subgroup || 'all';
   const pageSize = 10;
 
   let filteredMembers = members.filter((member) =>
@@ -32,6 +33,15 @@ const DirectoryView = ({ searchParams }: { searchParams?: { query?: string; page
     filteredMembers = filteredMembers.filter(member => member.ward === selectedWard);
   }
   
+  if (selectedSubgroup !== 'all') {
+    filteredMembers = filteredMembers.filter(member => {
+        const inMemberSubgroups = member.subGroups?.includes(selectedSubgroup);
+        const inFamilySubgroups = member.family?.some(f => f.subGroups?.includes(selectedSubgroup));
+        return inMemberSubgroups || inFamilySubgroups;
+    });
+  }
+
+
   const paginatedMembers: Member[] = filteredMembers.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
@@ -142,6 +152,7 @@ export default async function MembersPage({
     view?: string;
     zone?: string;
     ward?: string;
+    subgroup?: string;
   };
 }) {
 

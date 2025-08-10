@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { zones } from '@/lib/mock-data';
+import { zones, members } from '@/lib/mock-data';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -17,6 +17,14 @@ import { Filter } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 
+const allSubgroups = Array.from(new Set(
+  members.flatMap(m => [
+    ...(m.subGroups || []),
+    ...(m.family?.flatMap(f => f.subGroups || []) || [])
+  ])
+));
+
+
 export function FilterMenu() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -24,8 +32,10 @@ export function FilterMenu() {
 
   const selectedZone = searchParams.get('zone') || 'all';
   const selectedWard = searchParams.get('ward') || 'all';
+  const selectedSubgroup = searchParams.get('subgroup') || 'all';
 
-  const handleFilterChange = (type: 'zone' | 'ward', value: string) => {
+
+  const handleFilterChange = (type: 'zone' | 'ward' | 'subgroup', value: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('page', '1');
 
@@ -37,13 +47,17 @@ export function FilterMenu() {
         params.set('zone', value);
         params.delete('ward');
       }
-    }
-
-    if (type === 'ward') {
+    } else if (type === 'ward') {
       if (value === 'all') {
         params.delete('ward');
       } else {
         params.set('ward', value);
+      }
+    } else if (type === 'subgroup') {
+      if (value === 'all') {
+        params.delete('subgroup');
+      } else {
+        params.set('subgroup', value);
       }
     }
     
@@ -99,6 +113,26 @@ export function FilterMenu() {
                 </Select>
              </div>
           )}
+          
+          <DropdownMenuSeparator />
+
+          <div>
+            <Label>Spiritual Organization</Label>
+            <Select
+              value={selectedSubgroup}
+              onValueChange={(value) => handleFilterChange('subgroup', value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select Organization" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Organizations</SelectItem>
+                {allSubgroups.map(subgroup => (
+                  <SelectItem key={subgroup} value={subgroup}>{subgroup}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

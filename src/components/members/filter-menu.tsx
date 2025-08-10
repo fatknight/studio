@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { zones, members } from '@/lib/mock-data';
+import { zones, members as mockMembers } from '@/lib/mock-data';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -17,8 +17,10 @@ import { Filter } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 
+// We still need the mock data to populate the filter options initially.
+// A better approach would be to fetch these from Firestore as well.
 const allSubgroups = Array.from(new Set(
-  members.flatMap(m => [
+  mockMembers.flatMap(m => [
     ...(m.subGroups || []),
     ...(m.family?.flatMap(f => f.subGroups || []) || [])
   ])

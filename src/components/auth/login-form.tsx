@@ -18,7 +18,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { LogIn } from "lucide-react";
-import { members } from "@/lib/mock-data";
+import { getMemberByPhone } from "@/services/members";
+
 
 const formSchema = z.object({
   phone: z.string().min(1, { message: "Please enter a valid username." }),
@@ -38,34 +39,30 @@ export function LoginForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     
-    const authenticatedMember = members.find(
-      (member) => member.phone === values.phone && member.password === values.password
-    );
+    const authenticatedMember = await getMemberByPhone(values.phone);
 
-    setTimeout(() => {
-      if (authenticatedMember) {
-        toast({
-          title: "Login Successful",
-          description: `Welcome back, ${authenticatedMember.name}!`,
-        });
-        if (authenticatedMember.role === 'Admin') {
-          // Redirect admin to a specific dashboard if needed, for now redirecting to members page
-          router.push("/members");
-        } else {
-          router.push("/members");
-        }
+    if (authenticatedMember && authenticatedMember.password === values.password) {
+      toast({
+        title: "Login Successful",
+        description: `Welcome back, ${authenticatedMember.name}!`,
+      });
+      if (authenticatedMember.role === 'Admin') {
+        // Redirect admin to a specific dashboard if needed, for now redirecting to members page
+        router.push("/members");
       } else {
-        toast({
-          variant: "destructive",
-          title: "Login Failed",
-          description: "Invalid phone number or password. Please try again.",
-        });
+        router.push("/members");
       }
-      setIsLoading(false);
-    }, 1000);
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: "Invalid phone number or password. Please try again.",
+      });
+    }
+    setIsLoading(false);
   }
 
   return (
@@ -110,5 +107,3 @@ export function LoginForm() {
     </Form>
   );
 }
-
-    

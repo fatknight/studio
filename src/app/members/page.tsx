@@ -1,4 +1,4 @@
-import { members, type Member, zones, FamilyMember } from '@/lib/mock-data';
+import { type Member, zones, FamilyMember } from '@/lib/mock-data';
 import { MembersTable } from '@/components/members/members-table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SearchInput } from '@/components/members/search-input';
@@ -8,18 +8,21 @@ import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format, isWithinInterval, addDays, getDayOfYear, getYear, parseISO, setYear } from 'date-fns';
 import { FilterMenu } from '@/components/members/filter-menu';
+import { getMembers } from '@/services/members';
 
 type MemberWithMatchingFamily = Member & {
   matchingFamilyMembers?: FamilyMember[];
 }
 
-const DirectoryView = ({ searchParams }: { searchParams?: { query?: string; page?: string; zone?: string; ward?: string; subgroup?: string;} }) => {
+const DirectoryView = async ({ searchParams }: { searchParams?: { query?: string; page?: string; zone?: string; ward?: string; subgroup?: string;} }) => {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
   const selectedZone = searchParams?.zone || 'all';
   const selectedWard = searchParams?.ward || 'all';
   const selectedSubgroup = searchParams?.subgroup || 'all';
   const pageSize = 10;
+  
+  const members = await getMembers();
 
   let filteredMembers = members.filter((member) =>
     member.id !== 'admin' &&
@@ -66,11 +69,13 @@ const DirectoryView = ({ searchParams }: { searchParams?: { query?: string; page
   )
 }
 
-const CelebrationsView = () => {
+const CelebrationsView = async () => {
     const today = new Date();
     const currentYear = getYear(today);
     const todayDayOfYear = getDayOfYear(today);
     const nextSevenDays = addDays(today, 7);
+
+    const members = await getMembers();
 
     const upcomingEvents = members
         .filter(member => member.id !== 'admin')

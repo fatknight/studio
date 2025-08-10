@@ -1,4 +1,4 @@
-import { members, type Member, type FamilyMember } from '@/lib/mock-data';
+import { type Member, type FamilyMember } from '@/lib/mock-data';
 import { notFound, redirect } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
+import { getMemberById } from '@/services/members';
 
 const WhatsAppIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="text-green-500">
@@ -72,7 +73,7 @@ const FamilyMemberCard = ({ member }: { member: FamilyMember }) => (
 
 
 export default async function MemberDetailPage({ params }: { params: { id: string } }) {
-    const member = members.find((m) => m.id === params.id);
+    const member = await getMemberById(params.id);
 
     if (!member) {
         notFound();

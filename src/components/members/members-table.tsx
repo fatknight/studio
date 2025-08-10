@@ -13,7 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import type { Member } from '@/lib/mock-data';
 import { Button } from '../ui/button';
-import { ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
+import { ChevronLeft, ChevronRight, MapPin, Phone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type MembersTableProps = {
@@ -76,6 +76,9 @@ export function MembersTable({ members, totalPages, currentPage }: MembersTableP
                 <TableCell className="hidden sm:table-cell text-muted-foreground">{member.phone}</TableCell>
                 <TableCell className="text-right">
                   <div className='flex items-center justify-end gap-2'>
+                     <Button variant="ghost" size="icon" className="sm:hidden" onClick={(e) => handleActionClick(e, `tel:${member.phone}`)}>
+                        <Phone className="h-5 w-5 text-primary" />
+                    </Button>
                     <Button variant="ghost" size="icon" onClick={(e) => handleActionClick(e, `https://wa.me/${member.phone.replace(/\D/g, '')}`)}>
                       <WhatsAppIcon />
                     </Button>

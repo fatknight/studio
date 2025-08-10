@@ -18,7 +18,7 @@ const WhatsAppIcon = () => (
 
 
 const DetailItem = ({ icon: Icon, label, value, action, children }: { icon: React.ElementType, label: string, value?: string | string[], action?: React.ReactNode, children?: React.ReactNode }) => {
-    if (!value && !children) return null;
+    if (!value && !children && !action) return null;
     return (
         <div className="flex items-start gap-4">
             <Icon className="h-5 w-5 text-muted-foreground mt-1" />
@@ -107,21 +107,21 @@ export default async function MemberDetailPage({ params }: { params: { id: strin
                             <div className="space-y-6">
                                 <DetailItem icon={Mail} label="Email" value={member.email} />
                                 <DetailItem icon={Phone} label="Phone" value={member.phone} action={
-                                    <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
+                                   member.phone !== 'admin' && <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
                                         <Button variant="ghost" size="icon">
                                             <WhatsAppIcon />
                                         </Button>
                                     </a>
                                 } />
                                 <DetailItem icon={Home} label="Address" value={member.address} action={
-                                    <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(member.address)}`} target="_blank" rel="noopener noreferrer">
+                                   member.address !== 'N/A' && <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(member.address)}`} target="_blank" rel="noopener noreferrer">
                                         <Button variant="outline" size="sm">
                                             <Map className="mr-2 h-4 w-4" /> Directions
                                         </Button>
                                     </a>
                                 } />
                                 <DetailItem icon={MapPin} label="Native District" value={member.nativeDistrict} />
-                                <DetailItem icon={Gift} label="Birthday" value={member.birthday ? format(new Date(member.birthday), 'MMMM d') : undefined} />
+                                <DetailItem icon={Gift} label="Birthday" value={member.birthday ? format(new Date(member.birthday), 'MMMM d, yyyy') : undefined} />
                                 <DetailItem icon={HeartHandshake} label="Wedding Day" value={member.weddingDay ? format(new Date(member.weddingDay), 'MMMM d, yyyy') : undefined} />
                                 <DetailItem icon={Calendar} label="Home Parish" value={member.homeParish} />
                                 <DetailItem icon={Tag} label="">

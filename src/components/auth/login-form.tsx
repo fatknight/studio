@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { LogIn } from "lucide-react";
 import { getMemberByPhone } from "@/services/members";
+import { useAuthStore } from "@/hooks/use-auth";
 
 
 const formSchema = z.object({
@@ -30,6 +31,7 @@ export function LoginForm() {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = React.useState(false);
+  const { setMember } = useAuthStore();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,16 +47,13 @@ export function LoginForm() {
     const authenticatedMember = await getMemberByPhone(values.phone);
 
     if (authenticatedMember && authenticatedMember.password === values.password) {
+      setMember(authenticatedMember);
       toast({
         title: "Login Successful",
         description: `Welcome back, ${authenticatedMember.name}!`,
       });
-      if (authenticatedMember.role === 'Admin') {
-        // Redirect admin to a specific dashboard if needed, for now redirecting to members page
-        router.push("/members");
-      } else {
-        router.push("/members");
-      }
+      router.push("/members");
+
     } else {
       toast({
         variant: "destructive",

@@ -3,12 +3,13 @@ import { MembersTable } from '@/components/members/members-table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SearchInput } from '@/components/members/search-input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { List, Cake, Filter, Gift, HeartHandshake, HandHelping, User } from 'lucide-react';
+import { List, Cake, Filter, Gift, HeartHandshake, HandHelping, User, UserPlus } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format, isWithinInterval, addDays, getDayOfYear, getYear, parseISO, setYear } from 'date-fns';
 import { FilterMenu } from '@/components/members/filter-menu';
 import { getMembers, getSpecialRequests } from '@/services/members';
+import { AdminControls } from '@/components/admin/admin-controls';
 
 type MemberWithMatchingFamily = Member & {
   matchingFamilyMembers?: FamilyMember[];
@@ -63,6 +64,13 @@ const DirectoryView = async ({ searchParams }: { searchParams?: { query?: string
       <div className="flex flex-col sm:flex-row gap-4 mb-4">
         <SearchInput />
         <FilterMenu />
+        <AdminControls>
+            <Link href="/members/edit/new">
+                <div className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+                    <UserPlus className="mr-2 h-4 w-4" /> Add Member
+                </div>
+            </Link>
+        </AdminControls>
       </div>
       <MembersTable members={paginatedMembers} currentPage={currentPage} totalPages={totalPages} selectedSubgroup={selectedSubgroup} />
     </>

@@ -3,7 +3,7 @@ import { notFound, redirect } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Mail, Phone, Home, Calendar, Users, User, Link as LinkIcon, ArrowLeft, Map, Gift, HeartHandshake, MapPin, Tag, Heart, HandHelping } from 'lucide-react';
+import { Mail, Phone, Home, Calendar, Users, User, Link as LinkIcon, ArrowLeft, Map, Gift, HeartHandshake, MapPin, Tag, Heart, HandHelping, Edit, Trash } from 'lucide-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { getMemberById } from '@/services/members';
 import { RequestForm } from '@/components/members/request-form';
+import { AdminControls } from '@/components/admin/admin-controls';
 
 const WhatsAppIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="text-green-500">
@@ -91,12 +92,22 @@ export default async function MemberDetailPage({ params }: { params: { id: strin
                         Back to Directory
                     </Button>
                 </Link>
-                <RequestForm member={member}>
-                  <Button>
-                      <HandHelping className="mr-2 h-4 w-4" />
-                      Make a Request
-                  </Button>
-                </RequestForm>
+                <div className="flex items-center gap-2">
+                    <AdminControls>
+                         <Link href={`/members/edit/${member.id}`}>
+                            <Button variant="outline">
+                                <Edit className="mr-2 h-4 w-4" />
+                                Edit Member
+                            </Button>
+                        </Link>
+                    </AdminControls>
+                    <RequestForm member={member}>
+                      <Button>
+                          <HandHelping className="mr-2 h-4 w-4" />
+                          Make a Request
+                      </Button>
+                    </RequestForm>
+                </div>
             </div>
             <Card className="overflow-hidden shadow-lg">
                 <CardHeader className="flex flex-col items-center gap-6 bg-primary/10 p-6 text-center sm:flex-row sm:text-left">
@@ -173,5 +184,3 @@ export default async function MemberDetailPage({ params }: { params: { id: strin
         </div>
     );
 }
-
-    

@@ -1,6 +1,6 @@
 'use server';
 
-import { collection, doc, getDoc, getDocs, query, where, orderBy, Timestamp } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, where, orderBy, Timestamp, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { Member, SpecialRequest } from '@/lib/mock-data';
 
@@ -12,6 +12,7 @@ export async function getMembers(): Promise<Member[]> {
 }
 
 export async function getMemberById(id: string): Promise<Member | null> {
+  if (id === 'new') return null;
   const docRef = doc(db, 'members', id);
   const docSnap = await getDoc(docRef);
 
@@ -47,4 +48,20 @@ export async function getSpecialRequests(): Promise<SpecialRequest[]> {
       } as SpecialRequest
   });
   return requestList;
+}
+
+
+export async function createMember(memberData: Omit<Member, 'id'>): Promise<string> {
+    const docRef = await addDoc(collection(db, 'members'), memberData);
+    return docRef.id;
+}
+
+export async function updateMember(id: string, memberData: Partial<Member>): Promise<void> {
+    const memberRef = doc(db, 'members', id);
+    await updateDoc(memberRef, memberData);
+}
+
+export async function deleteMember(id: string): Promise<void> {
+    const memberRef = doc(db, 'members', id);
+    await deleteDoc(memberRef);
 }

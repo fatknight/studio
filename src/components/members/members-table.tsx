@@ -10,11 +10,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import type { Member, FamilyMember } from '@/lib/mock-data';
 import { Button } from '../ui/button';
-import { ChevronLeft, ChevronRight, MapPin, Phone, Users } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { ChevronLeft, ChevronRight, Edit, Eye, MapPin, MoreHorizontal, Phone, Trash, Users } from 'lucide-react';
+import { useAuthStore } from '@/hooks/use-auth';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
+import { deleteMember } from '@/services/members';
+import { useToast } from '@/hooks/use-toast';
 
 type MemberWithMatchingFamily = Member & {
   matchingFamilyMembers?: FamilyMember[];
@@ -37,6 +40,8 @@ export function MembersTable({ members, totalPages, currentPage, selectedSubgrou
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { member: currentUser } = useAuthStore();
+  const { toast } = useToast();
 
   const handleRowClick = (id: string) => {
     router.push(`/members/${id}`);
@@ -46,13 +51,30 @@ export function MembersTable({ members, totalPages, currentPage, selectedSubgrou
     if (page < 1 || page > totalPages) return;
     const params = new URLSearchParams(searchParams);
     params.set('page', page.toString());
-    router.push(`${pathname}?${params.toString()}`);
+    router.replace(`${pathname}?${params.toString()}`);
   }
 
   const handleActionClick = (e: React.MouseEvent, url: string) => {
     e.stopPropagation();
     window.open(url, '_blank', 'noopener,noreferrer');
   }
+
+  const handleEdit = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    router.push(`/members/edit/${id}`);
+  };
+
+  const handleDelete = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    try {
+      await deleteMember(id);
+      toast({ title: "Member deleted", description: "The member has been successfully deleted." });
+      router.refresh();
+    } catch (error) {
+      toast({ variant: "destructive", title: "Error", description: "Failed to delete member." });
+    }
+  };
+
 
   return (
     <>
@@ -88,17 +110,54 @@ export function MembersTable({ members, totalPages, currentPage, selectedSubgrou
                 <TableCell className="hidden md:table-cell text-muted-foreground">{member.email}</TableCell>
                 <TableCell className="hidden sm:table-cell text-muted-foreground">{member.phone}</TableCell>
                 <TableCell className="text-right">
-                  <div className='flex items-center justify-end gap-2'>
-                     <Button variant="ghost" size="icon" className="sm:hidden" onClick={(e) => handleActionClick(e, `tel:${member.phone}`)}>
-                        <Phone className="h-5 w-5 text-primary" />
-                    </Button>
-                    <Button variant="ghost" size="icon" onClick={(e) => handleActionClick(e, `https://wa.me/${member.phone.replace(/\D/g, '')}`)}>
-                      <WhatsAppIcon />
-                    </Button>
-                    <Button variant="ghost" size="icon" onClick={(e) => handleActionClick(e, `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(member.address)}`)}>
-                      <MapPin className="h-5 w-5 text-primary" />
-                    </Button>
-                  </div>
+                    {currentUser?.role === 'Admin' ? (
+                       <DropdownMenu>
+                           <DropdownMenuTrigger asChild>
+                               <Button variant="ghost" size="icon" onClick={(e) => e.stopPropagation()}>
+                                   <MoreHorizontal className="h-5 w-5" />
+                               </Button>
+                           </DropdownMenuTrigger>
+                           <DropdownMenuContent align="end">
+                               <DropdownMenuItem onClick={(e) => handleRowClick(member.id)}>
+                                   <Eye className="mr-2 h-4 w-4" /> View
+                               </DropdownMenuItem>
+                               <DropdownMenuItem onClick={(e) => handleEdit(e, member.id)}>
+                                   <Edit className="mr-2 h-4 w-4" /> Edit
+                               </DropdownMenuItem>
+                               <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                             <Trash className="mr-2 h-4 w-4" /> Delete
+                                        </DropdownMenuItem>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone. This will permanently delete the member account and all associated data.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction onClick={(e) => handleDelete(e, member.id)}>Delete</AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                               </AlertDialog>
+                           </DropdownMenuContent>
+                       </DropdownMenu>
+                    ) : (
+                       <div className='flex items-center justify-end gap-2'>
+                         <Button variant="ghost" size="icon" className="sm:hidden" onClick={(e) => handleActionClick(e, `tel:${member.phone}`)}>
+                            <Phone className="h-5 w-5 text-primary" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={(e) => handleActionClick(e, `https://wa.me/${member.phone.replace(/\D/g, '')}`)}>
+                          <WhatsAppIcon />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={(e) => handleActionClick(e, `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(member.address)}`)}>
+                          <MapPin className="h-5 w-5 text-primary" />
+                        </Button>
+                      </div>
+                    )}
                 </TableCell>
               </TableRow>
             ))}

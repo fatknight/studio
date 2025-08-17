@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 export type FamilyMember = {
   name: string;
   relation: 'Spouse' | 'Son' | 'Daughter' | 'Daughter-in-law' | 'Son-in-law' | 'Grandson' | 'Granddaughter' | 'Mother' | 'Father' | 'Brother' | 'Sister' | 'Others';
@@ -40,8 +42,19 @@ export type SpecialRequest = {
   requestDate: string;
   requestType: 'Orma Qurbana' | 'Special Qurbana' | 'Other Intercessory Prayers';
   otherRequest?: string;
-  createdAt: string;
+  createdAt: any; // Using `any` for Firestore Timestamp
 };
+
+export const CreateRequestInputSchema = z.object({
+  memberId: z.string().describe('The ID of the member making the request.'),
+  memberName: z.string().describe('The name of the member.'),
+  memberAvatarUrl: z.string().describe('The avatar URL of the member.'),
+  requestDate: z.string().describe('The ISO string of the requested date.'),
+  requestType: z.enum(['Orma Qurbana', 'Special Qurbana', 'Other Intercessory Prayers']).describe('The type of prayer request.'),
+  otherRequest: z.string().optional().describe('The details of the prayer request if "Other" is selected.'),
+});
+
+export type CreateRequestInput = z.infer<typeof CreateRequestInputSchema>;
 
 
 export const members: Member[] = [

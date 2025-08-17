@@ -1,6 +1,6 @@
 'use server';
 
-import { collection, doc, getDoc, getDocs, query, where, orderBy } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, where, orderBy, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { Member, SpecialRequest } from '@/lib/mock-data';
 
@@ -36,6 +36,15 @@ export async function getSpecialRequests(): Promise<SpecialRequest[]> {
   const requestsCol = collection(db, 'specialRequests');
   const q = query(requestsCol, orderBy('requestDate', 'asc'));
   const requestSnapshot = await getDocs(q);
-  const requestList = requestSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as SpecialRequest));
+  const requestList = requestSnapshot.docs.map(doc => {
+      const data = doc.data();
+      // Convert Firestore Timestamp to string
+      const createdAt = data.createdAt instanceof Timestamp ? data.createdAt.toDate().toISOString() : new Date().toISOString();
+      return {
+          id: doc.id,
+          ...data,
+          createdAt,
+      } as SpecialRequest
+  });
   return requestList;
 }

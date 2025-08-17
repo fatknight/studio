@@ -35,19 +35,19 @@ import { Calendar } from "@/components/ui/calendar";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { type Member } from "@/lib/mock-data";
+import { type Member, CreateRequestInputSchema } from "@/lib/mock-data";
 import { createRequest } from "@/ai/flows/create-request-flow";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 
-const formSchema = z.object({
-  requestDate: z.date({
-    required_error: "A date for the service is required.",
-  }),
-  requestType: z.enum(['Orma Qurbana', 'Special Qurbana', 'Other Intercessory Prayers'], {
-    required_error: "Please select a prayer request type.",
-  }),
-  otherRequest: z.string().optional(),
+const formSchema = CreateRequestInputSchema.omit({
+    memberId: true,
+    memberName: true,
+    memberAvatarUrl: true,
+}).extend({
+    requestDate: z.date({
+        required_error: "A date for the service is required.",
+    }),
 }).refine(data => {
     if (data.requestType === 'Other Intercessory Prayers') {
         return !!data.otherRequest && data.otherRequest.length >= 10;

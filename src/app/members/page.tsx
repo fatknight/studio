@@ -177,7 +177,10 @@ const IntercessoryServicesView = async () => {
                                         <p className="text-xs text-muted-foreground">{format(parseISO(request.requestDate), 'EEEE')}</p>
                                     </div>
                                 </div>
-                                <p className="mt-2 text-base bg-background/50 p-3 rounded-md">{request.prayerRequest}</p>
+                                <p className="mt-2 text-base bg-background/50 p-3 rounded-md">
+                                    <strong>{request.requestType}</strong>
+                                    {request.requestType === 'Other Intercessory Prayers' && request.otherRequest && `: ${request.otherRequest}`}
+                                </p>
                             </div>
                         </div>
                     </Link>
@@ -233,5 +236,3 @@ export default async function MembersPage({
     </div>
   );
 }
-
-    

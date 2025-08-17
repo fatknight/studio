@@ -37,13 +37,25 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { type Member } from "@/lib/mock-data";
 import { createRequest } from "@/ai/flows/create-request-flow";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 
 const formSchema = z.object({
   requestDate: z.date({
     required_error: "A date for the service is required.",
   }),
-  prayerRequest: z.string().min(10, { message: "Prayer request must be at least 10 characters." }),
+  requestType: z.enum(['Orma Qurbana', 'Special Qurbana', 'Other Intercessory Prayers'], {
+    required_error: "Please select a prayer request type.",
+  }),
+  otherRequest: z.string().optional(),
+}).refine(data => {
+    if (data.requestType === 'Other Intercessory Prayers') {
+        return !!data.otherRequest && data.otherRequest.length >= 10;
+    }
+    return true;
+}, {
+    message: "Please provide details for your prayer request (minimum 10 characters).",
+    path: ["otherRequest"],
 });
 
 export function RequestForm({ children, member }: { children: React.ReactNode, member: Member }) {
@@ -54,9 +66,11 @@ export function RequestForm({ children, member }: { children: React.ReactNode, m
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      prayerRequest: "",
-    },
+        otherRequest: ""
+    }
   });
+
+  const requestType = form.watch("requestType");
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
@@ -67,7 +81,8 @@ export function RequestForm({ children, member }: { children: React.ReactNode, m
         memberName: member.name,
         memberAvatarUrl: member.avatarUrl,
         requestDate: values.requestDate.toISOString(),
-        prayerRequest: values.prayerRequest,
+        requestType: values.requestType,
+        otherRequest: values.otherRequest,
       });
 
       toast({
@@ -97,7 +112,7 @@ export function RequestForm({ children, member }: { children: React.ReactNode, m
         <DialogHeader>
           <DialogTitle>Special Request</DialogTitle>
           <DialogDescription>
-            Request an Intercessory Service for a specific date. Please provide the details for your prayer request below.
+            Request an Intercessory Service for a specific date. Please select the type of prayer and provide details below.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -143,23 +158,48 @@ export function RequestForm({ children, member }: { children: React.ReactNode, m
                 </FormItem>
               )}
             />
-             <FormField
+            <FormField
                 control={form.control}
-                name="prayerRequest"
+                name="requestType"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Prayer Request</FormLabel>
-                    <FormControl>
-                        <Textarea
-                        placeholder="Please enter your prayer request here..."
-                        className="resize-none"
-                        {...field}
-                        />
-                    </FormControl>
-                    <FormMessage />
+                        <FormLabel>Prayer Request Type</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a prayer type" />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                <SelectItem value="Orma Qurbana">Orma Qurbana</SelectItem>
+                                <SelectItem value="Special Qurbana">Special Qurbana</SelectItem>
+                                <SelectItem value="Other Intercessory Prayers">Other Intercessory Prayers</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
                     </FormItem>
                 )}
-                />
+            />
+
+            {requestType === 'Other Intercessory Prayers' && (
+                 <FormField
+                    control={form.control}
+                    name="otherRequest"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Details for your Prayer</FormLabel>
+                        <FormControl>
+                            <Textarea
+                            placeholder="Please enter your prayer request here..."
+                            className="resize-none"
+                            {...field}
+                            />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+            )}
 
             <DialogFooter>
                 <DialogClose asChild>
@@ -181,5 +221,3 @@ export function RequestForm({ children, member }: { children: React.ReactNode, m
     </Dialog>
   );
 }
-
-    

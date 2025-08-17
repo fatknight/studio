@@ -39,5 +39,3 @@ export async function getSpecialRequests(): Promise<SpecialRequest[]> {
   const requestList = requestSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as SpecialRequest));
   return requestList;
 }
-
-    

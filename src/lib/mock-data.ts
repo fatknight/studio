@@ -38,7 +38,8 @@ export type SpecialRequest = {
   memberName: string;
   memberAvatarUrl: string;
   requestDate: string;
-  prayerRequest: string;
+  requestType: 'Orma Qurbana' | 'Special Qurbana' | 'Other Intercessory Prayers';
+  otherRequest?: string;
   createdAt: string;
 };
 
@@ -379,7 +380,3 @@ export const zones = [
     { name: 'East Zone', wards: ['Ward 1', 'Ward 2', 'Ward 3', 'Ward 4', 'Ward 5'] },
     { name: 'West Zone', wards: ['Ward 1', 'Ward 2', 'Ward 3', 'Ward 4', 'Ward 5'] },
 ]
-
-    
-
-    

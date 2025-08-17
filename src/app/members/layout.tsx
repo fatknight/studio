@@ -40,6 +40,7 @@ export default function MembersLayout({
             <span className="text-lg">Cathedral Family</span>
           </Link>
           <div className="flex flex-1 items-center justify-end space-x-4">
+            <ThemeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">

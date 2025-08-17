@@ -73,12 +73,14 @@ export const MemberPageClient = ({ member }: { member: Member }) => {
                             </Button>
                         </Link>
                     </AdminControls>
-                    <RequestForm member={member}>
-                      <Button>
-                          <HandHelping className="mr-2 h-4 w-4" />
-                          Make a Request
-                      </Button>
-                    </RequestForm>
+                    {currentUser?.id === member.id && (
+                        <RequestForm member={member}>
+                        <Button>
+                            <HandHelping className="mr-2 h-4 w-4" />
+                            Make a Request
+                        </Button>
+                        </RequestForm>
+                    )}
                 </div>
             </div>
             <Card className="overflow-hidden shadow-lg">

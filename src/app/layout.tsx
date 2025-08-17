@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/components/theme-provider';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export const metadata: Metadata = {
   title: 'Cathedral Family',
@@ -27,8 +28,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
-          <Toaster />
+          <div className="relative">
+            {children}
+            <div className="absolute top-4 right-4">
+              <ThemeToggle />
+            </div>
+            <Toaster />
+          </div>
         </ThemeProvider>
       </body>
     </html>

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useAuthStore } from "@/hooks/use-auth";
 
 export default function MembersLayout({
   children,
@@ -22,8 +23,11 @@ export default function MembersLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const { member, setMember } = useAuthStore();
+
 
   const handleLogout = () => {
+    setMember(null);
     router.push("/");
   };
 
@@ -36,12 +40,11 @@ export default function MembersLayout({
             <span className="text-lg">Cathedral Family</span>
           </Link>
           <div className="flex flex-1 items-center justify-end space-x-4">
-            <ThemeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src="https://placehold.co/40x40.png" alt="User avatar" data-ai-hint="person" />
+                    <AvatarImage src={member?.avatarUrl || "https://placehold.co/40x40.png"} alt="User avatar" data-ai-hint="person" />
                     <AvatarFallback>
                       <User />
                     </AvatarFallback>
@@ -51,9 +54,9 @@ export default function MembersLayout({
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">Member</p>
+                    <p className="text-sm font-medium leading-none">{member?.name || 'Member'}</p>
                     <p className="text-xs leading-none text-muted-foreground">
-                      member@example.com
+                      {member?.email || 'member@example.com'}
                     </p>
                   </div>
                 </DropdownMenuLabel>

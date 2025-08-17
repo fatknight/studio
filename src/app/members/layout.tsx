@@ -57,7 +57,7 @@ export default function MembersLayout({
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">{member?.name || 'Member'}</p>
                     <p className="text-xs leading-none text-muted-foreground">
-                      {member?.email || 'member@example.com'}
+                      {member?.role || 'Member'}
                     </p>
                   </div>
                 </DropdownMenuLabel>

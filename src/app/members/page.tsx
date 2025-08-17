@@ -3,7 +3,7 @@ import { MembersTable } from '@/components/members/members-table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SearchInput } from '@/components/members/search-input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { List, Cake, Filter, Gift, HeartHandshake, HandHelping } from 'lucide-react';
+import { List, Cake, Filter, Gift, HeartHandshake, HandHelping, User } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format, isWithinInterval, addDays, getDayOfYear, getYear, parseISO, setYear } from 'date-fns';
@@ -170,7 +170,8 @@ const IntercessoryServicesView = async () => {
                                 <div className="flex justify-between items-start">
                                     <div>
                                         <p className="font-semibold text-lg">{request.memberName}</p>
-                                        <p className="text-sm text-muted-foreground">Prayer Request</p>
+                                        <p className="text-sm text-muted-foreground">Requested a prayer for</p>
+                                        <p className="font-semibold text-base">{request.prayingFor}</p>
                                     </div>
                                     <div className="text-right flex-shrink-0">
                                         <p className="font-semibold text-primary">{format(parseISO(request.requestDate), 'MMMM d, yyyy')}</p>

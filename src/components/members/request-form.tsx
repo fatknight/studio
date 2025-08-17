@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import React from "react";
 import { format } from "date-fns";
-import { CalendarIcon, HandHelping } from "lucide-react";
+import { CalendarIcon, HandHelping, User } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -38,6 +38,7 @@ import { cn } from "@/lib/utils";
 import { type Member, CreateRequestInputSchema } from "@/lib/mock-data";
 import { createRequest } from "@/ai/flows/create-request-flow";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Input } from "../ui/input";
 
 
 const formSchema = CreateRequestInputSchema.omit({
@@ -58,21 +59,26 @@ const formSchema = CreateRequestInputSchema.omit({
     path: ["otherRequest"],
 });
 
+type FormValues = z.infer<typeof formSchema>;
+
 export function RequestForm({ children, member }: { children: React.ReactNode, member: Member }) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
+  
+  const requestTypeRef = React.useRef<HTMLButtonElement>(null);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-        otherRequest: ""
+        otherRequest: "",
+        prayingFor: "",
     }
   });
 
   const requestType = form.watch("requestType");
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: FormValues) {
     setIsLoading(true);
     
     try {
@@ -81,6 +87,7 @@ export function RequestForm({ children, member }: { children: React.ReactNode, m
         memberName: member.name,
         memberAvatarUrl: member.avatarUrl,
         requestDate: values.requestDate.toISOString(),
+        prayingFor: values.prayingFor,
         requestType: values.requestType,
         otherRequest: values.otherRequest,
       });
@@ -146,7 +153,11 @@ export function RequestForm({ children, member }: { children: React.ReactNode, m
                       <Calendar
                         mode="single"
                         selected={field.value}
-                        onSelect={field.onChange}
+                        onSelect={(date) => {
+                          field.onChange(date);
+                          // A short delay to allow the popover to close before focusing
+                          setTimeout(() => requestTypeRef.current?.focus(), 100);
+                        }}
                         disabled={(date) =>
                           date < new Date()
                         }
@@ -159,6 +170,22 @@ export function RequestForm({ children, member }: { children: React.ReactNode, m
               )}
             />
             <FormField
+              control={form.control}
+              name="prayingFor"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Praying For</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                       <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                       <Input placeholder="Enter name" {...field} className="pl-10" />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
                 control={form.control}
                 name="requestType"
                 render={({ field }) => (
@@ -166,7 +193,7 @@ export function RequestForm({ children, member }: { children: React.ReactNode, m
                         <FormLabel>Prayer Request Type</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger ref={requestTypeRef}>
                                 <SelectValue placeholder="Select a prayer type" />
                             </SelectTrigger>
                             </FormControl>

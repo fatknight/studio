@@ -40,6 +40,7 @@ export type SpecialRequest = {
   memberName: string;
   memberAvatarUrl: string;
   requestDate: string;
+  prayingFor: string;
   requestType: 'Orma Qurbana' | 'Special Qurbana' | 'Other Intercessory Prayers';
   otherRequest?: string;
   createdAt: any; // Using `any` for Firestore Timestamp
@@ -50,6 +51,7 @@ export const CreateRequestInputSchema = z.object({
   memberName: z.string().describe('The name of the member.'),
   memberAvatarUrl: z.string().describe('The avatar URL of the member.'),
   requestDate: z.string().describe('The ISO string of the requested date.'),
+  prayingFor: z.string().min(1, { message: 'Please enter the name of the person to pray for.' }),
   requestType: z.enum(['Orma Qurbana', 'Special Qurbana', 'Other Intercessory Prayers']).describe('The type of prayer request.'),
   otherRequest: z.string().optional().describe('The details of the prayer request if "Other" is selected.'),
 });

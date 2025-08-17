@@ -37,6 +37,7 @@ import { Textarea } from '../ui/textarea';
 const familyMemberSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   relation: z.enum(['Spouse', 'Son', 'Daughter', 'Daughter-in-law', 'Son-in-law', 'Grandson', 'Granddaughter', 'Mother', 'Father', 'Brother', 'Sister', 'Others']),
+  status: z.enum(['Active', 'Inactive']).optional(),
   birthday: z.date().optional(),
   phone: z.string().optional(),
   avatarUrl: z.string().url().optional(),
@@ -80,6 +81,7 @@ export function MemberForm({ member }: { member: Member | null }) {
       weddingDay: member?.weddingDay ? new Date(member.weddingDay) : undefined,
       family: member?.family.map(f => ({
           ...f,
+          status: f.status || 'Active',
           birthday: f.birthday ? new Date(f.birthday) : undefined,
           weddingDay: f.weddingDay ? new Date(f.weddingDay) : undefined,
       })) || [],
@@ -348,6 +350,17 @@ export function MemberForm({ member }: { member: Member | null }) {
                                         </Select>
                                     <FormMessage /></FormItem>
                                 )} />
+                                <FormField control={form.control} name={`family.${index}.status`} render={({ field }) => (
+                                    <FormItem><FormLabel>Status</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl><SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger></FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="Active">Active</SelectItem>
+                                                <SelectItem value="Inactive">Inactive</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    <FormMessage /></FormItem>
+                                )} />
                                  <FormField control={form.control} name={`family.${index}.birthday`} render={({ field }) => (
                                     <FormItem className="flex flex-col"><FormLabel>Birthday</FormLabel>
                                          <Popover>
@@ -371,7 +384,7 @@ export function MemberForm({ member }: { member: Member | null }) {
                             </div>
                         </div>
                     ))}
-                    <Button type="button" variant="outline" onClick={() => append({ name: '', relation: 'Others' })}>
+                    <Button type="button" variant="outline" onClick={() => append({ name: '', relation: 'Others', status: 'Active' })}>
                         <PlusCircle className="mr-2 h-4 w-4" /> Add Family Member
                     </Button>
                 </CardContent>

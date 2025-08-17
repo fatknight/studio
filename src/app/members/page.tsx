@@ -86,7 +86,7 @@ const CelebrationsView = async () => {
     const members = await getMembers();
 
     const upcomingEvents = members
-        .filter(member => member.id !== 'admin')
+        .filter(member => member.id !== 'admin' && member.status === 'Active')
         .flatMap(member => {
             const events = [];
             if (member.birthday) {
@@ -97,11 +97,13 @@ const CelebrationsView = async () => {
             }
 
             member.family.forEach(familyMember => {
-                if (familyMember.birthday) {
-                    events.push({ type: 'Birthday', date: familyMember.birthday, person: familyMember, isFamilyMember: true, headOfFamily: member });
-                }
-                if (familyMember.maritalStatus === 'Married' && familyMember.weddingDay) {
-                    events.push({ type: 'Wedding', date: familyMember.weddingDay, person: familyMember, isFamilyMember: true, headOfFamily: member });
+                if (familyMember.status === 'Active') {
+                    if (familyMember.birthday) {
+                        events.push({ type: 'Birthday', date: familyMember.birthday, person: familyMember, isFamilyMember: true, headOfFamily: member });
+                    }
+                    if (familyMember.maritalStatus === 'Married' && familyMember.weddingDay) {
+                        events.push({ type: 'Wedding', date: familyMember.weddingDay, person: familyMember, isFamilyMember: true, headOfFamily: member });
+                    }
                 }
             });
             

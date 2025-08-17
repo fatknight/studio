@@ -18,6 +18,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
 import { deleteMember } from '@/services/members';
 import { useToast } from '@/hooks/use-toast';
+import { Badge } from '../ui/badge';
 
 type MemberWithMatchingFamily = Member & {
   matchingFamilyMembers?: FamilyMember[];
@@ -74,6 +75,10 @@ export function MembersTable({ members, totalPages, currentPage, selectedSubgrou
       toast({ variant: "destructive", title: "Error", description: "Failed to delete member." });
     }
   };
+  
+  const membersToDisplay = currentUser?.role === 'Admin' 
+    ? members 
+    : members.filter(member => member.status === 'Active');
 
 
   return (
@@ -90,7 +95,7 @@ export function MembersTable({ members, totalPages, currentPage, selectedSubgrou
             </TableRow>
           </TableHeader>
           <TableBody>
-            {members.map((member) => (
+            {membersToDisplay.map((member) => (
               <TableRow key={member.id} onClick={() => handleRowClick(member.id)} className="cursor-pointer">
                 <TableCell>
                   <Avatar>
@@ -99,7 +104,12 @@ export function MembersTable({ members, totalPages, currentPage, selectedSubgrou
                   </Avatar>
                 </TableCell>
                 <TableCell className="font-medium">
-                  <div>{member.name}</div>
+                  <div className="flex items-center gap-2">
+                    <span>{member.name}</span>
+                    {member.status === 'Inactive' && currentUser?.role === 'Admin' && (
+                        <Badge variant="outline">Inactive</Badge>
+                    )}
+                  </div>
                   {'matchingFamilyMembers' in member && member.matchingFamilyMembers && member.matchingFamilyMembers.length > 0 && (
                     <div className="text-xs text-muted-foreground mt-1 flex items-center">
                       <Users className="h-3 w-3 mr-1" />

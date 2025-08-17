@@ -73,7 +73,7 @@ export const MemberPageClient = ({ member }: { member: Member }) => {
                             </Button>
                         </Link>
                     </AdminControls>
-                    {currentUser?.id === member.id && (
+                    {(currentUser?.id === member.id || isAdmin) && (
                         <RequestForm member={member}>
                         <Button>
                             <HandHelping className="mr-2 h-4 w-4" />

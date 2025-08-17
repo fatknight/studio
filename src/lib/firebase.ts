@@ -21,18 +21,12 @@ import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
-  // TODO: Replace this with your API key from the Firebase console.
-  apiKey: "TODO: Add your API key",
-  // TODO: Replace this with your auth domain from the Firebase console.
-  authDomain: "TODO: Add your auth domain",
-  // TODO: Replace this with your project ID from the Firebase console.
-  projectId: "TODO: Add your project ID",
-  // TODO: Replace this with your storage bucket from the Firebase console.
-  storageBucket: "TODO: Add your storage bucket",
-  // TODO: Replace this with your messaging sender ID from the Firebase console.
-  messagingSenderId: "TODO: Add your messaging sender ID",
-  // TODO: Replace this with your app ID from the Firebase console.
-  appId: "TODO: Add your app ID",
+  apiKey: "AIzaSyAXyI-rMJ2FJiVZfdibxYZfM7PenFHLcpY",
+  authDomain: "verity-directory.firebaseapp.com",
+  projectId: "verity-directory",
+  storageBucket: "verity-directory.firebasestorage.app",
+  messagingSenderId: "389378794700",
+  appId: "1:389378794700:web:3d036b3cea58c6f9e48e69"
 };
 
 // Initialize Firebase

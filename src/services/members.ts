@@ -1,8 +1,8 @@
 'use server';
 
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, where, orderBy } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import type { Member } from '@/lib/mock-data';
+import type { Member, SpecialRequest } from '@/lib/mock-data';
 
 export async function getMembers(): Promise<Member[]> {
   const membersCol = collection(db, 'members');
@@ -31,3 +31,13 @@ export async function getMemberByPhone(phone: string): Promise<Member | null> {
   }
   return null;
 }
+
+export async function getSpecialRequests(): Promise<SpecialRequest[]> {
+  const requestsCol = collection(db, 'specialRequests');
+  const q = query(requestsCol, orderBy('requestDate', 'asc'));
+  const requestSnapshot = await getDocs(q);
+  const requestList = requestSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as SpecialRequest));
+  return requestList;
+}
+
+    

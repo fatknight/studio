@@ -32,6 +32,17 @@ export type Member = {
   role?: 'Admin' | 'Member';
 };
 
+export type SpecialRequest = {
+  id: string;
+  memberId: string;
+  memberName: string;
+  memberAvatarUrl: string;
+  requestDate: string;
+  prayerRequest: string;
+  createdAt: string;
+};
+
+
 export const members: Member[] = [
   {
     id: 'admin',
@@ -368,5 +379,7 @@ export const zones = [
     { name: 'East Zone', wards: ['Ward 1', 'Ward 2', 'Ward 3', 'Ward 4', 'Ward 5'] },
     { name: 'West Zone', wards: ['Ward 1', 'Ward 2', 'Ward 3', 'Ward 4', 'Ward 5'] },
 ]
+
+    
 
     

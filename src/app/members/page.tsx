@@ -1,14 +1,14 @@
-import { type Member, zones, FamilyMember } from '@/lib/mock-data';
+import { type Member, zones, FamilyMember, SpecialRequest } from '@/lib/mock-data';
 import { MembersTable } from '@/components/members/members-table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SearchInput } from '@/components/members/search-input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { List, Cake, Filter, Gift, HeartHandshake } from 'lucide-react';
+import { List, Cake, Filter, Gift, HeartHandshake, HandHelping } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format, isWithinInterval, addDays, getDayOfYear, getYear, parseISO, setYear } from 'date-fns';
 import { FilterMenu } from '@/components/members/filter-menu';
-import { getMembers } from '@/services/members';
+import { getMembers, getSpecialRequests } from '@/services/members';
 
 type MemberWithMatchingFamily = Member & {
   matchingFamilyMembers?: FamilyMember[];
@@ -153,6 +153,41 @@ const CelebrationsView = async () => {
     );
 };
 
+const IntercessoryServicesView = async () => {
+    const requests = await getSpecialRequests();
+
+    return (
+        <div className="space-y-4">
+            {requests.length > 0 ? (
+                requests.map((request) => (
+                    <Link key={request.id} href={`/members/${request.memberId}`} className="block">
+                        <div className="flex items-start gap-4 p-4 rounded-lg border hover:bg-muted transition-colors">
+                             <Avatar className="h-12 w-12">
+                                <AvatarImage src={request.memberAvatarUrl} alt={request.memberName} data-ai-hint="person" />
+                                <AvatarFallback>{request.memberName.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1">
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <p className="font-semibold text-lg">{request.memberName}</p>
+                                        <p className="text-sm text-muted-foreground">Prayer Request</p>
+                                    </div>
+                                    <div className="text-right flex-shrink-0">
+                                        <p className="font-semibold text-primary">{format(parseISO(request.requestDate), 'MMMM d, yyyy')}</p>
+                                        <p className="text-xs text-muted-foreground">{format(parseISO(request.requestDate), 'EEEE')}</p>
+                                    </div>
+                                </div>
+                                <p className="mt-2 text-base bg-background/50 p-3 rounded-md">{request.prayerRequest}</p>
+                            </div>
+                        </div>
+                    </Link>
+                ))
+            ) : (
+                <p className="text-muted-foreground p-4 text-center">No special requests at this time.</p>
+            )}
+        </div>
+    );
+}
 
 export default async function MembersPage({
   searchParams,
@@ -178,9 +213,10 @@ export default async function MembersPage({
         </CardHeader>
         <CardContent>
           <Tabs defaultValue={view} className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="directory"><List className="mr-2 h-4 w-4" />Directory</TabsTrigger>
               <TabsTrigger value="celebrations"><Cake className="mr-2 h-4 w-4" />Celebrations</TabsTrigger>
+              <TabsTrigger value="intercessory"><HandHelping className="mr-2 h-4 w-4" />Intercessory Services</TabsTrigger>
             </TabsList>
             <TabsContent value="directory" className="mt-6">
               <DirectoryView searchParams={searchParams} />
@@ -188,9 +224,14 @@ export default async function MembersPage({
             <TabsContent value="celebrations" className="mt-6">
               <CelebrationsView />
             </TabsContent>
+            <TabsContent value="intercessory" className="mt-6">
+                <IntercessoryServicesView />
+            </TabsContent>
           </Tabs>
         </CardContent>
       </Card>
     </div>
   );
 }
+
+    

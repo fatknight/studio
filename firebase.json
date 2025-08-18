@@ -1,6 +1,5 @@
 {
   "storage": {
-    "rules": "storage.rules",
-    "cors": "./cors.json"
+    "rules": "storage.rules"
   }
 }

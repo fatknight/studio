@@ -1,3 +1,6 @@
+
+"use client";
+
 import { type Member, zones, FamilyMember, SpecialRequest } from '@/lib/mock-data';
 import { MembersTable } from '@/components/members/members-table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,20 +13,20 @@ import { format, isWithinInterval, addDays, getDayOfYear, getYear, parseISO, set
 import { FilterMenu } from '@/components/members/filter-menu';
 import { getMembers, getSpecialRequests } from '@/services/members';
 import { AdminControls } from '@/components/admin/admin-controls';
+import { useAuthStore } from '@/hooks/use-auth';
+import React from 'react';
 
 type MemberWithMatchingFamily = Member & {
   matchingFamilyMembers?: FamilyMember[];
 }
 
-const DirectoryView = async ({ searchParams }: { searchParams?: { query?: string; page?: string; zone?: string; ward?: string; subgroup?: string;} }) => {
+const DirectoryView = ({ members, searchParams }: { members: Member[], searchParams?: { query?: string; page?: string; zone?: string; ward?: string; subgroup?: string;} }) => {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
   const selectedZone = searchParams?.zone || 'all';
   const selectedWard = searchParams?.ward || 'all';
   const selectedSubgroup = searchParams?.subgroup || 'all';
   const pageSize = 10;
-  
-  const members = await getMembers();
 
   let filteredMembers = members.filter((member) =>
     member.id !== 'admin' &&
@@ -77,13 +80,11 @@ const DirectoryView = async ({ searchParams }: { searchParams?: { query?: string
   )
 }
 
-const CelebrationsView = async () => {
+const CelebrationsView = ({ members }: { members: Member[] }) => {
     const today = new Date();
     const currentYear = getYear(today);
     const todayDayOfYear = getDayOfYear(today);
     const nextSevenDays = addDays(today, 7);
-
-    const members = await getMembers();
 
     const upcomingEvents = members
         .filter(member => member.id !== 'admin' && member.status === 'Active')
@@ -163,9 +164,7 @@ const CelebrationsView = async () => {
     );
 };
 
-const IntercessoryServicesView = async () => {
-    const requests = await getSpecialRequests();
-
+const IntercessoryServicesView = ({ requests }: { requests: SpecialRequest[] }) => {
     return (
         <div className="space-y-4">
             {requests.length > 0 ? (
@@ -203,7 +202,7 @@ const IntercessoryServicesView = async () => {
     );
 }
 
-export default async function MembersPage({
+export default function MembersPage({
   searchParams,
 }: {
   searchParams?: {
@@ -215,8 +214,46 @@ export default async function MembersPage({
     subgroup?: string;
   };
 }) {
-
+  const { member: currentUser } = useAuthStore();
+  const isAdmin = currentUser?.role === 'Admin';
   const view = searchParams?.view || 'directory';
+
+  const [members, setMembers] = React.useState<Member[]>([]);
+  const [requests, setRequests] = React.useState<SpecialRequest[]>([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+        setLoading(true);
+        const [membersData, requestsData] = await Promise.all([
+            getMembers(),
+            isAdmin ? getSpecialRequests() : Promise.resolve([])
+        ]);
+        setMembers(membersData);
+        setRequests(requestsData);
+        setLoading(false);
+    }
+    fetchData();
+  }, [isAdmin]);
+
+  if (loading) {
+      return (
+          <div className="container mx-auto py-10">
+              <Card className="shadow-lg">
+                  <CardHeader>
+                      <CardTitle className="font-headline text-2xl">Church Members</CardTitle>
+                      <CardDescription>Browse and manage the directory of church members.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                      <div className="flex justify-center items-center p-10">
+                          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                      </div>
+                  </CardContent>
+              </Card>
+          </div>
+      )
+  }
+  
 
   return (
     <div className="container mx-auto py-10">
@@ -227,20 +264,20 @@ export default async function MembersPage({
         </CardHeader>
         <CardContent>
           <Tabs defaultValue={view} className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className={`grid w-full ${isAdmin ? 'grid-cols-3' : 'grid-cols-2'}`}>
               <TabsTrigger value="directory"><List className="mr-2 h-4 w-4" />Directory</TabsTrigger>
               <TabsTrigger value="celebrations"><Cake className="mr-2 h-4 w-4" />Celebrations</TabsTrigger>
-              <TabsTrigger value="intercessory"><HandHelping className="mr-2 h-4 w-4" />Intercessory Services</TabsTrigger>
+              {isAdmin && <TabsTrigger value="intercessory"><HandHelping className="mr-2 h-4 w-4" />Intercessory Services</TabsTrigger>}
             </TabsList>
             <TabsContent value="directory" className="mt-6">
-              <DirectoryView searchParams={searchParams} />
+              <DirectoryView members={members} searchParams={searchParams} />
             </TabsContent>
             <TabsContent value="celebrations" className="mt-6">
-              <CelebrationsView />
+              <CelebrationsView members={members} />
             </TabsContent>
-            <TabsContent value="intercessory" className="mt-6">
-                <IntercessoryServicesView />
-            </TabsContent>
+            {isAdmin && <TabsContent value="intercessory" className="mt-6">
+                <IntercessoryServicesView requests={requests} />
+            </TabsContent>}
           </Tabs>
         </CardContent>
       </Card>

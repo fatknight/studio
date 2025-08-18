@@ -422,7 +422,7 @@ export function MemberForm({ member }: { member: Member | null }) {
                 <FormField control={form.control} name="role" render={({ field }) => (
                     <FormItem>
                         <FormLabel>Role</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!isAdmin}>
+                        <Select onValuechange={field.onChange} defaultValue={field.value} disabled={!isAdmin}>
                             <FormControl><SelectTrigger><SelectValue placeholder="Select role" /></SelectTrigger></FormControl>
                             <SelectContent>
                                 <SelectItem value="Member">Member</SelectItem>

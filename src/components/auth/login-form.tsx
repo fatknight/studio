@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -52,7 +53,12 @@ export function LoginForm() {
         title: "Login Successful",
         description: `Welcome back, ${authenticatedMember.name}!`,
       });
-      router.push("/members");
+
+      if(authenticatedMember.role === 'Admin') {
+        router.push("/admin");
+      } else {
+        router.push("/members");
+      }
 
     } else {
       toast({

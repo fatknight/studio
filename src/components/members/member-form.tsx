@@ -53,8 +53,8 @@ const familyMemberSchema = z.object({
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  email: z.string().email('Invalid email address'),
-  phone: z.string().min(1, 'Phone is required'),
+  email: z.string().email('Invalid email address.'),
+  phone: z.string().regex(/^[6-9]\d{9}$/, 'Please enter a valid 10-digit Indian phone number.'),
   password: z.string().optional(),
   address: z.string().min(1, 'Address is required'),
   status: z.enum(['Active', 'Inactive']),
@@ -268,7 +268,7 @@ export function MemberForm({ member }: { member: Member | null }) {
                 <FormField control={form.control} name="phone" render={({ field }) => (
                     <FormItem>
                         <FormLabel>Phone</FormLabel>
-                        <FormControl><Input placeholder="555-0101" {...field} /></FormControl>
+                        <FormControl><Input placeholder="9876543210" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )} />

@@ -23,6 +23,8 @@ export async function uploadImage(file: File): Promise<string> {
         if (error.code) {
           console.error(`Error Code: ${error.code}`);
           console.error(`Error Message: ${error.message}`);
+          // Log the full error object for more details
+          console.error("Full Error Object:", JSON.stringify(error, null, 2));
         }
         // Throw a more informative error
         throw new Error(`File upload failed: ${error.code || error.message}`);

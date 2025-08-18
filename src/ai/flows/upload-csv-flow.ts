@@ -9,11 +9,12 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { batchUpdateMembers } from '@/services/members';
+import { batchUpdateMembers, getMemberById } from '@/services/members';
 import { z } from 'zod';
 
 const UploadCsvInputSchema = z.object({
   csvData: z.string().describe('The full content of the CSV file as a single string.'),
+  adminId: z.string().describe('The ID of the user performing the upload, who must be an admin.'),
 });
 export type UploadCsvInput = z.infer<typeof UploadCsvInputSchema>;
 
@@ -50,22 +51,31 @@ export const uploadMembersCsvFlow = ai.defineFlow(
   },
   async (input) => {
     try {
-      const { output: jsonOutput } = await prompt({ csv: input.csvData });
-      
-      if (!jsonOutput) {
-        throw new Error('Failed to convert CSV to JSON.');
-      }
-      
-      const jsonData = Array.isArray(jsonOutput) ? jsonOutput : JSON.parse(jsonOutput as any);
+        // First, verify the user is an admin.
+        const adminUser = await getMemberById(input.adminId);
+        if (!adminUser || adminUser.role !== 'Admin') {
+            return {
+                success: false,
+                message: 'Permission denied. You must be an administrator to perform this action.',
+            };
+        }
 
-      if (!Array.isArray(jsonData)) {
-          throw new Error('Parsing resulted in invalid JSON format.');
-      }
-
-      // Now, you can pass this structured data to your service layer
-      const result = await batchUpdateMembers(jsonData);
+        const { output: jsonOutput } = await prompt({ csv: input.csvData });
       
-      return result;
+        if (!jsonOutput) {
+            throw new Error('Failed to convert CSV to JSON.');
+        }
+      
+        const jsonData = Array.isArray(jsonOutput) ? jsonOutput : JSON.parse(jsonOutput as any);
+
+        if (!Array.isArray(jsonData)) {
+            throw new Error('Parsing resulted in invalid JSON format.');
+        }
+
+        // Now, you can pass this structured data to your service layer
+        const result = await batchUpdateMembers(jsonData);
+      
+        return result;
 
     } catch (error: any) {
         console.error("CSV Upload Flow Error: ", error);

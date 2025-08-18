@@ -19,6 +19,7 @@ import { Upload, FileText, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { uploadMembersCsv } from '@/ai/flows/upload-csv-flow';
+import { useAuthStore } from '@/hooks/use-auth';
 
 export function CsvUploadDialog() {
   const [file, setFile] = React.useState<File | null>(null);
@@ -26,6 +27,7 @@ export function CsvUploadDialog() {
   const [open, setOpen] = React.useState(false);
   const { toast } = useToast();
   const router = useRouter();
+  const { member: currentUser } = useAuthStore();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -42,6 +44,15 @@ export function CsvUploadDialog() {
       });
       return;
     }
+    
+    if (!currentUser || currentUser.role !== 'Admin') {
+        toast({
+            variant: 'destructive',
+            title: 'Permission Denied',
+            description: 'You are not authorized to perform this action.',
+        });
+        return;
+    }
 
     setIsLoading(true);
     const reader = new FileReader();
@@ -50,7 +61,7 @@ export function CsvUploadDialog() {
         const csvData = event.target?.result as string;
         if (csvData) {
             try {
-                const result = await uploadMembersCsv({ csvData });
+                const result = await uploadMembersCsv({ csvData, adminId: currentUser.id });
                 if (result.success) {
                     toast({
                         title: 'Upload Successful',

@@ -223,9 +223,9 @@ function MembersPageContent({
     const fetchData = async () => {
         setLoading(true);
         const filters = {
-          zone: searchParams?.zone,
-          ward: searchParams?.ward,
-          subgroup: searchParams?.subgroup,
+          zone: currentSearchParams.get('zone') || undefined,
+          ward: currentSearchParams.get('ward') || undefined,
+          subgroup: currentSearchParams.get('subgroup') || undefined,
         };
         const [membersData, requestsData] = await Promise.all([
             getMembers(filters),
@@ -236,7 +236,7 @@ function MembersPageContent({
         setLoading(false);
     }
     fetchData();
-  }, [isAdmin, searchParams]);
+  }, [isAdmin, currentSearchParams]);
 
   if (loading) {
       return (

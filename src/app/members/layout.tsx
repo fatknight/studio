@@ -48,7 +48,7 @@ export default function MembersLayout({
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={member?.avatarUrl || "https://placehold.co/40x40.png"} alt="User avatar" data-ai-hint="person" />
+                    <AvatarImage src={member?.memberPhotoUrl || "https://placehold.co/40x40.png"} alt="User avatar" data-ai-hint="person" />
                     <AvatarFallback>
                       <User />
                     </AvatarFallback>

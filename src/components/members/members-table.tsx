@@ -91,7 +91,7 @@ export function MembersTable({ members, totalPages, currentPage, selectedSubgrou
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[80px]">Avatar</TableHead>
+              <TableHead className="w-[80px]">Photo</TableHead>
               <TableHead>Name</TableHead>
               <TableHead className="hidden md:table-cell">Email</TableHead>
               <TableHead className="hidden sm:table-cell">Phone</TableHead>
@@ -103,7 +103,7 @@ export function MembersTable({ members, totalPages, currentPage, selectedSubgrou
               <TableRow key={member.id} onClick={() => handleRowClick(member.id)} className="cursor-pointer">
                 <TableCell>
                   <Avatar>
-                    <AvatarImage src={member.avatarUrl} alt={member.name} data-ai-hint="person portrait" />
+                    <AvatarImage src={member.memberPhotoUrl} alt={member.name} data-ai-hint="person portrait" />
                     <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                 </TableCell>

@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { type Member, zones, FamilyMember, SpecialRequest } from '@/lib/mock-data';
@@ -29,7 +28,7 @@ type MemberWithMatchingFamily = Member & {
 }
 
 const CrossIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-4 w-4">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-4 w-4">
         <path d="M12 2v20M5 7h14" />
     </svg>
 )
@@ -188,7 +187,7 @@ const CelebrationsView = ({ members, dateRange }: { members: Member[], dateRange
                         <div className="flex items-center justify-between gap-4 p-3 rounded-lg border hover:bg-muted transition-colors">
                             <div className="flex items-center gap-4">
                                 <Avatar className="h-12 w-12">
-                                    <AvatarImage src={event.person.avatarUrl} alt={event.person.name} data-ai-hint="person" />
+                                    <AvatarImage src={event.person.memberPhotoUrl} alt={event.person.name} data-ai-hint="person" />
                                     <AvatarFallback>{event.person.name.charAt(0)}</AvatarFallback>
                                 </Avatar>
                                 <div>
@@ -329,7 +328,7 @@ function MembersPageContent() {
               <TabsTrigger value="celebrations"><Cake className="mr-2 h-4 w-4" />Celebrations</TabsTrigger>
               {isAdmin && <TabsTrigger value="intercessory"><CrossIcon />Intercessory Services</TabsTrigger>}
             </TabsList>
-             {isAdmin && (view === 'celebrations' || view === 'intercessory') && (
+             {(view === 'celebrations' || view === 'intercessory') && (
                 <div className="flex justify-end mt-4">
                     <DateRangePicker date={dateRange} setDate={setDateRange} />
                 </div>
@@ -351,18 +350,7 @@ function MembersPageContent() {
 }
 
 
-export default function MembersPage({
-  searchParams,
-}: {
-  searchParams?: {
-    query?: string;
-    page?: string;
-    view?: string;
-    zone?: string;
-    ward?: string;
-    subgroup?: string;
-  };
-}) {
+export default function MembersPage() {
   return (
     <React.Suspense fallback={<div>Loading...</div>}>
       <MembersPageContent />

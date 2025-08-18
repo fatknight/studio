@@ -6,6 +6,7 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import Image from 'next/image';
 import {
   Form,
   FormControl,
@@ -27,7 +28,7 @@ import {
 } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { CalendarIcon, PlusCircle, Save, Trash, X } from 'lucide-react';
+import { CalendarIcon, PlusCircle, Save, Trash, X, Upload, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { type Member, zones } from '@/lib/mock-data';
@@ -36,6 +37,7 @@ import { createMember, updateMember } from '@/services/members';
 import { Textarea } from '../ui/textarea';
 import { useAuthStore } from '@/hooks/use-auth';
 import { AdminControls } from '../admin/admin-controls';
+import { uploadImage } from '@/services/storage';
 
 const familyMemberSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -43,7 +45,7 @@ const familyMemberSchema = z.object({
   status: z.enum(['Active', 'Inactive']).optional(),
   birthday: z.date().optional(),
   phone: z.string().optional(),
-  avatarUrl: z.string().url().optional(),
+  memberPhotoUrl: z.string().url().optional(),
   subGroups: z.array(z.string()).optional(),
   maritalStatus: z.enum(['Single', 'Married', 'Divorced', 'Widowed']).optional(),
   weddingDay: z.date().optional(),
@@ -64,7 +66,7 @@ const formSchema = z.object({
   familyName: z.string().optional(),
   familyId: z.string().optional(),
   subGroups: z.array(z.string()).optional(),
-  avatarUrl: z.string().url('Invalid URL'),
+  memberPhotoUrl: z.string().url('Invalid URL'),
   familyPhotoUrl: z.string().url('Invalid URL').optional(),
   zone: z.string().min(1, 'Zone is required'),
   ward: z.string().min(1, 'Ward is required'),
@@ -74,13 +76,75 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+const ImageUpload = ({ value, onChange, onUploadStart, onUploadEnd }: { value?: string, onChange: (url: string) => void, onUploadStart: () => void, onUploadEnd: () => void }) => {
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
+    const [isUploading, setIsUploading] = React.useState(false);
+    const { toast } = useToast();
+
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        onUploadStart();
+        setIsUploading(true);
+        try {
+            const url = await uploadImage(file);
+            onChange(url);
+            toast({ title: 'Image uploaded successfully!' });
+        } catch (error) {
+            console.error("Image upload failed", error);
+            toast({ variant: 'destructive', title: 'Upload Failed', description: 'Could not upload the image.' });
+        } finally {
+            setIsUploading(false);
+            onUploadEnd();
+        }
+    };
+
+    return (
+        <div className="flex items-center gap-4">
+            {value && (
+                <Image
+                    src={value}
+                    alt="Current photo"
+                    width={80}
+                    height={80}
+                    className="rounded-lg object-cover"
+                />
+            )}
+            <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="hidden"
+            />
+            <Button
+                type="button"
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploading}
+            >
+                {isUploading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                    <Upload className="mr-2 h-4 w-4" />
+                )}
+                {value ? 'Change Photo' : 'Upload Photo'}
+            </Button>
+        </div>
+    );
+};
+
+
 export function MemberForm({ member }: { member: Member | null }) {
   const router = useRouter();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [activeUploads, setActiveUploads] = React.useState(0);
   const { member: currentUser } = useAuthStore();
   const isNew = member === null;
   const isAdmin = currentUser?.role === 'Admin';
+  const isOwner = !isNew && currentUser?.id === member.id;
 
 
   const defaultValues = {
@@ -105,7 +169,7 @@ export function MemberForm({ member }: { member: Member | null }) {
         family: [],
         subGroups: [],
         role: 'Member',
-        avatarUrl: 'https://placehold.co/128x128.png',
+        memberPhotoUrl: 'https://placehold.co/128x128.png',
         familyPhotoUrl: 'https://placehold.co/600x400.png',
      } : defaultValues,
   });
@@ -119,7 +183,7 @@ export function MemberForm({ member }: { member: Member | null }) {
   const currentZone = zones.find(z => z.name === selectedZone);
 
   async function onSubmit(values: FormValues) {
-    setIsLoading(true);
+    setIsSubmitting(true);
     
     const memberData = {
         ...values,
@@ -134,9 +198,11 @@ export function MemberForm({ member }: { member: Member | null }) {
 
     try {
         if (isNew) {
+            if (!isAdmin) throw new Error("Permission denied.");
             await createMember(memberData);
             toast({ title: 'Member Created', description: 'New member has been successfully added.' });
         } else if(member) {
+            if (!isAdmin && !isOwner) throw new Error("Permission denied.");
             await updateMember(member.id, memberData);
             toast({ title: 'Member Updated', description: 'Member details have been successfully updated.' });
         }
@@ -146,8 +212,18 @@ export function MemberForm({ member }: { member: Member | null }) {
         console.error("Form submission error:", error)
         toast({ variant: 'destructive', title: 'Error', description: 'An error occurred. Please try again.' });
     } finally {
-        setIsLoading(false);
+        setIsSubmitting(false);
     }
+  }
+
+  const handleUploadStart = () => setActiveUploads(prev => prev + 1);
+  const handleUploadEnd = () => setActiveUploads(prev => prev - 1);
+  const isUploading = activeUploads > 0;
+  const canSubmit = !isSubmitting && !isUploading;
+
+  if (!isAdmin && !isNew && !isOwner) {
+    // This should ideally redirect or be handled by routing rules
+    return <p>You do not have permission to edit this member.</p>;
   }
 
   return (
@@ -174,16 +250,14 @@ export function MemberForm({ member }: { member: Member | null }) {
                         <FormMessage />
                     </FormItem>
                 )} />
-                <AdminControls>
-                    <FormField control={form.control} name="familyId" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Family ID</FormLabel>
-                            <FormControl><Input placeholder="e.g., 24/PM/0001" {...field} /></FormControl>
-                            <FormDescription>Unique identifier for the family.</FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )} />
-                </AdminControls>
+                <FormField control={form.control} name="familyId" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Family ID</FormLabel>
+                        <FormControl><Input placeholder="e.g., 24/PM/0001" {...field} disabled={!isAdmin} /></FormControl>
+                        <FormDescription>Unique identifier for the family.</FormDescription>
+                        <FormMessage />
+                    </FormItem>
+                )} />
                 <FormField control={form.control} name="email" render={({ field }) => (
                     <FormItem>
                         <FormLabel>Email</FormLabel>
@@ -198,16 +272,14 @@ export function MemberForm({ member }: { member: Member | null }) {
                         <FormMessage />
                     </FormItem>
                 )} />
-                 <AdminControls>
-                    <FormField control={form.control} name="password" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Password</FormLabel>
-                            <FormControl><Input type="password" placeholder="Leave blank to keep unchanged" {...field} disabled={!isAdmin} /></FormControl>
-                            <FormDescription>Set or update the member's login password. A password is required for the member role</FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )} />
-                </AdminControls>
+                <FormField control={form.control} name="password" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl><Input type="password" placeholder="Leave blank to keep unchanged" {...field} disabled={true} /></FormControl>
+                        <FormDescription>Password can only be changed by an administrator through a reset process.</FormDescription>
+                        <FormMessage />
+                    </FormItem>
+                )} />
                 <FormField control={form.control} name="address" render={({ field }) => (
                     <FormItem className="md:col-span-2">
                         <FormLabel>Address</FormLabel>
@@ -284,36 +356,43 @@ export function MemberForm({ member }: { member: Member | null }) {
                         </FormItem>
                     )} />
                 )}
-                 <FormField control={form.control} name="avatarUrl" render={({ field }) => (
+                 <FormField control={form.control} name="memberPhotoUrl" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Avatar URL</FormLabel>
-                        <FormControl><Input placeholder="https://placehold.co/128x128.png" {...field} /></FormControl>
+                        <FormLabel>Member Photo</FormLabel>
+                         <ImageUpload
+                            value={field.value}
+                            onChange={field.onChange}
+                            onUploadStart={handleUploadStart}
+                            onUploadEnd={handleUploadEnd}
+                        />
                         <FormMessage />
                     </FormItem>
                 )} />
                  <FormField control={form.control} name="familyPhotoUrl" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Family Photo URL</FormLabel>
-                        <FormControl><Input placeholder="https://placehold.co/600x400.png" {...field} /></FormControl>
+                        <FormLabel>Family Photo</FormLabel>
+                         <ImageUpload
+                            value={field.value}
+                            onChange={field.onChange}
+                            onUploadStart={handleUploadStart}
+                            onUploadEnd={handleUploadEnd}
+                        />
                         <FormMessage />
                     </FormItem>
                 )} />
-                <AdminControls>
-                  <FormField control={form.control} name="zone" render={({ field }) => (
-                      <FormItem>
-                          <FormLabel>Zone</FormLabel>
-                          <Select onValueChange={(value) => { field.onChange(value); form.setValue('ward', ''); }} defaultValue={field.value} disabled={!isAdmin}>
-                              <FormControl><SelectTrigger><SelectValue placeholder="Select zone" /></SelectTrigger></FormControl>
-                              <SelectContent>
-                                  {zones.map(zone => <SelectItem key={zone.name} value={zone.name}>{zone.name}</SelectItem>)}
-                              </SelectContent>
-                          </Select>
-                          <FormMessage />
-                      </FormItem>
-                  )} />
-                </AdminControls>
+                <FormField control={form.control} name="zone" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Zone</FormLabel>
+                        <Select onValueChange={(value) => { field.onChange(value); form.setValue('ward', ''); }} defaultValue={field.value} disabled={!isAdmin}>
+                            <FormControl><SelectTrigger><SelectValue placeholder="Select zone" /></SelectTrigger></FormControl>
+                            <SelectContent>
+                                {zones.map(zone => <SelectItem key={zone.name} value={zone.name}>{zone.name}</SelectItem>)}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                )} />
                  {currentZone && (
-                  <AdminControls>
                      <FormField control={form.control} name="ward" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Ward</FormLabel>
@@ -326,38 +405,33 @@ export function MemberForm({ member }: { member: Member | null }) {
                             <FormMessage />
                         </FormItem>
                     )} />
-                  </AdminControls>
                  )}
-                <AdminControls>
-                  <FormField control={form.control} name="status" render={({ field }) => (
-                      <FormItem>
-                          <FormLabel>Status</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!isAdmin}>
-                              <FormControl><SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger></FormControl>
-                              <SelectContent>
-                                  <SelectItem value="Active">Active</SelectItem>
-                                  <SelectItem value="Inactive">Inactive</SelectItem>
-                              </SelectContent>
-                          </Select>
-                          <FormMessage />
-                      </FormItem>
-                  )} />
-                </AdminControls>
-                <AdminControls>
-                  <FormField control={form.control} name="role" render={({ field }) => (
-                      <FormItem>
-                          <FormLabel>Role</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!isAdmin}>
-                              <FormControl><SelectTrigger><SelectValue placeholder="Select role" /></SelectTrigger></FormControl>
-                              <SelectContent>
-                                  <SelectItem value="Member">Member</SelectItem>
-                                  <SelectItem value="Admin">Admin</SelectItem>
-                              </SelectContent>
-                          </Select>
-                          <FormMessage />
-                      </FormItem>
-                  )} />
-                </AdminControls>
+                <FormField control={form.control} name="status" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!isAdmin}>
+                            <FormControl><SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger></FormControl>
+                            <SelectContent>
+                                <SelectItem value="Active">Active</SelectItem>
+                                <SelectItem value="Inactive">Inactive</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                )} />
+                <FormField control={form.control} name="role" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Role</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!isAdmin}>
+                            <FormControl><SelectTrigger><SelectValue placeholder="Select role" /></SelectTrigger></FormControl>
+                            <SelectContent>
+                                <SelectItem value="Member">Member</SelectItem>
+                                <SelectItem value="Admin">Admin</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                )} />
             </CardContent>
           </Card>
 
@@ -386,19 +460,17 @@ export function MemberForm({ member }: { member: Member | null }) {
                                         </Select>
                                     <FormMessage /></FormItem>
                                 )} />
-                                <AdminControls>
-                                  <FormField control={form.control} name={`family.${index}.status`} render={({ field }) => (
-                                      <FormItem><FormLabel>Status</FormLabel>
-                                          <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!isAdmin}>
-                                              <FormControl><SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger></FormControl>
-                                              <SelectContent>
-                                                  <SelectItem value="Active">Active</SelectItem>
-                                                  <SelectItem value="Inactive">Inactive</SelectItem>
-                                              </SelectContent>
-                                          </Select>
-                                      <FormMessage /></FormItem>
-                                  )} />
-                                </AdminControls>
+                                <FormField control={form.control} name={`family.${index}.status`} render={({ field }) => (
+                                    <FormItem><FormLabel>Status</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!isAdmin}>
+                                            <FormControl><SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger></FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="Active">Active</SelectItem>
+                                                <SelectItem value="Inactive">Inactive</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    <FormMessage /></FormItem>
+                                )} />
                                  <FormField control={form.control} name={`family.${index}.birthday`} render={({ field }) => (
                                     <FormItem className="flex flex-col"><FormLabel>Birthday</FormLabel>
                                          <Popover>
@@ -419,10 +491,20 @@ export function MemberForm({ member }: { member: Member | null }) {
                                 <FormField control={form.control} name={`family.${index}.phone`} render={({ field }) => (
                                     <FormItem><FormLabel>Phone</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                                 )} />
+                                <FormField control={form.control} name={`family.${index}.memberPhotoUrl`} render={({ field }) => (
+                                    <FormItem><FormLabel>Photo</FormLabel>
+                                        <ImageUpload
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            onUploadStart={handleUploadStart}
+                                            onUploadEnd={handleUploadEnd}
+                                        />
+                                    <FormMessage /></FormItem>
+                                )} />
                             </div>
                         </div>
                     ))}
-                    <Button type="button" variant="outline" onClick={() => append({ name: '', relation: 'Others', status: 'Active' })}>
+                    <Button type="button" variant="outline" onClick={() => append({ name: '', relation: 'Others', status: 'Active', memberPhotoUrl: 'https://placehold.co/128x128.png' })}>
                         <PlusCircle className="mr-2 h-4 w-4" /> Add Family Member
                     </Button>
                 </CardContent>
@@ -430,8 +512,8 @@ export function MemberForm({ member }: { member: Member | null }) {
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="ghost" onClick={() => router.back()}>Cancel</Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Saving...' : <><Save className="mr-2 h-4 w-4" /> Save Member</>}
+            <Button type="submit" disabled={!canSubmit}>
+              {isSubmitting ? 'Saving...' : isUploading ? 'Uploading...' : <><Save className="mr-2 h-4 w-4" /> Save Member</>}
             </Button>
           </div>
         </form>

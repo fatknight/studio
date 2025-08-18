@@ -78,9 +78,9 @@ export function LoginForm() {
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Username (Phone Number)</FormLabel>
               <FormControl>
-                <Input placeholder="Username" {...field} />
+                <Input placeholder="Enter your phone number" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

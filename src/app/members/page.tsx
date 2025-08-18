@@ -15,6 +15,7 @@ import { getMembers, getSpecialRequests } from '@/services/members';
 import { AdminControls } from '@/components/admin/admin-controls';
 import { useAuthStore } from '@/hooks/use-auth';
 import React from 'react';
+import { useSearchParams } from 'next/navigation';
 
 type MemberWithMatchingFamily = Member & {
   matchingFamilyMembers?: FamilyMember[];
@@ -202,7 +203,7 @@ const IntercessoryServicesView = ({ requests }: { requests: SpecialRequest[] }) 
     );
 }
 
-export default function MembersPage({
+function MembersPageContent({
   searchParams,
 }: {
   searchParams?: {
@@ -216,7 +217,8 @@ export default function MembersPage({
 }) {
   const { member: currentUser } = useAuthStore();
   const isAdmin = currentUser?.role === 'Admin';
-  const view = searchParams?.view || 'directory';
+  const currentSearchParams = useSearchParams();
+  const view = currentSearchParams.get('view') || 'directory';
 
   const [members, setMembers] = React.useState<Member[]>([]);
   const [requests, setRequests] = React.useState<SpecialRequest[]>([]);
@@ -283,4 +285,24 @@ export default function MembersPage({
       </Card>
     </div>
   );
+}
+
+
+export default function MembersPage({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
+    page?: string;
+    view?: string;
+    zone?: string;
+    ward?: string;
+    subgroup?: string;
+  };
+}) {
+  return (
+    <React.Suspense fallback={<div>Loading...</div>}>
+      <MembersPageContent searchParams={searchParams} />
+    </React.Suspense>
+  )
 }

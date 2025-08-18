@@ -1,4 +1,5 @@
 
+
 // ==========================================================================================
 // !! IMPORTANT !!
 // YOUR APP WILL NOT WORK UNTIL YOU COMPLETE THE STEPS BELOW.
@@ -26,7 +27,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyAXyI-rMJ2FJiVZfdibxYZfM7PenFHLcpY",
   authDomain: "verity-directory.firebaseapp.com",
   projectId: "verity-directory",
-  storageBucket: "verity-directory.appspot.com",
+  storageBucket: "verity-directory.firebasestorage.app",
   messagingSenderId: "389378794700",
   appId: "1:389378794700:web:3d036b3cea58c6f9e48e69"
 };

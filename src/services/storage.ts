@@ -3,7 +3,6 @@
 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '@/lib/firebase';
-import { v4 as uuidv4 } from 'uuid';
 
 export async function uploadImage(file: File): Promise<string> {
     if (!file) {
@@ -11,7 +10,8 @@ export async function uploadImage(file: File): Promise<string> {
     }
 
     const fileExtension = file.name.split('.').pop();
-    const fileName = `${uuidv4()}.${fileExtension}`;
+    // Using crypto.randomUUID() is more reliable in this environment
+    const fileName = `${crypto.randomUUID()}.${fileExtension}`;
     const storageRef = ref(storage, `images/${fileName}`);
 
     try {

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -33,6 +34,8 @@ import { type Member, zones } from '@/lib/mock-data';
 import { useToast } from '@/hooks/use-toast';
 import { createMember, updateMember } from '@/services/members';
 import { Textarea } from '../ui/textarea';
+import { useAuthStore } from '@/hooks/use-auth';
+import { AdminControls } from '../admin/admin-controls';
 
 const familyMemberSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -62,6 +65,7 @@ const formSchema = z.object({
   familyId: z.string().optional(),
   subGroups: z.array(z.string()).optional(),
   avatarUrl: z.string().url('Invalid URL'),
+  familyPhotoUrl: z.string().url('Invalid URL').optional(),
   zone: z.string().min(1, 'Zone is required'),
   ward: z.string().min(1, 'Ward is required'),
   role: z.enum(['Admin', 'Member']),
@@ -74,7 +78,10 @@ export function MemberForm({ member }: { member: Member | null }) {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = React.useState(false);
+  const { member: currentUser } = useAuthStore();
   const isNew = member === null;
+  const isAdmin = currentUser?.role === 'Admin';
+
 
   const defaultValues = {
       ...member,
@@ -99,6 +106,7 @@ export function MemberForm({ member }: { member: Member | null }) {
         subGroups: [],
         role: 'Member',
         avatarUrl: 'https://placehold.co/128x128.png',
+        familyPhotoUrl: 'https://placehold.co/600x400.png',
      } : defaultValues,
   });
 
@@ -132,7 +140,7 @@ export function MemberForm({ member }: { member: Member | null }) {
             await updateMember(member.id, memberData);
             toast({ title: 'Member Updated', description: 'Member details have been successfully updated.' });
         }
-        router.push('/members');
+        router.push(isAdmin ? '/members' : `/members/${member?.id || currentUser?.id}`);
         router.refresh();
     } catch (error) {
         console.error("Form submission error:", error)
@@ -166,14 +174,16 @@ export function MemberForm({ member }: { member: Member | null }) {
                         <FormMessage />
                     </FormItem>
                 )} />
-                 <FormField control={form.control} name="familyId" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Family ID</FormLabel>
-                        <FormControl><Input placeholder="e.g., 24/PM/0001" {...field} /></FormControl>
-                        <FormDescription>Unique identifier for the family.</FormDescription>
-                        <FormMessage />
-                    </FormItem>
-                )} />
+                <AdminControls>
+                    <FormField control={form.control} name="familyId" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Family ID</FormLabel>
+                            <FormControl><Input placeholder="e.g., 24/PM/0001" {...field} /></FormControl>
+                            <FormDescription>Unique identifier for the family.</FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+                </AdminControls>
                 <FormField control={form.control} name="email" render={({ field }) => (
                     <FormItem>
                         <FormLabel>Email</FormLabel>
@@ -188,14 +198,16 @@ export function MemberForm({ member }: { member: Member | null }) {
                         <FormMessage />
                     </FormItem>
                 )} />
-                <FormField control={form.control} name="password" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl><Input type="password" placeholder="Leave blank to keep unchanged" {...field} /></FormControl>
-                        <FormDescription>Set or update the member's login password. A password is required for the member role</FormDescription>
-                        <FormMessage />
-                    </FormItem>
-                )} />
+                 <AdminControls>
+                    <FormField control={form.control} name="password" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Password</FormLabel>
+                            <FormControl><Input type="password" placeholder="Leave blank to keep unchanged" {...field} disabled={!isAdmin} /></FormControl>
+                            <FormDescription>Set or update the member's login password. A password is required for the member role</FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+                </AdminControls>
                 <FormField control={form.control} name="address" render={({ field }) => (
                     <FormItem className="md:col-span-2">
                         <FormLabel>Address</FormLabel>
@@ -279,23 +291,33 @@ export function MemberForm({ member }: { member: Member | null }) {
                         <FormMessage />
                     </FormItem>
                 )} />
-                 <FormField control={form.control} name="zone" render={({ field }) => (
+                 <FormField control={form.control} name="familyPhotoUrl" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Zone</FormLabel>
-                        <Select onValueChange={(value) => { field.onChange(value); form.setValue('ward', ''); }} defaultValue={field.value}>
-                            <FormControl><SelectTrigger><SelectValue placeholder="Select zone" /></SelectTrigger></FormControl>
-                            <SelectContent>
-                                {zones.map(zone => <SelectItem key={zone.name} value={zone.name}>{zone.name}</SelectItem>)}
-                            </SelectContent>
-                        </Select>
+                        <FormLabel>Family Photo URL</FormLabel>
+                        <FormControl><Input placeholder="https://placehold.co/600x400.png" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )} />
+                <AdminControls>
+                  <FormField control={form.control} name="zone" render={({ field }) => (
+                      <FormItem>
+                          <FormLabel>Zone</FormLabel>
+                          <Select onValueChange={(value) => { field.onChange(value); form.setValue('ward', ''); }} defaultValue={field.value} disabled={!isAdmin}>
+                              <FormControl><SelectTrigger><SelectValue placeholder="Select zone" /></SelectTrigger></FormControl>
+                              <SelectContent>
+                                  {zones.map(zone => <SelectItem key={zone.name} value={zone.name}>{zone.name}</SelectItem>)}
+                              </SelectContent>
+                          </Select>
+                          <FormMessage />
+                      </FormItem>
+                  )} />
+                </AdminControls>
                  {currentZone && (
+                  <AdminControls>
                      <FormField control={form.control} name="ward" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Ward</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                            <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value} disabled={!isAdmin}>
                                 <FormControl><SelectTrigger><SelectValue placeholder="Select ward" /></SelectTrigger></FormControl>
                                 <SelectContent>
                                     {currentZone.wards.map(ward => <SelectItem key={ward} value={ward}>{ward}</SelectItem>)}
@@ -304,33 +326,38 @@ export function MemberForm({ member }: { member: Member | null }) {
                             <FormMessage />
                         </FormItem>
                     )} />
+                  </AdminControls>
                  )}
-                 <FormField control={form.control} name="status" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Status</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl><SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger></FormControl>
-                            <SelectContent>
-                                <SelectItem value="Active">Active</SelectItem>
-                                <SelectItem value="Inactive">Inactive</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                    </FormItem>
-                )} />
-                <FormField control={form.control} name="role" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Role</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl><SelectTrigger><SelectValue placeholder="Select role" /></SelectTrigger></FormControl>
-                            <SelectContent>
-                                <SelectItem value="Member">Member</SelectItem>
-                                <SelectItem value="Admin">Admin</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                    </FormItem>
-                )} />
+                <AdminControls>
+                  <FormField control={form.control} name="status" render={({ field }) => (
+                      <FormItem>
+                          <FormLabel>Status</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!isAdmin}>
+                              <FormControl><SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger></FormControl>
+                              <SelectContent>
+                                  <SelectItem value="Active">Active</SelectItem>
+                                  <SelectItem value="Inactive">Inactive</SelectItem>
+                              </SelectContent>
+                          </Select>
+                          <FormMessage />
+                      </FormItem>
+                  )} />
+                </AdminControls>
+                <AdminControls>
+                  <FormField control={form.control} name="role" render={({ field }) => (
+                      <FormItem>
+                          <FormLabel>Role</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!isAdmin}>
+                              <FormControl><SelectTrigger><SelectValue placeholder="Select role" /></SelectTrigger></FormControl>
+                              <SelectContent>
+                                  <SelectItem value="Member">Member</SelectItem>
+                                  <SelectItem value="Admin">Admin</SelectItem>
+                              </SelectContent>
+                          </Select>
+                          <FormMessage />
+                      </FormItem>
+                  )} />
+                </AdminControls>
             </CardContent>
           </Card>
 
@@ -359,17 +386,19 @@ export function MemberForm({ member }: { member: Member | null }) {
                                         </Select>
                                     <FormMessage /></FormItem>
                                 )} />
-                                <FormField control={form.control} name={`family.${index}.status`} render={({ field }) => (
-                                    <FormItem><FormLabel>Status</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                            <FormControl><SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger></FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="Active">Active</SelectItem>
-                                                <SelectItem value="Inactive">Inactive</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    <FormMessage /></FormItem>
-                                )} />
+                                <AdminControls>
+                                  <FormField control={form.control} name={`family.${index}.status`} render={({ field }) => (
+                                      <FormItem><FormLabel>Status</FormLabel>
+                                          <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!isAdmin}>
+                                              <FormControl><SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger></FormControl>
+                                              <SelectContent>
+                                                  <SelectItem value="Active">Active</SelectItem>
+                                                  <SelectItem value="Inactive">Inactive</SelectItem>
+                                              </SelectContent>
+                                          </Select>
+                                      <FormMessage /></FormItem>
+                                  )} />
+                                </AdminControls>
                                  <FormField control={form.control} name={`family.${index}.birthday`} render={({ field }) => (
                                     <FormItem className="flex flex-col"><FormLabel>Birthday</FormLabel>
                                          <Popover>

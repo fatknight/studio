@@ -32,6 +32,7 @@ const CrossIcon = () => (
 export const MemberPageClient = ({ member }: { member: Member }) => {
     const { member: currentUser } = useAuthStore();
     const isAdmin = currentUser?.role === 'Admin';
+    const isOwner = currentUser?.id === member.id;
 
     if (!isAdmin && member.status === 'Inactive') {
         return (
@@ -71,15 +72,15 @@ export const MemberPageClient = ({ member }: { member: Member }) => {
                     </Button>
                 </Link>
                 <div className="flex items-center gap-2">
-                    <AdminControls>
+                    {(isAdmin || isOwner) && (
                          <Link href={`/members/edit/${member.id}`}>
                             <Button variant="outline">
                                 <Edit className="mr-2 h-4 w-4" />
                                 Edit Member
                             </Button>
                         </Link>
-                    </AdminControls>
-                    {(currentUser?.id === member.id || isAdmin) && (
+                    )}
+                    {(isOwner || isAdmin) && (
                         <RequestForm member={member}>
                         <Button>
                             <CrossIcon />
@@ -168,5 +169,3 @@ export const MemberPageClient = ({ member }: { member: Member }) => {
         </div>
     );
 }
-
-    

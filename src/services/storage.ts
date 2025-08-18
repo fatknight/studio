@@ -10,7 +10,6 @@ export async function uploadImage(file: File): Promise<string> {
     }
 
     const fileExtension = file.name.split('.').pop();
-    // Using crypto.randomUUID() is more reliable in this environment
     const fileName = `${crypto.randomUUID()}.${fileExtension}`;
     const storageRef = ref(storage, `images/${fileName}`);
 
@@ -18,10 +17,14 @@ export async function uploadImage(file: File): Promise<string> {
         const snapshot = await uploadBytes(storageRef, file);
         const downloadURL = await getDownloadURL(snapshot.ref);
         return downloadURL;
-    } catch (error) {
-        console.error('Error uploading file:', error);
-        // Depending on your error handling strategy, you might want to re-throw the error
-        // or return a specific error message.
-        throw new Error('File upload failed.');
+    } catch (error: any) {
+        console.error('Firebase Storage Upload Error:', error);
+        // Log the specific error code and message from Firebase
+        if (error.code) {
+          console.error(`Error Code: ${error.code}`);
+          console.error(`Error Message: ${error.message}`);
+        }
+        // Throw a more informative error
+        throw new Error(`File upload failed: ${error.code || error.message}`);
     }
 }

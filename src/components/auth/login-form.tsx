@@ -19,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { LogIn } from "lucide-react";
-import { getMemberByPhone } from "@/services/members";
+import { authenticateMember } from "@/services/members";
 import { useAuthStore } from "@/hooks/use-auth";
 
 
@@ -45,9 +45,9 @@ export function LoginForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     
-    const authenticatedMember = await getMemberByPhone(values.phone);
+    const authenticatedMember = await authenticateMember(values.phone, values.password);
 
-    if (authenticatedMember && authenticatedMember.password === values.password) {
+    if (authenticatedMember) {
       setMember(authenticatedMember);
       toast({
         title: "Login Successful",

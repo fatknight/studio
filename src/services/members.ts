@@ -1,3 +1,4 @@
+
 'use server';
 
 import { collection, doc, getDoc, getDocs, query, where, orderBy, Timestamp, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
@@ -17,7 +18,10 @@ export async function getMemberById(id: string): Promise<Member | null> {
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
-    return { id: docSnap.id, ...docSnap.data() } as Member;
+    const memberData = docSnap.data() as Member;
+    // Important: Do not return the password hash
+    delete memberData.password;
+    return { id: docSnap.id, ...memberData };
   } else {
     return null;
   }
@@ -28,8 +32,33 @@ export async function getMemberByPhone(phone: string): Promise<Member | null> {
   const querySnapshot = await getDocs(q);
   if (!querySnapshot.empty) {
     const docSnap = querySnapshot.docs[0];
-    return { id: docSnap.id, ...docSnap.data() } as Member;
+    const memberData = docSnap.data() as Member;
+    // Important: Do not return the password hash
+    delete memberData.password;
+    return { id: docSnap.id, ...memberData };
   }
+  return null;
+}
+
+export async function authenticateMember(phone: string, password_DO_NOT_USE: string): Promise<Member | null> {
+  const q = query(collection(db, "members"), where("phone", "==", phone));
+  const querySnapshot = await getDocs(q);
+
+  if (querySnapshot.empty) {
+    return null;
+  }
+
+  const memberDoc = querySnapshot.docs[0];
+  const memberData = memberDoc.data() as Member;
+
+  // WARNING: This is a temporary, insecure password check.
+  // In a real application, you MUST use a secure, hashed password system.
+  if (memberData.password === password_DO_NOT_USE) {
+    // On successful authentication, return the member object without the password.
+    const { password, ...memberInfo } = memberData;
+    return { id: memberDoc.id, ...memberInfo };
+  }
+
   return null;
 }
 

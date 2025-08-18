@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { type Member, zones, FamilyMember, SpecialRequest } from '@/lib/mock-data';
@@ -30,32 +31,20 @@ const CrossIcon = () => (
 const DirectoryView = ({ members, searchParams }: { members: Member[], searchParams?: { query?: string; page?: string; zone?: string; ward?: string; subgroup?: string;} }) => {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
-  const selectedZone = searchParams?.zone || 'all';
-  const selectedWard = searchParams?.ward || 'all';
   const selectedSubgroup = searchParams?.subgroup || 'all';
   const pageSize = 10;
 
+  // Text search is still performed on the client-side after initial filtering from the DB
   let filteredMembers = members.filter((member) =>
     member.id !== 'admin' &&
     (member.name.toLowerCase().includes(query.toLowerCase()) ||
     member.email.toLowerCase().includes(query.toLowerCase()) ||
     (member.familyName && member.familyName.toLowerCase().includes(query.toLowerCase())))
   );
-
-  if (selectedZone !== 'all') {
-    filteredMembers = filteredMembers.filter(member => member.zone === selectedZone);
-  }
-
-  if (selectedWard !== 'all' && selectedZone !== 'all') {
-    filteredMembers = filteredMembers.filter(member => member.ward === selectedWard);
-  }
   
+  // This logic is for highlighting matching family members, not for filtering the main list
   if (selectedSubgroup !== 'all') {
-    filteredMembers = filteredMembers.filter(member => {
-        const inMemberSubgroups = member.subGroups?.includes(selectedSubgroup);
-        const inFamilySubgroups = member.family?.some(f => f.subGroups?.includes(selectedSubgroup));
-        return inMemberSubgroups || inFamilySubgroups;
-    }).map(member => {
+    filteredMembers = filteredMembers.map(member => {
         const matchingFamilyMembers = member.family?.filter(f => f.subGroups?.includes(selectedSubgroup));
         return { ...member, matchingFamilyMembers };
     });
@@ -233,8 +222,13 @@ function MembersPageContent({
   React.useEffect(() => {
     const fetchData = async () => {
         setLoading(true);
+        const filters = {
+          zone: searchParams?.zone,
+          ward: searchParams?.ward,
+          subgroup: searchParams?.subgroup,
+        };
         const [membersData, requestsData] = await Promise.all([
-            getMembers(),
+            getMembers(filters),
             isAdmin ? getSpecialRequests() : Promise.resolve([])
         ]);
         setMembers(membersData);
@@ -242,7 +236,7 @@ function MembersPageContent({
         setLoading(false);
     }
     fetchData();
-  }, [isAdmin]);
+  }, [isAdmin, searchParams]);
 
   if (loading) {
       return (

@@ -1,13 +1,26 @@
 
 'use server';
 
-import { collection, doc, getDoc, getDocs, query, where, orderBy, Timestamp, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, where, orderBy, Timestamp, addDoc, updateDoc, deleteDoc, QueryConstraint } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { Member, SpecialRequest } from '@/lib/mock-data';
 
-export async function getMembers(): Promise<Member[]> {
+export async function getMembers(filters?: { zone?: string; ward?: string; subgroup?: string; }): Promise<Member[]> {
   const membersCol = collection(db, 'members');
-  const memberSnapshot = await getDocs(membersCol);
+  const constraints: QueryConstraint[] = [];
+
+  if (filters?.zone && filters.zone !== 'all') {
+    constraints.push(where('zone', '==', filters.zone));
+  }
+  if (filters?.ward && filters.ward !== 'all') {
+    constraints.push(where('ward', '==', filters.ward));
+  }
+  if (filters?.subgroup && filters.subgroup !== 'all') {
+    constraints.push(where('subGroups', 'array-contains', filters.subgroup));
+  }
+  
+  const q = query(membersCol, ...constraints);
+  const memberSnapshot = await getDocs(q);
   const memberList = memberSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Member));
   return memberList;
 }

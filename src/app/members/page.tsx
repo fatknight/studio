@@ -21,6 +21,12 @@ type MemberWithMatchingFamily = Member & {
   matchingFamilyMembers?: FamilyMember[];
 }
 
+const CrossIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-4 w-4">
+        <path d="M12 5v14M5 12h14" />
+    </svg>
+)
+
 const DirectoryView = ({ members, searchParams }: { members: Member[], searchParams?: { query?: string; page?: string; zone?: string; ward?: string; subgroup?: string;} }) => {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
@@ -269,7 +275,7 @@ function MembersPageContent({
             <TabsList className={`grid w-full ${isAdmin ? 'grid-cols-3' : 'grid-cols-2'}`}>
               <TabsTrigger value="directory"><List className="mr-2 h-4 w-4" />Directory</TabsTrigger>
               <TabsTrigger value="celebrations"><Cake className="mr-2 h-4 w-4" />Celebrations</TabsTrigger>
-              {isAdmin && <TabsTrigger value="intercessory"><HandHelping className="mr-2 h-4 w-4" />Intercessory Services</TabsTrigger>}
+              {isAdmin && <TabsTrigger value="intercessory"><CrossIcon />Intercessory Services</TabsTrigger>}
             </TabsList>
             <TabsContent value="directory" className="mt-6">
               <DirectoryView members={members} searchParams={searchParams} />

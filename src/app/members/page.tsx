@@ -7,7 +7,7 @@ import { MembersTable } from '@/components/members/members-table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SearchInput } from '@/components/members/search-input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { List, Cake, Filter, Gift, HeartHandshake, UserPlus, Calendar as CalendarIcon } from 'lucide-react';
+import { List, Cake, Filter, Gift, HeartHandshake, UserPlus, Calendar as CalendarIcon, Upload } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format, isWithinInterval, addDays, getDayOfYear, getYear, parseISO, setYear, startOfDay, endOfDay } from 'date-fns';
@@ -22,13 +22,14 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { type DateRange } from 'react-day-picker';
 import { cn } from '@/lib/utils';
+import { CsvUploadDialog } from '@/components/members/csv-upload-dialog';
 
 type MemberWithMatchingFamily = Member & {
   matchingFamilyMembers?: FamilyMember[];
 }
 
 const CrossIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-4 w-4">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-4 w-4">
         <path d="M12 2v20M5 7h14" />
     </svg>
 )
@@ -70,11 +71,14 @@ const DirectoryView = ({ members }: { members: Member[] }) => {
         <SearchInput />
         <FilterMenu />
         <AdminControls>
-            <Link href="/members/edit/new">
-                <div className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
-                    <UserPlus className="mr-2 h-4 w-4" /> Add Member
-                </div>
-            </Link>
+            <div className='flex gap-2'>
+              <CsvUploadDialog />
+              <Link href="/members/edit/new">
+                  <Button>
+                      <UserPlus className="mr-2 h-4 w-4" /> Add Member
+                  </Button>
+              </Link>
+            </div>
         </AdminControls>
       </div>
       <MembersTable members={paginatedMembers} currentPage={currentPage} totalPages={totalPages} selectedSubgroup={selectedSubgroup} />
@@ -365,5 +369,3 @@ export default function MembersPage({
     </React.Suspense>
   )
 }
-
-    

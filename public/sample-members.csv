@@ -1,0 +1,7 @@
+familyId,familyName,relation,name,email,phone,password,address,status,homeParish,nativeDistrict,birthday,maritalStatus,weddingDay,subGroups,avatarUrl,zone,ward,role
+23/PM/0012,Cheruvathur Family,Head,Libin Cheruvathur,libs_c@yahoo.co.in,9844234658,password123,"G4, Eastern Court Apartment, Coles Road, Frazer Town, Bangalore-560005",Active,St. Peter's & St.Paul's JSO Church,Thrissur,1986-11-30,Married,2016-11-06,"Youth League, Choir",https://placehold.co/128x128.png,West Zone,Ward 3,Member
+23/PM/0012,Cheruvathur Family,Spouse,Lisha Elizabeth Shaji,,9449835249,,"",Active,,,"1990-05-25",Married,2016-11-06,Choir,https://placehold.co/128x128.png,,,,
+23/PM/0012,Cheruvathur Family,Daughter,Bryanna Mary Cheruvathur,,,,,"",Active,,,"2019-03-28",Single,,Sunday School,https://placehold.co/128x128.png,,,,
+18/PM/0001,Doe Family,Head,John Doe,john.doe@example.com,555-0101,password123,"123 Maple St, Anytown, USA",Active,St. Peter's Cathedral,Kottayam,1985-05-20,Married,2010-06-12,"Sunday School, Choir",https://placehold.co/128x128.png,North Zone,Ward 1,Member
+18/PM/0001,Doe Family,Spouse,Jane Doe,,555-0113,,"",Active,,,"1988-04-12",Married,2010-06-12,Choir,https://placehold.co/128x128.png,,,,
+18/PM/0001,Doe Family,Son,Jimmy Doe,,N/A,,"",Active,,,"2012-01-15",Single,,Altar Servers,https://placehold.co/128x128.png,,,,

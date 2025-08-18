@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
@@ -12,13 +13,14 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { Member, FamilyMember } from '@/lib/mock-data';
 import { Button } from '../ui/button';
-import { ChevronLeft, ChevronRight, Edit, Eye, MapPin, MoreHorizontal, Phone, Trash, Users } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Edit, Eye, MapPin, MoreHorizontal, Phone, Trash, Users, Upload } from 'lucide-react';
 import { useAuthStore } from '@/hooks/use-auth';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
 import { deleteMember } from '@/services/members';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '../ui/badge';
+import Link from 'next/link';
 
 type MemberWithMatchingFamily = Member & {
   matchingFamilyMembers?: FamilyMember[];
@@ -70,6 +72,8 @@ export function MembersTable({ members, totalPages, currentPage, selectedSubgrou
     try {
       await deleteMember(id);
       toast({ title: "Member deleted", description: "The member has been successfully deleted." });
+      // A bit of a hack to force a re-fetch of data on the page
+      router.replace(pathname + '?' + new URLSearchParams(searchParams.toString()));
       router.refresh();
     } catch (error) {
       toast({ variant: "destructive", title: "Error", description: "Failed to delete member." });

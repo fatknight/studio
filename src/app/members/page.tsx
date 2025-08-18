@@ -7,23 +7,28 @@ import { MembersTable } from '@/components/members/members-table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SearchInput } from '@/components/members/search-input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { List, Cake, Filter, Gift, HeartHandshake, UserPlus } from 'lucide-react';
+import { List, Cake, Filter, Gift, HeartHandshake, UserPlus, Calendar as CalendarIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { format, isWithinInterval, addDays, getDayOfYear, getYear, parseISO, setYear } from 'date-fns';
+import { format, isWithinInterval, addDays, getDayOfYear, getYear, parseISO, setYear, startOfDay, endOfDay } from 'date-fns';
 import { FilterMenu } from '@/components/members/filter-menu';
 import { getMembers, getSpecialRequests } from '@/services/members';
 import { AdminControls } from '@/components/admin/admin-controls';
 import { useAuthStore } from '@/hooks/use-auth';
 import React from 'react';
 import { useSearchParams } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { type DateRange } from 'react-day-picker';
+import { cn } from '@/lib/utils';
 
 type MemberWithMatchingFamily = Member & {
   matchingFamilyMembers?: FamilyMember[];
 }
 
 const CrossIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-4 w-4">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-4 w-4">
         <path d="M12 2v20M5 7h14" />
     </svg>
 )
@@ -77,11 +82,57 @@ const DirectoryView = ({ members }: { members: Member[] }) => {
   )
 }
 
-const CelebrationsView = ({ members }: { members: Member[] }) => {
+const DateRangePicker = ({ date, setDate, className }: { date: DateRange | undefined, setDate: (date: DateRange | undefined) => void, className?: string }) => {
+  return (
+    <div className={cn("grid gap-2", className)}>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            id="date"
+            variant={"outline"}
+            className={cn(
+              "w-[300px] justify-start text-left font-normal",
+              !date && "text-muted-foreground"
+            )}
+          >
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {date?.from ? (
+              date.to ? (
+                <>
+                  {format(date.from, "LLL dd, y")} -{" "}
+                  {format(date.to, "LLL dd, y")}
+                </>
+              ) : (
+                format(date.from, "LLL dd, y")
+              )
+            ) : (
+              <span>Pick a date range</span>
+            )}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            initialFocus
+            mode="range"
+            defaultMonth={date?.from}
+            selected={date}
+            onSelect={setDate}
+            numberOfMonths={2}
+          />
+        </PopoverContent>
+      </Popover>
+    </div>
+  )
+}
+
+
+const CelebrationsView = ({ members, dateRange }: { members: Member[], dateRange: DateRange | undefined }) => {
     const today = new Date();
-    const currentYear = getYear(today);
-    const todayDayOfYear = getDayOfYear(today);
-    const nextSevenDays = addDays(today, 7);
+    const range = dateRange ?? { from: today, to: addDays(today, 7) };
+    const rangeStart = startOfDay(range.from ?? today);
+    const rangeEnd = endOfDay(range.to ?? range.from ?? addDays(today, 7));
+    const startYear = getYear(rangeStart);
+    const endYear = getYear(rangeEnd);
 
     const upcomingEvents = members
         .filter(member => member.id !== 'admin' && member.status === 'Active')
@@ -107,23 +158,23 @@ const CelebrationsView = ({ members }: { members: Member[] }) => {
             
             return events;
         })
-        .map(event => {
+        .flatMap(event => {
             const eventDate = parseISO(event.date);
-            let currentYearEventDate = setYear(eventDate, currentYear);
+            const occurrences = [];
 
-            if (getDayOfYear(currentYearEventDate) < todayDayOfYear) {
-                currentYearEventDate = setYear(eventDate, currentYear + 1);
+            // Check for occurrences in the start year, end year, and any years in between
+            for (let year = startYear; year <= endYear; year++) {
+                const currentYearEventDate = setYear(eventDate, year);
+                 if (isWithinInterval(currentYearEventDate, { start: rangeStart, end: rangeEnd })) {
+                    occurrences.push({
+                        ...event,
+                        currentYearEventDate
+                    });
+                }
             }
-            
-            return {
-                ...event,
-                currentYearEventDate
-            };
+            return occurrences;
         })
-        .filter(event => {
-            return isWithinInterval(event.currentYearEventDate, { start: today, end: nextSevenDays });
-        })
-        .sort((a, b) => getDayOfYear(a.currentYearEventDate) - getDayOfYear(b.currentYearEventDate));
+        .sort((a, b) => a.currentYearEventDate.getTime() - b.currentYearEventDate.getTime());
 
     return (
         <div className="space-y-4">
@@ -155,17 +206,26 @@ const CelebrationsView = ({ members }: { members: Member[] }) => {
                     </Link>
                 ))
             ) : (
-                <p className="text-muted-foreground p-4 text-center">No upcoming celebrations this week.</p>
+                <p className="text-muted-foreground p-4 text-center">No upcoming celebrations in the selected date range.</p>
             )}
         </div>
     );
 };
 
-const IntercessoryServicesView = ({ requests }: { requests: SpecialRequest[] }) => {
+const IntercessoryServicesView = ({ requests, dateRange }: { requests: SpecialRequest[], dateRange: DateRange | undefined }) => {
+    
+    const filteredRequests = requests.filter(request => {
+        if (!dateRange?.from) return true; // Show all if no start date
+        const requestDate = parseISO(request.requestDate);
+        const start = startOfDay(dateRange.from);
+        const end = dateRange.to ? endOfDay(dateRange.to) : endOfDay(dateRange.from);
+        return isWithinInterval(requestDate, { start, end });
+    })
+    
     return (
         <div className="space-y-4">
-            {requests.length > 0 ? (
-                requests.map((request) => (
+            {filteredRequests.length > 0 ? (
+                filteredRequests.map((request) => (
                     <Link key={request.id} href={`/members/${request.memberId}`} className="block">
                         <div className="flex items-start gap-4 p-4 rounded-lg border hover:bg-muted transition-colors">
                              <Avatar className="h-12 w-12">
@@ -193,7 +253,7 @@ const IntercessoryServicesView = ({ requests }: { requests: SpecialRequest[] }) 
                     </Link>
                 ))
             ) : (
-                <p className="text-muted-foreground p-4 text-center">No special requests at this time.</p>
+                <p className="text-muted-foreground p-4 text-center">No special requests in the selected date range.</p>
             )}
         </div>
     );
@@ -208,6 +268,10 @@ function MembersPageContent() {
   const [members, setMembers] = React.useState<Member[]>([]);
   const [requests, setRequests] = React.useState<SpecialRequest[]>([]);
   const [loading, setLoading] = React.useState(true);
+  const [dateRange, setDateRange] = React.useState<DateRange | undefined>({
+      from: new Date(),
+      to: addDays(new Date(), 7),
+  });
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -261,14 +325,19 @@ function MembersPageContent() {
               <TabsTrigger value="celebrations"><Cake className="mr-2 h-4 w-4" />Celebrations</TabsTrigger>
               {isAdmin && <TabsTrigger value="intercessory"><CrossIcon />Intercessory Services</TabsTrigger>}
             </TabsList>
+             {isAdmin && (view === 'celebrations' || view === 'intercessory') && (
+                <div className="flex justify-end mt-4">
+                    <DateRangePicker date={dateRange} setDate={setDateRange} />
+                </div>
+            )}
             <TabsContent value="directory" className="mt-6">
               <DirectoryView members={members} />
             </TabsContent>
             <TabsContent value="celebrations" className="mt-6">
-              <CelebrationsView members={members} />
+              <CelebrationsView members={members} dateRange={dateRange} />
             </TabsContent>
             {isAdmin && <TabsContent value="intercessory" className="mt-6">
-                <IntercessoryServicesView requests={requests} />
+                <IntercessoryServicesView requests={requests} dateRange={dateRange} />
             </TabsContent>}
           </Tabs>
         </CardContent>
@@ -296,3 +365,5 @@ export default function MembersPage({
     </React.Suspense>
   )
 }
+
+    

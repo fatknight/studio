@@ -31,7 +31,7 @@ const prompt = ai.definePrompt({
     output: { format: 'json' },
     prompt: `
         You are a data processing expert. Convert the following CSV data into a JSON array.
-        The CSV has the following columns: familyId,familyName,relation,name,email,phone,password,address,status,homeParish,nativeDistrict,birthday,maritalStatus,weddingDay,subGroups,avatarUrl,zone,ward,role
+        The CSV has the following columns: familyId,familyName,relation,name,email,phone,password,address,status,homeParish,nativeDistrict,birthday,maritalStatus,weddingDay,subGroups,avatarUrl,zone,ward,role,familyPhotoUrl
         - Each row in the CSV should become a JSON object in the array.
         - The keys of the JSON object should be the column headers.
         - Handle empty fields as null or undefined.
@@ -91,3 +91,5 @@ export const uploadMembersCsvFlow = ai.defineFlow(
 export async function uploadMembersCsv(input: UploadCsvInput): Promise<UploadCsvOutput> {
     return uploadMembersCsvFlow(input);
 }
+
+    

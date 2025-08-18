@@ -170,6 +170,7 @@ export async function batchUpdateMembers(data: any[]): Promise<{ success: boolea
             weddingDay: head.weddingDay || undefined,
             familyName: head.familyName,
             familyId: head.familyId,
+            familyPhotoUrl: head.familyPhotoUrl || undefined,
             subGroups: head.subGroups ? head.subGroups.split(',').map((s: string) => s.trim()) : [],
             avatarUrl: head.avatarUrl || 'https://placehold.co/128x128.png',
             zone: head.zone,
@@ -198,3 +199,5 @@ export async function batchUpdateMembers(data: any[]): Promise<{ success: boolea
         return { success: false, message: `An error occurred: ${error.message}` };
     }
 }
+
+    

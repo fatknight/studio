@@ -29,6 +29,7 @@ export type Member = {
   family: FamilyMember[];
   familyName?: string;
   familyId?: string;
+  familyPhotoUrl?: string;
   subGroups?: string[];
   avatarUrl: string;
   zone: string;
@@ -103,6 +104,7 @@ export const members: Member[] = [
     ],
     familyName: 'Doe Family',
     familyId: '18/PM/0001',
+    familyPhotoUrl: 'https://placehold.co/600x400.png',
     subGroups: ['Sunday School', 'Choir'],
     avatarUrl: 'https://placehold.co/128x128/EBF4FA/3E6680.png',
     zone: 'North Zone',
@@ -131,6 +133,7 @@ export const members: Member[] = [
     ],
     familyName: 'Smith Family',
     familyId: '19/AM/0002',
+    familyPhotoUrl: 'https://placehold.co/600x400.png',
     subGroups: ['Youth League'],
     avatarUrl: 'https://placehold.co/128x128/FCF3CF/F1C40F.png',
     zone: 'North Zone',
@@ -411,3 +414,5 @@ export const zones = [
     { name: 'East Zone', wards: ['Ward 1', 'Ward 2', 'Ward 3', 'Ward 4', 'Ward 5'] },
     { name: 'West Zone', wards: ['Ward 1', 'Ward 2', 'Ward 3', 'Ward 4', 'Ward 5'] },
 ]
+
+    

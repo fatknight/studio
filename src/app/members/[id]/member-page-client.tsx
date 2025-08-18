@@ -149,7 +149,7 @@ export const MemberPageClient = ({ member }: { member: Member }) => {
                         <TabsContent value="family" className="mt-6">
                             <div className="space-y-8">
                                 <div className="relative aspect-video w-full overflow-hidden rounded-lg">
-                                    <Image src="https://placehold.co/600x400.png" alt="Family photo" layout="fill" objectFit="cover" data-ai-hint="family photo" />
+                                    <Image src={member.familyPhotoUrl || "https://placehold.co/600x400.png"} alt="Family photo" layout="fill" objectFit="cover" data-ai-hint="family photo" />
                                 </div>
                                  <div className="grid gap-4 md:grid-cols-2">
                                     {visibleFamilyMembers.length > 0 ? (
@@ -168,3 +168,5 @@ export const MemberPageClient = ({ member }: { member: Member }) => {
         </div>
     );
 }
+
+    

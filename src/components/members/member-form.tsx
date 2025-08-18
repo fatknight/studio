@@ -59,6 +59,7 @@ const formSchema = z.object({
   maritalStatus: z.enum(['Single', 'Married', 'Divorced', 'Widowed']),
   weddingDay: z.date().optional(),
   familyName: z.string().optional(),
+  familyId: z.string().optional(),
   subGroups: z.array(z.string()).optional(),
   avatarUrl: z.string().url('Invalid URL'),
   zone: z.string().min(1, 'Zone is required'),
@@ -162,6 +163,14 @@ export function MemberForm({ member }: { member: Member | null }) {
                     <FormItem>
                         <FormLabel>Family Name</FormLabel>
                         <FormControl><Input placeholder="Doe Family" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )} />
+                 <FormField control={form.control} name="familyId" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Family ID</FormLabel>
+                        <FormControl><Input placeholder="e.g., 24/PM/0001" {...field} /></FormControl>
+                        <FormDescription>Unique identifier for the family.</FormDescription>
                         <FormMessage />
                     </FormItem>
                 )} />

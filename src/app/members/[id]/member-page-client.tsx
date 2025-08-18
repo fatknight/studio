@@ -5,7 +5,7 @@ import type { Member } from '@/lib/mock-data';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Mail, Phone, Home, Calendar, Users, User, ArrowLeft, Map, Gift, HeartHandshake, MapPin, Tag, HandHelping, Edit } from 'lucide-react';
+import { Mail, Phone, Home, Calendar, Users, User, ArrowLeft, Map, Gift, HeartHandshake, MapPin, Tag, HandHelping, Edit, Info } from 'lucide-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -111,6 +111,7 @@ export const MemberPageClient = ({ member }: { member: Member }) => {
                         </TabsList>
                         <TabsContent value="personal" className="mt-6">
                             <div className="space-y-6">
+                                {member.familyId && <DetailItem icon={Info} label="Family ID" value={member.familyId} />}
                                 <DetailItem icon={Mail} label="Email" value={member.email} />
                                 <DetailItem icon={Phone} label="Phone" value={member.phone} action={
                                    member.phone !== 'admin' && <a href={whatsappLink} target="_blank" rel="noopener noreferrer">

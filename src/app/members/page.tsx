@@ -7,7 +7,7 @@ import { MembersTable } from '@/components/members/members-table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SearchInput } from '@/components/members/search-input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { List, Cake, Filter, Gift, HeartHandshake, HandHelping, User, UserPlus } from 'lucide-react';
+import { List, Cake, Filter, Gift, HeartHandshake, UserPlus } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format, isWithinInterval, addDays, getDayOfYear, getYear, parseISO, setYear } from 'date-fns';
@@ -28,10 +28,11 @@ const CrossIcon = () => (
     </svg>
 )
 
-const DirectoryView = ({ members, searchParams }: { members: Member[], searchParams?: { query?: string; page?: string; zone?: string; ward?: string; subgroup?: string;} }) => {
-  const query = searchParams?.query || '';
-  const currentPage = Number(searchParams?.page) || 1;
-  const selectedSubgroup = searchParams?.subgroup || 'all';
+const DirectoryView = ({ members }: { members: Member[] }) => {
+  const searchParams = useSearchParams();
+  const query = searchParams.get('query') || '';
+  const currentPage = Number(searchParams.get('page')) || 1;
+  const selectedSubgroup = searchParams.get('subgroup') || 'all';
   const pageSize = 10;
 
   // Text search is still performed on the client-side after initial filtering from the DB
@@ -198,22 +199,11 @@ const IntercessoryServicesView = ({ requests }: { requests: SpecialRequest[] }) 
     );
 }
 
-function MembersPageContent({
-  searchParams,
-}: {
-  searchParams?: {
-    query?: string;
-    page?: string;
-    view?: string;
-    zone?: string;
-    ward?: string;
-    subgroup?: string;
-  };
-}) {
+function MembersPageContent() {
   const { member: currentUser } = useAuthStore();
   const isAdmin = currentUser?.role === 'Admin';
-  const currentSearchParams = useSearchParams();
-  const view = currentSearchParams.get('view') || 'directory';
+  const searchParams = useSearchParams();
+  const view = searchParams.get('view') || 'directory';
 
   const [members, setMembers] = React.useState<Member[]>([]);
   const [requests, setRequests] = React.useState<SpecialRequest[]>([]);
@@ -223,9 +213,9 @@ function MembersPageContent({
     const fetchData = async () => {
         setLoading(true);
         const filters = {
-          zone: currentSearchParams.get('zone') || undefined,
-          ward: currentSearchParams.get('ward') || undefined,
-          subgroup: currentSearchParams.get('subgroup') || undefined,
+          zone: searchParams.get('zone') || undefined,
+          ward: searchParams.get('ward') || undefined,
+          subgroup: searchParams.get('subgroup') || undefined,
         };
         const [membersData, requestsData] = await Promise.all([
             getMembers(filters),
@@ -236,7 +226,7 @@ function MembersPageContent({
         setLoading(false);
     }
     fetchData();
-  }, [isAdmin, currentSearchParams]);
+  }, [isAdmin, searchParams]);
 
   if (loading) {
       return (
@@ -272,7 +262,7 @@ function MembersPageContent({
               {isAdmin && <TabsTrigger value="intercessory"><CrossIcon />Intercessory Services</TabsTrigger>}
             </TabsList>
             <TabsContent value="directory" className="mt-6">
-              <DirectoryView members={members} searchParams={searchParams} />
+              <DirectoryView members={members} />
             </TabsContent>
             <TabsContent value="celebrations" className="mt-6">
               <CelebrationsView members={members} />
@@ -302,7 +292,7 @@ export default function MembersPage({
 }) {
   return (
     <React.Suspense fallback={<div>Loading...</div>}>
-      <MembersPageContent searchParams={searchParams} />
+      <MembersPageContent />
     </React.Suspense>
   )
 }

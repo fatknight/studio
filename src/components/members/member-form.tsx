@@ -323,7 +323,7 @@ export function MemberForm({ member }: { member: Member | null }) {
                 <FormField control={form.control} name="password" render={({ field }) => (
                     <FormItem>
                         <FormLabel>Password</FormLabel>
-                        <FormControl><Input type="password" placeholder={isNew ? "Set initial password" : "Password cannot be edited"} {...field} disabled={!isNew || !isAdmin} /></FormControl>
+                        <FormControl><Input type="password" placeholder={isNew ? "Set initial password" : "Password cannot be edited"} {...field} disabled={!isAdmin || !isNew} /></FormControl>
                         <FormDescription>{isNew ? "Set an initial password for the new member." : "Password cannot be changed here."}</FormDescription>
                         <FormMessage />
                     </FormItem>

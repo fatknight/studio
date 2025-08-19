@@ -148,17 +148,34 @@ export function MemberForm({ member }: { member: Member | null }) {
 
 
   const defaultValues = {
-      ...member,
+      name: member?.name || '',
+      email: member?.email || '',
+      phone: member?.phone || '',
+      address: member?.address || '',
+      status: member?.status || 'Active',
+      homeParish: member?.homeParish || '',
+      nativeDistrict: member?.nativeDistrict || '',
       birthday: member?.birthday ? new Date(member.birthday) : undefined,
+      maritalStatus: member?.maritalStatus || 'Single',
       weddingDay: member?.weddingDay ? new Date(member.weddingDay) : undefined,
+      familyName: member?.familyName || '',
+      familyId: member?.familyId || '',
+      subGroups: member?.subGroups || [],
+      memberPhotoUrl: member?.memberPhotoUrl || 'https://placehold.co/128x128.png',
+      familyPhotoUrl: member?.familyPhotoUrl || 'https://placehold.co/600x400.png',
+      zone: member?.zone || '',
+      ward: member?.ward || '',
+      role: member?.role || 'Member',
       family: member?.family.map(f => ({
           ...f,
+          name: f.name || '',
+          phone: f.phone || '',
+          memberPhotoUrl: f.memberPhotoUrl || 'https://placehold.co/128x128.png',
           status: f.status || 'Active',
           birthday: f.birthday ? new Date(f.birthday) : undefined,
           weddingDay: f.weddingDay ? new Date(f.weddingDay) : undefined,
       })) || [],
-      subGroups: member?.subGroups || [],
-      role: member?.role || 'Member',
+      password: '',
   };
 
   const form = useForm<FormValues>({
@@ -171,6 +188,17 @@ export function MemberForm({ member }: { member: Member | null }) {
         role: 'Member',
         memberPhotoUrl: 'https://placehold.co/128x128.png',
         familyPhotoUrl: 'https://placehold.co/600x400.png',
+        name: '',
+        email: '',
+        phone: '',
+        address: '',
+        homeParish: '',
+        nativeDistrict: '',
+        familyName: '',
+        familyId: '',
+        zone: '',
+        ward: '',
+        password: '',
      } : defaultValues,
   });
 
@@ -422,7 +450,7 @@ export function MemberForm({ member }: { member: Member | null }) {
                 <FormField control={form.control} name="role" render={({ field }) => (
                     <FormItem>
                         <FormLabel>Role</FormLabel>
-                        <Select onValuechange={field.onChange} defaultValue={field.value} disabled={!isAdmin}>
+                        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!isAdmin}>
                             <FormControl><SelectTrigger><SelectValue placeholder="Select role" /></SelectTrigger></FormControl>
                             <SelectContent>
                                 <SelectItem value="Member">Member</SelectItem>
@@ -504,7 +532,7 @@ export function MemberForm({ member }: { member: Member | null }) {
                             </div>
                         </div>
                     ))}
-                    <Button type="button" variant="outline" onClick={() => append({ name: '', relation: 'Others', status: 'Active', memberPhotoUrl: 'https://placehold.co/128x128.png' })}>
+                    <Button type="button" variant="outline" onClick={() => append({ name: '', relation: 'Others', status: 'Active', memberPhotoUrl: 'https://placehold.co/128x128.png', phone: '' })}>
                         <PlusCircle className="mr-2 h-4 w-4" /> Add Family Member
                     </Button>
                 </CardContent>
@@ -521,3 +549,5 @@ export function MemberForm({ member }: { member: Member | null }) {
     </div>
   );
 }
+
+    

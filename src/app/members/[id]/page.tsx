@@ -47,7 +47,7 @@ export const FamilyMemberCard = ({ member, isAdmin }: { member: FamilyMember, is
         <CardHeader className="flex flex-row items-center gap-4">
              <Avatar className="h-16 w-16 border">
                 <AvatarImage src={member.memberPhotoUrl} alt={member.name} data-ai-hint="person" />
-                <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                <AvatarFallback>{member.name ? member.name.split(' ').map(n => n[0]).join('') : ''}</AvatarFallback>
             </Avatar>
             <div>
                 <div className="flex items-center gap-2">

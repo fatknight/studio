@@ -303,8 +303,8 @@ export function MemberForm({ member }: { member: Member | null }) {
                 <FormField control={form.control} name="password" render={({ field }) => (
                     <FormItem>
                         <FormLabel>Password</FormLabel>
-                        <FormControl><Input type="password" placeholder="Leave blank to keep unchanged" {...field} disabled={true} /></FormControl>
-                        <FormDescription>Password can only be changed by an administrator through a reset process.</FormDescription>
+                        <FormControl><Input type="password" placeholder={isNew ? "Set initial password" : "Password cannot be edited"} {...field} disabled={!isNew || !isAdmin} /></FormControl>
+                        <FormDescription>{isNew ? "Set an initial password for the new member." : "Password cannot be changed here."}</FormDescription>
                         <FormMessage />
                     </FormItem>
                 )} />
@@ -549,5 +549,7 @@ export function MemberForm({ member }: { member: Member | null }) {
     </div>
   );
 }
+
+    
 
     

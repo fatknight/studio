@@ -87,14 +87,28 @@ const ImageUpload = ({ value, onChange, onUploadStart, onUploadEnd }: { value?: 
 
         onUploadStart();
         setIsUploading(true);
-        try {
-            const url = await uploadImage(file);
-            onChange(url);
-            toast({ title: 'Image uploaded successfully!' });
-        } catch (error) {
-            console.error("Image upload failed", error);
-            toast({ variant: 'destructive', title: 'Upload Failed', description: 'Could not upload the image.' });
-        } finally {
+
+        // Read the file as a data URL
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = async () => {
+            const dataUrl = reader.result as string;
+            try {
+                // Pass the data URL to the server action
+                const url = await uploadImage(dataUrl);
+                onChange(url);
+                toast({ title: 'Image uploaded successfully!' });
+            } catch (error) {
+                console.error("Image upload failed", error);
+                toast({ variant: 'destructive', title: 'Upload Failed', description: 'Could not upload the image.' });
+            } finally {
+                setIsUploading(false);
+                onUploadEnd();
+            }
+        };
+        reader.onerror = (error) => {
+            console.error("File reading failed", error);
+            toast({ variant: 'destructive', title: 'File Read Failed', description: 'Could not read the selected file.' });
             setIsUploading(false);
             onUploadEnd();
         }
@@ -180,7 +194,7 @@ export function MemberForm({ member }: { member: Member | null }) {
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: isNew ? { 
+    defaultValues: isNew ? {
         status: 'Active',
         maritalStatus: 'Single',
         family: [],
@@ -212,7 +226,7 @@ export function MemberForm({ member }: { member: Member | null }) {
 
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
-    
+
     const memberData = {
         ...values,
         birthday: values.birthday?.toISOString(),
@@ -223,6 +237,12 @@ export function MemberForm({ member }: { member: Member | null }) {
             weddingDay: f.weddingDay?.toISOString(),
         })),
     };
+
+    // Remove password if it's empty
+    if (!memberData.password) {
+        delete (memberData as Partial<typeof memberData>).password;
+    }
+
 
     try {
         if (isNew) {
@@ -549,7 +569,3 @@ export function MemberForm({ member }: { member: Member | null }) {
     </div>
   );
 }
-
-    
-
-    

@@ -1,32 +1,30 @@
 
 'use server';
 
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, uploadString } from 'firebase/storage';
 import { storage } from '@/lib/firebase';
 
-export async function uploadImage(file: File): Promise<string> {
-    if (!file) {
-        throw new Error('No file provided for upload.');
+// This function now accepts a data URI string instead of a File object.
+export async function uploadImage(dataUrl: string): Promise<string> {
+    if (!dataUrl) {
+        throw new Error('No file data provided for upload.');
     }
 
-    const fileExtension = file.name.split('.').pop();
-    const fileName = `${crypto.randomUUID()}.${fileExtension}`;
+    const fileName = `${crypto.randomUUID()}.png`; // Assume png, or parse from dataUrl if needed
     const storageRef = ref(storage, `images/${fileName}`);
 
     try {
-        const snapshot = await uploadBytes(storageRef, file);
+        // Upload the file from the data URL.
+        const snapshot = await uploadString(storageRef, dataUrl, 'data_url');
         const downloadURL = await getDownloadURL(snapshot.ref);
         return downloadURL;
     } catch (error: any) {
         console.error('Firebase Storage Upload Error:', error);
-        // Log the specific error code and message from Firebase
         if (error.code) {
           console.error(`Error Code: ${error.code}`);
           console.error(`Error Message: ${error.message}`);
-          // Log the full error object for more details
           console.error("Full Error Object:", JSON.stringify(error, null, 2));
         }
-        // Throw a more informative error
         throw new Error(`File upload failed: ${error.code || error.message}`);
     }
 }

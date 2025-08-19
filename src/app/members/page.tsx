@@ -21,7 +21,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { type DateRange } from 'react-day-picker';
 import { cn } from '@/lib/utils';
-import { CsvUploadDialog } from '@/components/members/csv-upload-dialog';
 
 type MemberWithMatchingFamily = Member & {
   matchingFamilyMembers?: FamilyMember[];
@@ -71,7 +70,6 @@ const DirectoryView = ({ members }: { members: Member[] }) => {
         <FilterMenu />
         <AdminControls>
             <div className='flex gap-2'>
-              <CsvUploadDialog />
               <Link href="/members/edit/new">
                   <Button>
                       <UserPlus className="mr-2 h-4 w-4" /> Add Member

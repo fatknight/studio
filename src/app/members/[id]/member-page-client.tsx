@@ -92,7 +92,9 @@ export const MemberPageClient = ({ member }: { member: Member }) => {
             <Card className="overflow-hidden shadow-lg">
                 <CardHeader className="flex flex-col items-center gap-6 bg-primary/10 p-6 text-center sm:flex-row sm:text-left">
                     <Avatar className="h-24 w-24 border-4 border-background shadow-md">
-                        <AvatarImage src={member.memberPhotoUrl} alt={member.name} data-ai-hint="person portrait" />
+                        {member.memberPhotoUrl && !member.memberPhotoUrl.includes('placehold.co') ? (
+                            <AvatarImage src={member.memberPhotoUrl} alt={member.name} data-ai-hint="person portrait" />
+                        ) : null }
                         <AvatarFallback className="text-3xl">{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                     </Avatar>
                     <div>

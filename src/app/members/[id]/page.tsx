@@ -4,7 +4,7 @@ import { notFound, redirect } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Mail, Phone, Home, Calendar, Users, User, Link as LinkIcon, ArrowLeft, Map, Gift, HeartHandshake, MapPin, Tag, Heart, HandHelping, Edit, Trash, ShieldOff, Loader2 } from 'lucide-react';
+import { Mail, Phone, Home, Calendar, Users, User, Link as LinkIcon, ArrowLeft, Map, Gift, HeartHandshake, MapPin, Tag, Heart, HandHelping, Edit, Trash, ShieldOff, Loader2, Info } from 'lucide-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -87,6 +87,7 @@ export const FamilyMemberCard = ({ member, isAdmin }: { member: FamilyMember, is
                     )}
                 </div>
                 <CardDescription>{member.relation}</CardDescription>
+                 {member.memberId && <Badge variant="secondary" className="mt-1">{member.memberId}</Badge>}
             </div>
         </CardHeader>
         <CardContent className="space-y-4 text-sm pt-4">

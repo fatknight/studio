@@ -28,7 +28,7 @@ import {
 } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { CalendarIcon, PlusCircle, Save, Trash, X, Upload, Loader2, Mail } from 'lucide-react';
+import { CalendarIcon, PlusCircle, Save, Trash, X, Upload, Loader2, Mail, Info } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { type Member, zones, members as mockMembers } from '@/lib/mock-data';
@@ -53,6 +53,7 @@ const familyMemberSchema = z.object({
   birthday: z.date().optional(),
   phone: z.string().optional(),
   email: z.string().email().optional().or(z.literal('')),
+  memberId: z.string().optional(),
   memberPhotoUrl: z.string().optional(),
   subGroups: z.array(z.string()).optional(),
   maritalStatus: z.enum(['Single', 'Married', 'Divorced', 'Widowed']).optional(),
@@ -73,6 +74,7 @@ const formSchema = z.object({
   weddingDay: z.date().optional(),
   familyName: z.string().optional(),
   familyId: z.string().optional(),
+  memberId: z.string().optional(),
   subGroups: z.array(z.string()).optional(),
   memberPhotoUrl: z.string(),
   familyPhotoUrl: z.string().optional(),
@@ -108,7 +110,7 @@ const ImageDisplay = ({ url, alt }: { url?: string, alt: string }) => {
     );
 };
 
-const ImageUpload = ({ value, onChange, onUploadStart, onUploadEnd, disabled }: { value?: string, onChange: (url: string) => void, onUploadStart: () => void, onUploadEnd: () => void, disabled?: boolean }) => {
+const ImageUpload = ({ value, onChange, onUploadStart, onUploadEnd, disabled, memberId }: { value?: string, onChange: (url: string) => void, onUploadStart: () => void, onUploadEnd: () => void, disabled?: boolean, memberId?: string }) => {
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     const [isUploading, setIsUploading] = React.useState(false);
     const [uploadProgress, setUploadProgress] = React.useState(0);
@@ -126,9 +128,8 @@ const ImageUpload = ({ value, onChange, onUploadStart, onUploadEnd, disabled }: 
         reader.onload = async () => {
             const dataUrl = reader.result as string;
             try {
-                // Simulate progress for data URL reading and initial upload phase
                 setUploadProgress(30);
-                const path = await uploadImage(dataUrl);
+                const path = await uploadImage(dataUrl, memberId);
                 setUploadProgress(70);
                 onChange(path);
                 toast({ title: 'Image uploaded successfully!' });
@@ -210,6 +211,7 @@ export function MemberForm({ member }: { member: Member | null }) {
       weddingDay: member?.weddingDay ? new Date(member.weddingDay) : undefined,
       familyName: member?.familyName || '',
       familyId: member?.familyId || '',
+      memberId: member?.memberId || '',
       subGroups: member?.subGroups || [],
       memberPhotoUrl: member?.memberPhotoUrl || 'https://placehold.co/128x128.png',
       familyPhotoUrl: member?.familyPhotoUrl || 'https://placehold.co/600x400.png',
@@ -221,6 +223,7 @@ export function MemberForm({ member }: { member: Member | null }) {
           name: f.name || '',
           phone: f.phone || '',
           email: f.email || '',
+          memberId: f.memberId || '',
           memberPhotoUrl: f.memberPhotoUrl || 'https://placehold.co/128x128.png',
           status: f.status || 'Active',
           birthday: f.birthday ? new Date(f.birthday) : undefined,
@@ -248,6 +251,7 @@ export function MemberForm({ member }: { member: Member | null }) {
         nativeDistrict: '',
         familyName: '',
         familyId: '',
+        memberId: '',
         zone: '',
         ward: '',
         password: '',
@@ -340,7 +344,15 @@ export function MemberForm({ member }: { member: Member | null }) {
                     <FormItem>
                         <FormLabel>Family ID</FormLabel>
                         <FormControl><Input placeholder="e.g., 24/PM/0001" {...field} disabled={!isAdmin} /></FormControl>
-                        <FormDescription>Unique identifier for the family.</FormDescription>
+                        <FormDescription>Old family identifier.</FormDescription>
+                        <FormMessage />
+                    </FormItem>
+                )} />
+                 <FormField control={form.control} name="memberId" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Member ID</FormLabel>
+                        <FormControl><Input placeholder="e.g., Z01W01F01M01" {...field} disabled={!isAdmin} /></FormControl>
+                        <FormDescription>Unique identifier for the member.</FormDescription>
                         <FormMessage />
                     </FormItem>
                 )} />
@@ -451,6 +463,7 @@ export function MemberForm({ member }: { member: Member | null }) {
                             onUploadStart={handleUploadStart}
                             onUploadEnd={handleUploadEnd}
                             disabled={!isAdmin}
+                            memberId={form.getValues('memberId')}
                         />
                         <FormMessage />
                     </FormItem>
@@ -464,6 +477,7 @@ export function MemberForm({ member }: { member: Member | null }) {
                             onUploadStart={handleUploadStart}
                             onUploadEnd={handleUploadEnd}
                             disabled={!isAdmin}
+                            memberId={form.getValues('familyId')}
                         />
                         <FormMessage />
                     </FormItem>
@@ -537,6 +551,9 @@ export function MemberForm({ member }: { member: Member | null }) {
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 <FormField control={form.control} name={`family.${index}.name`} render={({ field }) => (
                                     <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                                )} />
+                                <FormField control={form.control} name={`family.${index}.memberId`} render={({ field }) => (
+                                    <FormItem><FormLabel>Member ID</FormLabel><FormControl><Input placeholder="e.g., Z01W01F01M02" {...field} disabled={!isAdmin} /></FormControl><FormMessage /></FormItem>
                                 )} />
                                 <FormField control={form.control} name={`family.${index}.relation`} render={({ field }) => (
                                     <FormItem><FormLabel>Relation</FormLabel>
@@ -643,6 +660,7 @@ export function MemberForm({ member }: { member: Member | null }) {
                                             onUploadStart={handleUploadStart}
                                             onUploadEnd={handleUploadEnd}
                                             disabled={!isAdmin}
+                                            memberId={form.getValues(`family.${index}.memberId`)}
                                         />
                                     <FormMessage /></FormItem>
                                 )} />

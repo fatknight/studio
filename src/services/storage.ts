@@ -44,14 +44,15 @@ export async function getSecureUrl(filePath: string): Promise<string> {
 
 
 // This function now accepts a data URI string instead of a File object.
-export async function uploadImage(dataUrl: string): Promise<string> {
+export async function uploadImage(dataUrl: string, name?: string): Promise<string> {
     if (!dataUrl || !dataUrl.startsWith('data:')) {
         // If the URL is not a data URL, assume it's either a placeholder or already a valid URL.
         // Or it could be an invalid value, in which case we let it pass and let the browser handle it.
         return dataUrl;
     }
 
-    const fileName = `images/${crypto.randomUUID()}.png`;
+    const extension = dataUrl.substring(dataUrl.indexOf('/') + 1, dataUrl.indexOf(';'));
+    const fileName = `images/${name || crypto.randomUUID()}.${extension || 'png'}`;
     const storageRef = ref(storage, fileName);
 
     try {

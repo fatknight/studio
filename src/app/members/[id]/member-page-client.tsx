@@ -146,6 +146,7 @@ export const MemberPageClient = ({ member }: { member: Member }) => {
                             {member.status === 'Inactive' && <Badge variant="destructive">Inactive</Badge>}
                         </div>
                         <p className="text-lg text-muted-foreground">{member.familyName}</p>
+                        {member.memberId && <Badge variant="secondary" className="mt-2">{member.memberId}</Badge>}
                     </div>
                 </CardHeader>
                 <CardContent className="p-6">

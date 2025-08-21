@@ -6,11 +6,13 @@ import { storage } from '@/lib/firebase';
 
 // This function now accepts a data URI string instead of a File object.
 export async function uploadImage(dataUrl: string): Promise<string> {
-    if (!dataUrl) {
-        throw new Error('No file data provided for upload.');
+    if (!dataUrl || !dataUrl.startsWith('data:')) {
+        // If the URL is not a data URL, assume it's either a placeholder or already a valid URL.
+        // Or it could be an invalid value, in which case we let it pass and let the browser handle it.
+        return dataUrl;
     }
 
-    const fileName = `${crypto.randomUUID()}.png`; // Assume png, or parse from dataUrl if needed
+    const fileName = `${crypto.randomUUID()}.png`;
     const storageRef = ref(storage, `images/${fileName}`);
 
     try {

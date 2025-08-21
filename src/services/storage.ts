@@ -1,7 +1,7 @@
 
 'use server';
 
-import { ref, uploadBytes, getDownloadURL, uploadString } from 'firebase/storage';
+import { ref, getDownloadURL, uploadString } from 'firebase/storage';
 import { storage } from '@/lib/firebase';
 
 // This function now accepts a data URI string instead of a File object.

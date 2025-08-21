@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { LogIn } from "lucide-react";
 import { authenticateMember } from "@/services/members";
 import { useAuthStore } from "@/hooks/use-auth";
+import { Progress } from "../ui/progress";
 
 
 const formSchema = z.object({
@@ -101,7 +102,9 @@ export function LoginForm() {
         />
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? (
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground"></div>
+            <div className="w-full flex items-center justify-center">
+              <span className="animate-pulse">Authenticating...</span>
+            </div>
           ) : (
              <>
               <LogIn className="mr-2 h-4 w-4" /> Login

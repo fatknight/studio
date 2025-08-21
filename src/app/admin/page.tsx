@@ -7,9 +7,10 @@ import { Users, HandHelping, Cake, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useAuthStore } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
+import { Progress } from '@/components/ui/progress';
 
 const CrossIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-primary">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-primary">
         <path d="M12 2v20M5 7h14" />
     </svg>
 )
@@ -17,10 +18,16 @@ const CrossIcon = () => (
 export default function AdminDashboard() {
     const { member } = useAuthStore();
     const router = useRouter();
+    const [loading, setLoading] = React.useState(true);
+
 
     React.useEffect(() => {
-        if(member?.role !== 'Admin') {
-            router.push('/members');
+        if(member) {
+            if(member.role !== 'Admin') {
+                router.push('/members');
+            } else {
+                setLoading(false);
+            }
         }
     }, [member, router]);
 
@@ -45,13 +52,16 @@ export default function AdminDashboard() {
         },
     ];
 
-    if (!member || member.role !== 'Admin') {
+    if (loading) {
         return (
-             <div className="flex justify-center items-center h-full">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+             <div className="flex flex-col justify-center items-center h-full gap-4">
+                <p>Loading Admin Dashboard...</p>
+                <Progress value={50} className="w-1/2" />
             </div>
         )
     }
+
+    if (!member) return null;
 
     return (
         <div>

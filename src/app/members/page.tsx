@@ -21,6 +21,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { type DateRange } from 'react-day-picker';
 import { cn } from '@/lib/utils';
+import { Progress } from '@/components/ui/progress';
 
 type MemberWithMatchingFamily = Member & {
   matchingFamilyMembers?: FamilyMember[];
@@ -269,6 +270,8 @@ function MembersPageContent() {
   const [members, setMembers] = React.useState<Member[]>([]);
   const [requests, setRequests] = React.useState<SpecialRequest[]>([]);
   const [loading, setLoading] = React.useState(true);
+  const [progress, setProgress] = React.useState(0);
+
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>({
       from: new Date(),
       to: addDays(new Date(), 7),
@@ -277,17 +280,20 @@ function MembersPageContent() {
   React.useEffect(() => {
     const fetchData = async () => {
         setLoading(true);
+        setProgress(30);
         const filters = {
           zone: searchParams.get('zone') || undefined,
           ward: searchParams.get('ward') || undefined,
           subgroup: searchParams.get('subgroup') || undefined,
         };
+        setProgress(50);
         const [membersData, requestsData] = await Promise.all([
             getMembers(filters),
             isAdmin ? getSpecialRequests() : Promise.resolve([])
         ]);
         setMembers(membersData);
         setRequests(requestsData);
+        setProgress(100);
         setLoading(false);
     }
     fetchData();
@@ -302,8 +308,9 @@ function MembersPageContent() {
                       <CardDescription>Browse and manage the directory of church members.</CardDescription>
                   </CardHeader>
                   <CardContent>
-                      <div className="flex justify-center items-center p-10">
-                          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                      <div className="flex flex-col justify-center items-center p-10 gap-4">
+                          <p>Loading member data...</p>
+                          <Progress value={progress} className="w-1/2" />
                       </div>
                   </CardContent>
               </Card>
@@ -350,7 +357,22 @@ function MembersPageContent() {
 
 export default function MembersPage() {
   return (
-    <React.Suspense fallback={<div>Loading...</div>}>
+    <React.Suspense fallback={
+        <div className="container mx-auto py-10">
+            <Card className="shadow-lg">
+                <CardHeader>
+                    <CardTitle className="font-headline text-2xl">Church Members</CardTitle>
+                    <CardDescription>Browse and manage the directory of church members.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="flex flex-col justify-center items-center p-10 gap-4">
+                        <p>Loading...</p>
+                        <Progress value={20} className="w-1/2" />
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+    }>
       <MembersPageContent />
     </React.Suspense>
   )

@@ -36,8 +36,8 @@ import { useToast } from '@/hooks/use-toast';
 import { createMember, updateMember } from '@/services/members';
 import { Textarea } from '../ui/textarea';
 import { useAuthStore } from '@/hooks/use-auth';
-import { AdminControls } from '../admin/admin-controls';
 import { getSecureUrl, uploadImage } from '@/services/storage';
+import { Progress } from '../ui/progress';
 
 const familyMemberSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -103,6 +103,7 @@ const ImageDisplay = ({ url, alt }: { url?: string, alt: string }) => {
 const ImageUpload = ({ value, onChange, onUploadStart, onUploadEnd, disabled }: { value?: string, onChange: (url: string) => void, onUploadStart: () => void, onUploadEnd: () => void, disabled?: boolean }) => {
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     const [isUploading, setIsUploading] = React.useState(false);
+    const [uploadProgress, setUploadProgress] = React.useState(0);
     const { toast } = useToast();
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,15 +118,22 @@ const ImageUpload = ({ value, onChange, onUploadStart, onUploadEnd, disabled }: 
         reader.onload = async () => {
             const dataUrl = reader.result as string;
             try {
+                // Simulate progress for data URL reading and initial upload phase
+                setUploadProgress(30);
                 const path = await uploadImage(dataUrl);
+                setUploadProgress(70);
                 onChange(path);
                 toast({ title: 'Image uploaded successfully!' });
+                setUploadProgress(100);
             } catch (error) {
                 console.error("Image upload failed", error);
                 toast({ variant: 'destructive', title: 'Upload Failed', description: 'Could not upload the image.' });
+                 setUploadProgress(0);
             } finally {
-                setIsUploading(false);
-                onUploadEnd();
+                setTimeout(() => {
+                    setIsUploading(false);
+                    onUploadEnd();
+                }, 500);
             }
         };
         reader.onerror = (error) => {
@@ -140,7 +148,7 @@ const ImageUpload = ({ value, onChange, onUploadStart, onUploadEnd, disabled }: 
         <div className="flex items-center gap-4">
             <ImageDisplay url={value} alt="Current photo" />
             {!disabled && (
-                 <>
+                 <div className="flex-1">
                     <input
                         type="file"
                         accept="image/*"
@@ -154,14 +162,16 @@ const ImageUpload = ({ value, onChange, onUploadStart, onUploadEnd, disabled }: 
                         onClick={() => fileInputRef.current?.click()}
                         disabled={isUploading}
                     >
-                        {isUploading ? (
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                            <Upload className="mr-2 h-4 w-4" />
-                        )}
+                        <Upload className="mr-2 h-4 w-4" />
                         {value ? 'Change Photo' : 'Upload Photo'}
                     </Button>
-                </>
+                    {isUploading && (
+                        <div className="mt-2">
+                             <Progress value={uploadProgress} className="w-full" />
+                             <p className="text-xs text-muted-foreground mt-1">Uploading...</p>
+                        </div>
+                    )}
+                </div>
             )}
         </div>
     );

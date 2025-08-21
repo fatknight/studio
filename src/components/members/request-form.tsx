@@ -240,7 +240,9 @@ export function RequestForm({ children, member }: { children: React.ReactNode, m
                 </DialogClose>
                 <Button type="submit" disabled={isLoading}>
                     {isLoading ? (
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground"></div>
+                        <div className="w-full flex items-center justify-center">
+                            <span className="animate-pulse">Submitting...</span>
+                        </div>
                     ) : (
                         <>
                         <CrossIcon /> Submit Request

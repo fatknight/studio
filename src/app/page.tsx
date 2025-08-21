@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LoginForm } from "@/components/auth/login-form";
@@ -12,7 +13,7 @@ export default function Home() {
              <div className="absolute inset-0 z-0 bg-primary/20 opacity-50"></div>
              <div className="relative z-10 flex items-center gap-2 text-2xl font-bold text-primary font-headline">
               <Church className="h-8 w-8" />
-              Cathedral Family
+              St.Mary's JSO Cathedral, Bangalore
             </div>
              <div className="relative z-10 mt-6 block md:hidden">
               <blockquote className="space-y-2 text-center">
@@ -49,7 +50,7 @@ export default function Home() {
             <CardHeader className="p-0 mb-6 text-center md:hidden">
               <div className="flex items-center justify-center gap-2 text-2xl font-bold text-primary font-headline">
                 <Church className="h-8 w-8" />
-                Cathedral Family
+                St.Mary's JSO Cathedral, Bangalore
               </div>
             </CardHeader>
             <CardHeader className="p-0 mb-6 text-left">

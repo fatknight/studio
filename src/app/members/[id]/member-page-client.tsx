@@ -36,7 +36,7 @@ const SecureImage = ({ src, alt, ...props }: React.ComponentProps<typeof Image>)
         return <div className="w-full h-full bg-muted animate-pulse" />;
     }
 
-    return <Image src={imageUrl} alt={alt} {...props} />;
+    return <Image src={imageUrl} alt={alt} {...props} onContextMenu={(e) => e.preventDefault()} />;
 };
 
 
@@ -111,7 +111,7 @@ export const MemberPageClient = ({ member }: { member: Member }) => {
             <Card className="overflow-hidden shadow-lg">
                 <CardHeader className="flex flex-col items-center gap-6 bg-primary/10 p-6 text-center sm:flex-row sm:text-left">
                      <Avatar className="h-24 w-24 border-4 border-background shadow-md">
-                        <AvatarImage src={memberPhotoUrl} alt={member.name} data-ai-hint="person portrait" />
+                        <AvatarImage src={memberPhotoUrl} alt={member.name} data-ai-hint="person portrait" onContextMenu={(e) => e.preventDefault()} />
                         <AvatarFallback className="text-3xl">{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                     </Avatar>
                     <div>

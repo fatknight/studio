@@ -56,7 +56,7 @@ const FamilyMemberAvatar = ({ member }: { member: FamilyMember }) => {
 
     return (
         <Avatar className="h-16 w-16 border">
-            <AvatarImage src={imageUrl} alt={member.name} data-ai-hint="person" />
+            <AvatarImage src={imageUrl} alt={member.name} data-ai-hint="person" onContextMenu={(e) => e.preventDefault()} />
             <AvatarFallback>{member.name ? member.name.split(' ').map(n => n[0]).join('') : ''}</AvatarFallback>
         </Avatar>
     );

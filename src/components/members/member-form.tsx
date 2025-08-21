@@ -76,19 +76,34 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-const ImageUpload = ({ value, onChange, onUploadStart, onUploadEnd }: { value?: string, onChange: (url: string) => void, onUploadStart: () => void, onUploadEnd: () => void }) => {
-    const fileInputRef = React.useRef<HTMLInputElement>(null);
-    const [isUploading, setIsUploading] = React.useState(false);
+const ImageDisplay = ({ url, alt }: { url?: string, alt: string }) => {
     const [displayUrl, setDisplayUrl] = React.useState('');
-    const { toast } = useToast();
 
     React.useEffect(() => {
-        if (value) {
-            getSecureUrl(value).then(setDisplayUrl);
+        if (url) {
+            getSecureUrl(url).then(setDisplayUrl);
         } else {
             setDisplayUrl('');
         }
-    }, [value]);
+    }, [url]);
+
+    if (!displayUrl) return null;
+
+    return (
+        <Image
+            src={displayUrl}
+            alt={alt}
+            width={80}
+            height={80}
+            className="rounded-lg object-cover"
+        />
+    );
+};
+
+const ImageUpload = ({ value, onChange, onUploadStart, onUploadEnd, disabled }: { value?: string, onChange: (url: string) => void, onUploadStart: () => void, onUploadEnd: () => void, disabled?: boolean }) => {
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
+    const [isUploading, setIsUploading] = React.useState(false);
+    const { toast } = useToast();
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -123,35 +138,31 @@ const ImageUpload = ({ value, onChange, onUploadStart, onUploadEnd }: { value?: 
 
     return (
         <div className="flex items-center gap-4">
-            {displayUrl && (
-                <Image
-                    src={displayUrl}
-                    alt="Current photo"
-                    width={80}
-                    height={80}
-                    className="rounded-lg object-cover"
-                />
+            <ImageDisplay url={value} alt="Current photo" />
+            {!disabled && (
+                 <>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                        className="hidden"
+                    />
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isUploading}
+                    >
+                        {isUploading ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                            <Upload className="mr-2 h-4 w-4" />
+                        )}
+                        {value ? 'Change Photo' : 'Upload Photo'}
+                    </Button>
+                </>
             )}
-            <input
-                type="file"
-                accept="image/*"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                className="hidden"
-            />
-            <Button
-                type="button"
-                variant="outline"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isUploading}
-            >
-                {isUploading ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                    <Upload className="mr-2 h-4 w-4" />
-                )}
-                {value ? 'Change Photo' : 'Upload Photo'}
-            </Button>
         </div>
     );
 };
@@ -327,10 +338,10 @@ export function MemberForm({ member }: { member: Member | null }) {
                         <FormMessage />
                     </FormItem>
                 )} />
-                <FormField control={form.control} name="password" render={({ field }) => (
+                 <FormField control={form.control} name="password" render={({ field }) => (
                     <FormItem>
                         <FormLabel>Password</FormLabel>
-                        <FormControl><Input type="password" placeholder={isNew ? "Set initial password" : "Password cannot be edited"} {...field} disabled={!isNew || !isAdmin} /></FormControl>
+                        <FormControl><Input type="password" placeholder={isNew ? "Set initial password" : "Password cannot be edited"} {...field} disabled={!isAdmin || !isNew} /></FormControl>
                         <FormDescription>{isNew ? "Set an initial password for the new member." : "Password cannot be changed here."}</FormDescription>
                         <FormMessage />
                     </FormItem>
@@ -419,6 +430,7 @@ export function MemberForm({ member }: { member: Member | null }) {
                             onChange={field.onChange}
                             onUploadStart={handleUploadStart}
                             onUploadEnd={handleUploadEnd}
+                            disabled={!isAdmin}
                         />
                         <FormMessage />
                     </FormItem>
@@ -431,6 +443,7 @@ export function MemberForm({ member }: { member: Member | null }) {
                             onChange={field.onChange}
                             onUploadStart={handleUploadStart}
                             onUploadEnd={handleUploadEnd}
+                            disabled={!isAdmin}
                         />
                         <FormMessage />
                     </FormItem>
@@ -553,6 +566,7 @@ export function MemberForm({ member }: { member: Member | null }) {
                                             onChange={field.onChange}
                                             onUploadStart={handleUploadStart}
                                             onUploadEnd={handleUploadEnd}
+                                            disabled={!isAdmin}
                                         />
                                     <FormMessage /></FormItem>
                                 )} />

@@ -88,14 +88,27 @@ type FormValues = z.infer<typeof formSchema>;
 
 const ImageDisplay = ({ url, alt }: { url?: string, alt: string }) => {
     const [displayUrl, setDisplayUrl] = React.useState('');
+    const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
+        setLoading(true);
         if (url) {
-            getSecureUrl(url).then(setDisplayUrl);
+            getSecureUrl(url).then(url => {
+              setDisplayUrl(url);
+              setLoading(false);
+            });
         } else {
-            setDisplayUrl('');
+            setLoading(false);
         }
     }, [url]);
+
+    if(loading) {
+      return (
+        <div className="w-20 h-20 rounded-lg object-cover bg-muted flex items-center justify-center">
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </div>
+      )
+    }
 
     if (!displayUrl) return null;
 
@@ -488,7 +501,7 @@ export function MemberForm({ member }: { member: Member | null }) {
                         <Select onValueChange={(value) => { field.onChange(value); form.setValue('ward', ''); }} defaultValue={field.value} disabled={!isAdmin}>
                             <FormControl><SelectTrigger><SelectValue placeholder="Select zone" /></SelectTrigger></FormControl>
                             <SelectContent>
-                                {zones.map(zone => <SelectItem key={zone.name} value={zone.name}>{zone.name}</SelectItem>)}
+                                {zones.map(zone => <SelectItem key={zone.name} value={zone.name}>Zone {zone.name}</SelectItem>)}
                             </SelectContent>
                         </Select>
                         <FormMessage />

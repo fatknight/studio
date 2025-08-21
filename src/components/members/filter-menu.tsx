@@ -90,7 +90,7 @@ export function FilterMenu() {
               <SelectContent>
                 <SelectItem value="all">All Zones</SelectItem>
                 {zones.map(zone => (
-                  <SelectItem key={zone.name} value={zone.name}>{zone.name}</SelectItem>
+                  <SelectItem key={zone.name} value={zone.name}>Zone {zone.name}</SelectItem>
                 ))}
               </SelectContent>
             </Select>

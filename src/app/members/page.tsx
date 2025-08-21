@@ -6,7 +6,7 @@ import { MembersTable } from '@/components/members/members-table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SearchInput } from '@/components/members/search-input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { List, Cake, Filter, Gift, HeartHandshake, UserPlus, Calendar as CalendarIcon, Upload, HandHelping } from 'lucide-react';
+import { List, Cake, Filter, Gift, HeartHandshake, UserPlus, Calendar as CalendarIcon, Upload } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format, isWithinInterval, addDays, getDayOfYear, getYear, parseISO, setYear, startOfDay, endOfDay } from 'date-fns';
@@ -22,6 +22,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { type DateRange } from 'react-day-picker';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
+import { PrayingHandsIcon } from '@/components/icons/praying-hands-icon';
 
 type MemberWithMatchingFamily = Member & {
   matchingFamilyMembers?: FamilyMember[];
@@ -325,7 +326,7 @@ function MembersPageContent() {
             <TabsList className={`grid w-full ${isAdmin ? 'grid-cols-3' : 'grid-cols-2'}`}>
               <TabsTrigger value="directory"><List className="mr-2 h-4 w-4" />Directory</TabsTrigger>
               <TabsTrigger value="celebrations"><Cake className="mr-2 h-4 w-4" />Celebrations</TabsTrigger>
-              {isAdmin && <TabsTrigger value="intercessory"><HandHelping className="mr-2 h-4 w-4" />Intercessory Services</TabsTrigger>}
+              {isAdmin && <TabsTrigger value="intercessory"><PrayingHandsIcon className="mr-2 h-4 w-4" />Intercessory Services</TabsTrigger>}
             </TabsList>
              {(view === 'celebrations' || view === 'intercessory') && (
                 <div className="flex justify-end mt-4">

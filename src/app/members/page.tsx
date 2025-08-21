@@ -6,7 +6,7 @@ import { MembersTable } from '@/components/members/members-table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SearchInput } from '@/components/members/search-input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { List, Cake, Filter, Gift, HeartHandshake, UserPlus, Calendar as CalendarIcon, Upload } from 'lucide-react';
+import { List, Cake, Filter, Gift, HeartHandshake, UserPlus, Calendar as CalendarIcon, Upload, HandHelping } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format, isWithinInterval, addDays, getDayOfYear, getYear, parseISO, setYear, startOfDay, endOfDay } from 'date-fns';
@@ -26,12 +26,6 @@ import { Progress } from '@/components/ui/progress';
 type MemberWithMatchingFamily = Member & {
   matchingFamilyMembers?: FamilyMember[];
 }
-
-const CrossIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-4 w-4">
-        <path d="M12 2v20M5 7h14" />
-    </svg>
-)
 
 const DirectoryView = ({ members }: { members: Member[] }) => {
   const searchParams = useSearchParams();
@@ -331,7 +325,7 @@ function MembersPageContent() {
             <TabsList className={`grid w-full ${isAdmin ? 'grid-cols-3' : 'grid-cols-2'}`}>
               <TabsTrigger value="directory"><List className="mr-2 h-4 w-4" />Directory</TabsTrigger>
               <TabsTrigger value="celebrations"><Cake className="mr-2 h-4 w-4" />Celebrations</TabsTrigger>
-              {isAdmin && <TabsTrigger value="intercessory"><CrossIcon />Intercessory Services</TabsTrigger>}
+              {isAdmin && <TabsTrigger value="intercessory"><HandHelping className="mr-2 h-4 w-4" />Intercessory Services</TabsTrigger>}
             </TabsList>
              {(view === 'celebrations' || view === 'intercessory') && (
                 <div className="flex justify-end mt-4">

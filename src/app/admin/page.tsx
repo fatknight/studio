@@ -9,12 +9,6 @@ import { useAuthStore } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 import { Progress } from '@/components/ui/progress';
 
-const CrossIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-primary">
-        <path d="M12 2v20M5 7h14" />
-    </svg>
-)
-
 export default function AdminDashboard() {
     const { member } = useAuthStore();
     const router = useRouter();
@@ -41,7 +35,7 @@ export default function AdminDashboard() {
         {
             title: 'Intercessory Requests',
             description: 'View and manage all special prayer requests from members.',
-            icon: <CrossIcon />,
+            icon: <HandHelping className="h-8 w-8 text-primary" />,
             link: '/members?view=intercessory',
         },
         {

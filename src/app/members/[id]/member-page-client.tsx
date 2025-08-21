@@ -5,7 +5,7 @@ import type { Member } from '@/lib/mock-data';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Mail, Phone, Home, Calendar, Users, User, ArrowLeft, Map, Gift, HeartHandshake, MapPin, Tag, HandHelping, Edit, Info } from 'lucide-react';
+import { Mail, Phone, Home, Calendar, Users, User, ArrowLeft, Map, Gift, HeartHandshake, MapPin, Tag, HandHelping, Edit, Info, Church } from 'lucide-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -101,7 +101,7 @@ export const MemberPageClient = ({ member }: { member: Member }) => {
                     {(isOwner || isAdmin) && (
                         <RequestForm member={member}>
                         <Button>
-                            <HandHelping />
+                            <Church />
                             Make a Request
                         </Button>
                         </RequestForm>
@@ -110,7 +110,7 @@ export const MemberPageClient = ({ member }: { member: Member }) => {
             </div>
             <Card className="overflow-hidden shadow-lg">
                 <CardHeader className="flex flex-col items-center gap-6 bg-primary/10 p-6 text-center sm:flex-row sm:text-left">
-                    <Avatar className="h-24 w-24 border-4 border-background shadow-md">
+                     <Avatar className="h-24 w-24 border-4 border-background shadow-md">
                         <AvatarImage src={memberPhotoUrl} alt={member.name} data-ai-hint="person portrait" />
                         <AvatarFallback className="text-3xl">{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                     </Avatar>

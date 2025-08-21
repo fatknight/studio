@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import React from "react";
 import { format } from "date-fns";
-import { CalendarIcon, User, HandHelping } from "lucide-react";
+import { CalendarIcon, User, Church } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -239,7 +239,7 @@ export function RequestForm({ children, member }: { children: React.ReactNode, m
                         </div>
                     ) : (
                         <>
-                        <HandHelping /> Submit Request
+                        <Church /> Submit Request
                         </>
                     )}
                 </Button>

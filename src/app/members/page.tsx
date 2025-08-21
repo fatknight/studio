@@ -6,10 +6,10 @@ import { MembersTable } from '@/components/members/members-table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SearchInput } from '@/components/members/search-input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { List, Cake, Filter, Gift, HeartHandshake, UserPlus, Calendar as CalendarIcon, Upload, HandHelping, Church } from 'lucide-react';
+import { List, Cake, Filter, Gift, HeartHandshake, UserPlus, Calendar as CalendarIcon, Upload, Church } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { format, isWithinInterval, addDays, getDayOfYear, getYear, parseISO, setYear, startOfDay, endOfDay } from 'date-fns';
+import { format, isWithinInterval, addDays, getYear, parseISO, setYear, startOfDay, endOfDay } from 'date-fns';
 import { FilterMenu } from '@/components/members/filter-menu';
 import { getMembers, getSpecialRequests } from '@/services/members';
 import { AdminControls } from '@/components/admin/admin-controls';
@@ -327,11 +327,13 @@ function MembersPageContent() {
               <TabsTrigger value="celebrations"><Cake className="mr-2 h-4 w-4" />Celebrations</TabsTrigger>
               {isAdmin && <TabsTrigger value="intercessory"><Church className="mr-2 h-4 w-4" />Intercessory Services</TabsTrigger>}
             </TabsList>
-             {(view === 'celebrations' || view === 'intercessory') && (
-                <div className="flex justify-end mt-4">
-                    <DateRangePicker date={dateRange} setDate={setDateRange} />
-                </div>
-            )}
+            <AdminControls>
+                {(view === 'celebrations' || view === 'intercessory') && (
+                    <div className="flex justify-end mt-4">
+                        <DateRangePicker date={dateRange} setDate={setDateRange} />
+                    </div>
+                )}
+            </AdminControls>
             <TabsContent value="directory" className="mt-6">
               <DirectoryView members={members} />
             </TabsContent>
@@ -371,3 +373,5 @@ export default function MembersPage() {
     </React.Suspense>
   )
 }
+
+    

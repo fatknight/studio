@@ -10,7 +10,7 @@ export type FamilyMember = {
   memberId?: string;
   memberPhotoUrl?: string;
   subGroups?: string[];
-  maritalStatus?: 'Single' | 'Married' | 'Divorced' | 'Widowed';
+  maritalStatus?: 'Single' | 'Married' | 'Separated' | 'Widowed';
   weddingDay?: string;
 };
 
@@ -26,7 +26,7 @@ export type Member = {
   homeParish: string;
   nativeDistrict: string;
   birthday?: string;
-  maritalStatus: 'Single' | 'Married' | 'Divorced' | 'Widowed';
+  maritalStatus: 'Single' | 'Married' | 'Separated' | 'Widowed';
   weddingDay?: string;
   family: FamilyMember[];
   familyName?: string;

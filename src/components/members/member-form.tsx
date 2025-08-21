@@ -56,7 +56,7 @@ const familyMemberSchema = z.object({
   memberId: z.string().optional(),
   memberPhotoUrl: z.string().optional(),
   subGroups: z.array(z.string()).optional(),
-  maritalStatus: z.enum(['Single', 'Married', 'Divorced', 'Widowed']).optional(),
+  maritalStatus: z.enum(['Single', 'Married', 'Separated', 'Widowed']).optional(),
   weddingDay: z.date().optional(),
 });
 
@@ -70,7 +70,7 @@ const formSchema = z.object({
   homeParish: z.string().min(1, 'Home Parish is required'),
   nativeDistrict: z.string().min(1, 'Native District is required'),
   birthday: z.date().optional(),
-  maritalStatus: z.enum(['Single', 'Married', 'Divorced', 'Widowed']),
+  maritalStatus: z.enum(['Single', 'Married', 'Separated', 'Widowed']),
   weddingDay: z.date().optional(),
   familyName: z.string().optional(),
   familyId: z.string().optional(),
@@ -439,7 +439,7 @@ export function MemberForm({ member }: { member: Member | null }) {
                             <SelectContent>
                                 <SelectItem value="Single">Single</SelectItem>
                                 <SelectItem value="Married">Married</SelectItem>
-                                <SelectItem value="Divorced">Divorced</SelectItem>
+                                <SelectItem value="Separated">Separated</SelectItem>
                                 <SelectItem value="Widowed">Widowed</SelectItem>
                             </SelectContent>
                         </Select>
@@ -620,7 +620,7 @@ export function MemberForm({ member }: { member: Member | null }) {
                                             <SelectContent>
                                                 <SelectItem value="Single">Single</SelectItem>
                                                 <SelectItem value="Married">Married</SelectItem>
-                                                <SelectItem value="Divorced">Divorced</SelectItem>
+                                                <SelectItem value="Separated">Separated</SelectItem>
                                                 <SelectItem value="Widowed">Widowed</SelectItem>
                                             </SelectContent>
                                         </Select>

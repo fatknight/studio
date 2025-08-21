@@ -92,6 +92,7 @@ export const FamilyMemberCard = ({ member, isAdmin }: { member: FamilyMember, is
         <CardContent className="space-y-4 text-sm pt-4">
             {member.birthday && <p><Gift className="inline-block mr-2 h-4 w-4 text-muted-foreground" /> Birthday: {format(new Date(member.birthday), 'MMMM d')}</p>}
             {member.phone && member.phone !== "N/A" && <p><Phone className="inline-block mr-2 h-4 w-4 text-muted-foreground" /> Phone: {member.phone}</p>}
+            {member.email && <p><Mail className="inline-block mr-2 h-4 w-4 text-muted-foreground" /> Email: {member.email}</p>}
             {member.maritalStatus === 'Married' && member.weddingDay && (
                 <p><HeartHandshake className="inline-block mr-2 h-4 w-4 text-muted-foreground" /> Wedding Day: {format(new Date(member.weddingDay), 'MMMM d')}</p>
             )}

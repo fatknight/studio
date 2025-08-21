@@ -28,10 +28,10 @@ import {
 } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { CalendarIcon, PlusCircle, Save, Trash, X, Upload, Loader2 } from 'lucide-react';
+import { CalendarIcon, PlusCircle, Save, Trash, X, Upload, Loader2, Mail } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { type Member, zones } from '@/lib/mock-data';
+import { type Member, zones, members as mockMembers } from '@/lib/mock-data';
 import { useToast } from '@/hooks/use-toast';
 import { createMember, updateMember } from '@/services/members';
 import { Textarea } from '../ui/textarea';
@@ -39,12 +39,20 @@ import { useAuthStore } from '@/hooks/use-auth';
 import { getSecureUrl, uploadImage } from '@/services/storage';
 import { Progress } from '../ui/progress';
 
+const allSubgroups = Array.from(new Set(
+  mockMembers.flatMap(m => [
+    ...(m.subGroups || []),
+    ...(m.family?.flatMap(f => f.subGroups || []) || [])
+  ])
+));
+
 const familyMemberSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   relation: z.enum(['Spouse', 'Son', 'Daughter', 'Daughter-in-law', 'Son-in-law', 'Grandson', 'Granddaughter', 'Mother', 'Father', 'Brother', 'Sister', 'Others']),
   status: z.enum(['Active', 'Inactive']).optional(),
   birthday: z.date().optional(),
   phone: z.string().optional(),
+  email: z.string().email().optional().or(z.literal('')),
   memberPhotoUrl: z.string().optional(),
   subGroups: z.array(z.string()).optional(),
   maritalStatus: z.enum(['Single', 'Married', 'Divorced', 'Widowed']).optional(),
@@ -212,10 +220,12 @@ export function MemberForm({ member }: { member: Member | null }) {
           ...f,
           name: f.name || '',
           phone: f.phone || '',
+          email: f.email || '',
           memberPhotoUrl: f.memberPhotoUrl || 'https://placehold.co/128x128.png',
           status: f.status || 'Active',
           birthday: f.birthday ? new Date(f.birthday) : undefined,
           weddingDay: f.weddingDay ? new Date(f.weddingDay) : undefined,
+          subGroups: f.subGroups || [],
       })) || [],
       password: '',
   };
@@ -524,7 +534,7 @@ export function MemberForm({ member }: { member: Member | null }) {
                              <Button type="button" variant="ghost" size="icon" className="absolute top-2 right-2" onClick={() => remove(index)}>
                                 <X className="h-4 w-4" />
                             </Button>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 <FormField control={form.control} name={`family.${index}.name`} render={({ field }) => (
                                     <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                                 )} />
@@ -569,6 +579,62 @@ export function MemberForm({ member }: { member: Member | null }) {
                                 <FormField control={form.control} name={`family.${index}.phone`} render={({ field }) => (
                                     <FormItem><FormLabel>Phone</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                                 )} />
+                                <FormField control={form.control} name={`family.${index}.email`} render={({ field }) => (
+                                     <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" {...field} /></FormControl><FormMessage /></FormItem>
+                                )} />
+                                <FormField control={form.control} name={`family.${index}.maritalStatus`} render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Marital Status</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl><SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger></FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="Single">Single</SelectItem>
+                                                <SelectItem value="Married">Married</SelectItem>
+                                                <SelectItem value="Divorced">Divorced</SelectItem>
+                                                <SelectItem value="Widowed">Widowed</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+                                 {form.watch(`family.${index}.maritalStatus`) === 'Married' && (
+                                     <FormField control={form.control} name={`family.${index}.weddingDay`} render={({ field }) => (
+                                        <FormItem className="flex flex-col"><FormLabel>Wedding Day</FormLabel>
+                                             <Popover>
+                                                <PopoverTrigger asChild>
+                                                <FormControl>
+                                                    <Button variant={"outline"} className={cn("pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
+                                                    {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
+                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                    </Button>
+                                                </FormControl>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-auto p-0" align="start">
+                                                    <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                                                </PopoverContent>
+                                            </Popover>
+                                        <FormMessage /></FormItem>
+                                    )} />
+                                 )}
+                                <FormField control={form.control} name={`family.${index}.subGroups`} render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Spiritual Organizations</FormLabel>
+                                        <FormControl>
+                                             <Select onValueChange={(value) => field.onChange(value ? [value] : [])} value={field.value?.[0] || ''}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select Organization" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="">None</SelectItem>
+                                                    {allSubgroups.map(subgroup => (
+                                                    <SelectItem key={subgroup} value={subgroup}>{subgroup}</SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
                                 <FormField control={form.control} name={`family.${index}.memberPhotoUrl`} render={({ field }) => (
                                     <FormItem><FormLabel>Photo</FormLabel>
                                         <ImageUpload
@@ -583,7 +649,7 @@ export function MemberForm({ member }: { member: Member | null }) {
                             </div>
                         </div>
                     ))}
-                    <Button type="button" variant="outline" onClick={() => append({ name: '', relation: 'Others', status: 'Active', memberPhotoUrl: 'https://placehold.co/128x128.png', phone: '' })}>
+                    <Button type="button" variant="outline" onClick={() => append({ name: '', email: '', relation: 'Others', status: 'Active', memberPhotoUrl: 'https://placehold.co/128x128.png', phone: '' })}>
                         <PlusCircle className="mr-2 h-4 w-4" /> Add Family Member
                     </Button>
                 </CardContent>

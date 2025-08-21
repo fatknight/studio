@@ -5,7 +5,7 @@ import type { Member } from '@/lib/mock-data';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Mail, Phone, Home, Calendar, Users, User, ArrowLeft, Map, Gift, HeartHandshake, MapPin, Tag, HandHelping, Edit, Info, Church } from 'lucide-react';
+import { Mail, Phone, Home, Calendar, Users, User, ArrowLeft, Map, Gift, HeartHandshake, MapPin, Tag, HandHelping, Edit, Info, Church, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -25,16 +25,29 @@ const WhatsAppIcon = () => (
 
 const SecureImage = ({ src, alt, ...props }: React.ComponentProps<typeof Image>) => {
     const [imageUrl, setImageUrl] = React.useState('');
+    const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
         if (src) {
-            getSecureUrl(src as string).then(setImageUrl);
+            setLoading(true);
+            getSecureUrl(src as string).then(url => {
+                setImageUrl(url);
+                setLoading(false);
+            });
+        } else {
+            setLoading(false);
         }
     }, [src]);
 
-    if (!imageUrl) {
-        return <div className="w-full h-full bg-muted animate-pulse" />;
+    if (loading) {
+        return (
+            <div className="w-full h-full bg-muted flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            </div>
+        );
     }
+    
+    if (!imageUrl) return null;
 
     return <Image src={imageUrl} alt={alt} {...props} onContextMenu={(e) => e.preventDefault()} />;
 };
@@ -45,10 +58,17 @@ export const MemberPageClient = ({ member }: { member: Member }) => {
     const isAdmin = currentUser?.role === 'Admin';
     const isOwner = currentUser?.id === member.id;
     const [memberPhotoUrl, setMemberPhotoUrl] = React.useState('');
+    const [loadingPhoto, setLoadingPhoto] = React.useState(true);
 
     React.useEffect(() => {
         if (member.memberPhotoUrl) {
-            getSecureUrl(member.memberPhotoUrl).then(setMemberPhotoUrl);
+            setLoadingPhoto(true);
+            getSecureUrl(member.memberPhotoUrl).then(url => {
+                setMemberPhotoUrl(url);
+                setLoadingPhoto(false);
+            });
+        } else {
+            setLoadingPhoto(false);
         }
     }, [member.memberPhotoUrl]);
 
@@ -101,7 +121,7 @@ export const MemberPageClient = ({ member }: { member: Member }) => {
                     {(isOwner || isAdmin) && (
                         <RequestForm member={member}>
                         <Button>
-                            <Church />
+                            <Church className="mr-2 h-4 w-4" />
                             Make a Request
                         </Button>
                         </RequestForm>
@@ -111,7 +131,13 @@ export const MemberPageClient = ({ member }: { member: Member }) => {
             <Card className="overflow-hidden shadow-lg">
                 <CardHeader className="flex flex-col items-center gap-6 bg-primary/10 p-6 text-center sm:flex-row sm:text-left">
                      <Avatar className="h-24 w-24 border-4 border-background shadow-md">
-                        <AvatarImage src={memberPhotoUrl} alt={member.name} data-ai-hint="person portrait" onContextMenu={(e) => e.preventDefault()} />
+                        {loadingPhoto ? (
+                            <div className="w-full h-full flex items-center justify-center bg-muted">
+                                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                            </div>
+                        ) : (
+                            <AvatarImage src={memberPhotoUrl} alt={member.name} data-ai-hint="person portrait" onContextMenu={(e) => e.preventDefault()} />
+                        )}
                         <AvatarFallback className="text-3xl">{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                     </Avatar>
                     <div>

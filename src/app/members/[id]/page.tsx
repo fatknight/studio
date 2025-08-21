@@ -4,7 +4,7 @@ import { notFound, redirect } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Mail, Phone, Home, Calendar, Users, User, Link as LinkIcon, ArrowLeft, Map, Gift, HeartHandshake, MapPin, Tag, Heart, HandHelping, Edit, Trash, ShieldOff } from 'lucide-react';
+import { Mail, Phone, Home, Calendar, Users, User, Link as LinkIcon, ArrowLeft, Map, Gift, HeartHandshake, MapPin, Tag, Heart, HandHelping, Edit, Trash, ShieldOff, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -47,16 +47,29 @@ export const DetailItem = ({ icon: Icon, label, value, action, children }: { ico
 
 const FamilyMemberAvatar = ({ member }: { member: FamilyMember }) => {
     const [imageUrl, setImageUrl] = React.useState('');
+    const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
+        setLoading(true);
         if (member.memberPhotoUrl) {
-            getSecureUrl(member.memberPhotoUrl).then(setImageUrl);
+            getSecureUrl(member.memberPhotoUrl).then(url => {
+                setImageUrl(url);
+                setLoading(false);
+            });
+        } else {
+            setLoading(false);
         }
     }, [member.memberPhotoUrl]);
 
     return (
         <Avatar className="h-16 w-16 border">
-            <AvatarImage src={imageUrl} alt={member.name} data-ai-hint="person" onContextMenu={(e) => e.preventDefault()} />
+            {loading ? (
+                <div className="w-full h-full flex items-center justify-center bg-muted">
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                </div>
+            ) : (
+                <AvatarImage src={imageUrl} alt={member.name} data-ai-hint="person" onContextMenu={(e) => e.preventDefault()} />
+            )}
             <AvatarFallback>{member.name ? member.name.split(' ').map(n => n[0]).join('') : ''}</AvatarFallback>
         </Avatar>
     );

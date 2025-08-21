@@ -13,7 +13,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { Member, FamilyMember } from '@/lib/mock-data';
 import { Button } from '../ui/button';
-import { ChevronLeft, ChevronRight, Edit, Eye, MapPin, MoreHorizontal, Phone, Trash, Users, Upload } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Edit, Eye, MapPin, MoreHorizontal, Phone, Trash, Users, Upload, Loader2 } from 'lucide-react';
 import { useAuthStore } from '@/hooks/use-auth';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
@@ -44,16 +44,29 @@ const WhatsAppIcon = () => (
 
 const MemberAvatar = ({ member }: { member: Member }) => {
     const [imageUrl, setImageUrl] = React.useState('');
+    const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
+        setLoading(true);
         if (member.memberPhotoUrl) {
-            getSecureUrl(member.memberPhotoUrl).then(setImageUrl);
+            getSecureUrl(member.memberPhotoUrl).then(url => {
+                setImageUrl(url);
+                setLoading(false);
+            });
+        } else {
+            setLoading(false);
         }
     }, [member.memberPhotoUrl]);
 
     return (
         <Avatar>
-            <AvatarImage src={imageUrl} alt={member.name} data-ai-hint="person portrait" />
+            {loading ? (
+                <div className="w-full h-full flex items-center justify-center bg-muted">
+                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                </div>
+            ) : (
+                <AvatarImage src={imageUrl} alt={member.name} data-ai-hint="person portrait" />
+            )}
             <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
         </Avatar>
     )

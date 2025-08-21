@@ -1,7 +1,7 @@
 
 "use client";
 
-import { Church, LogOut, User, Users, Cake } from "lucide-react";
+import { Church, LogOut, User, Users, Cake, HandHelping } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -18,7 +18,6 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useAuthStore } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
-import { PrayingHandsIcon } from "@/components/icons/praying-hands-icon";
 
 export default function AdminLayout({
   children,
@@ -41,7 +40,7 @@ export default function AdminLayout({
 
   const navItems = [
     { href: '/members', label: 'Members', icon: Users },
-    { href: '/members?view=intercessory', label: 'Intercessory', icon: PrayingHandsIcon },
+    { href: '/members?view=intercessory', label: 'Intercessory', icon: Church },
     { href: '/members?view=celebrations', label: 'Celebrations', icon: Cake },
   ]
 

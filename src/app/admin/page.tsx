@@ -3,12 +3,11 @@
 
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Users, Cake, ArrowRight } from 'lucide-react';
+import { Users, Cake, ArrowRight, HandHelping, Church } from 'lucide-react';
 import Link from 'next/link';
 import { useAuthStore } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 import { Progress } from '@/components/ui/progress';
-import { PrayingHandsIcon } from '@/components/icons/praying-hands-icon';
 
 export default function AdminDashboard() {
     const { member } = useAuthStore();
@@ -36,7 +35,7 @@ export default function AdminDashboard() {
         {
             title: 'Intercessory Requests',
             description: 'View and manage all special prayer requests from members.',
-            icon: <PrayingHandsIcon className="h-8 w-8 text-primary" />,
+            icon: <Church className="h-8 w-8 text-primary" />,
             link: '/members?view=intercessory',
         },
         {

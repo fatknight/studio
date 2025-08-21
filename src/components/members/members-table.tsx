@@ -21,6 +21,8 @@ import { deleteMember } from '@/services/members';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '../ui/badge';
 import Link from 'next/link';
+import React from 'react';
+import { getSecureUrl } from '@/services/storage';
 
 type MemberWithMatchingFamily = Member & {
   matchingFamilyMembers?: FamilyMember[];
@@ -38,6 +40,24 @@ const WhatsAppIcon = () => (
         <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 4.315 1.919 6.066l-1.425 4.185 4.25-1.109z" />
     </svg>
 );
+
+
+const MemberAvatar = ({ member }: { member: Member }) => {
+    const [imageUrl, setImageUrl] = React.useState('');
+
+    React.useEffect(() => {
+        if (member.memberPhotoUrl) {
+            getSecureUrl(member.memberPhotoUrl).then(setImageUrl);
+        }
+    }, [member.memberPhotoUrl]);
+
+    return (
+        <Avatar>
+            <AvatarImage src={imageUrl} alt={member.name} data-ai-hint="person portrait" />
+            <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+        </Avatar>
+    )
+}
 
 export function MembersTable({ members, totalPages, currentPage, selectedSubgroup }: MembersTableProps) {
   const router = useRouter();
@@ -102,10 +122,7 @@ export function MembersTable({ members, totalPages, currentPage, selectedSubgrou
             {membersToDisplay.map((member) => (
               <TableRow key={member.id} onClick={() => handleRowClick(member.id)} className="cursor-pointer">
                 <TableCell>
-                  <Avatar>
-                    <AvatarImage src={member.memberPhotoUrl} alt={member.name} data-ai-hint="person portrait" />
-                    <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
+                  <MemberAvatar member={member as Member} />
                 </TableCell>
                 <TableCell className="font-medium">
                   <div className="flex items-center gap-2">

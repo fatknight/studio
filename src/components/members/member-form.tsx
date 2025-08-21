@@ -37,7 +37,7 @@ import { createMember, updateMember } from '@/services/members';
 import { Textarea } from '../ui/textarea';
 import { useAuthStore } from '@/hooks/use-auth';
 import { AdminControls } from '../admin/admin-controls';
-import { uploadImage } from '@/services/storage';
+import { getSecureUrl, uploadImage } from '@/services/storage';
 
 const familyMemberSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -45,7 +45,7 @@ const familyMemberSchema = z.object({
   status: z.enum(['Active', 'Inactive']).optional(),
   birthday: z.date().optional(),
   phone: z.string().optional(),
-  memberPhotoUrl: z.string().url().optional(),
+  memberPhotoUrl: z.string().optional(),
   subGroups: z.array(z.string()).optional(),
   maritalStatus: z.enum(['Single', 'Married', 'Divorced', 'Widowed']).optional(),
   weddingDay: z.date().optional(),
@@ -66,8 +66,8 @@ const formSchema = z.object({
   familyName: z.string().optional(),
   familyId: z.string().optional(),
   subGroups: z.array(z.string()).optional(),
-  memberPhotoUrl: z.string().url('Invalid URL'),
-  familyPhotoUrl: z.string().url('Invalid URL').optional(),
+  memberPhotoUrl: z.string(),
+  familyPhotoUrl: z.string().optional(),
   zone: z.string().min(1, 'Zone is required'),
   ward: z.string().min(1, 'Ward is required'),
   role: z.enum(['Admin', 'Member']),
@@ -79,7 +79,16 @@ type FormValues = z.infer<typeof formSchema>;
 const ImageUpload = ({ value, onChange, onUploadStart, onUploadEnd }: { value?: string, onChange: (url: string) => void, onUploadStart: () => void, onUploadEnd: () => void }) => {
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     const [isUploading, setIsUploading] = React.useState(false);
+    const [displayUrl, setDisplayUrl] = React.useState('');
     const { toast } = useToast();
+
+    React.useEffect(() => {
+        if (value) {
+            getSecureUrl(value).then(setDisplayUrl);
+        } else {
+            setDisplayUrl('');
+        }
+    }, [value]);
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -88,15 +97,13 @@ const ImageUpload = ({ value, onChange, onUploadStart, onUploadEnd }: { value?: 
         onUploadStart();
         setIsUploading(true);
 
-        // Read the file as a data URL
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = async () => {
             const dataUrl = reader.result as string;
             try {
-                // Pass the data URL to the server action
-                const url = await uploadImage(dataUrl);
-                onChange(url);
+                const path = await uploadImage(dataUrl);
+                onChange(path);
                 toast({ title: 'Image uploaded successfully!' });
             } catch (error) {
                 console.error("Image upload failed", error);
@@ -116,9 +123,9 @@ const ImageUpload = ({ value, onChange, onUploadStart, onUploadEnd }: { value?: 
 
     return (
         <div className="flex items-center gap-4">
-            {value && (
+            {displayUrl && (
                 <Image
-                    src={value}
+                    src={displayUrl}
                     alt="Current photo"
                     width={80}
                     height={80}
@@ -323,7 +330,7 @@ export function MemberForm({ member }: { member: Member | null }) {
                 <FormField control={form.control} name="password" render={({ field }) => (
                     <FormItem>
                         <FormLabel>Password</FormLabel>
-                        <FormControl><Input type="password" placeholder={isNew ? "Set initial password" : "Password cannot be edited"} {...field} disabled={!isAdmin || !isNew} /></FormControl>
+                        <FormControl><Input type="password" placeholder={isNew ? "Set initial password" : "Password cannot be edited"} {...field} disabled={!isNew || !isAdmin} /></FormControl>
                         <FormDescription>{isNew ? "Set an initial password for the new member." : "Password cannot be changed here."}</FormDescription>
                         <FormMessage />
                     </FormItem>

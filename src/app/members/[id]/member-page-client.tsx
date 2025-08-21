@@ -14,6 +14,8 @@ import { Badge } from '@/components/ui/badge';
 import { RequestForm } from '@/components/members/request-form';
 import { useAuthStore } from '@/hooks/use-auth';
 import { DetailItem, FamilyMemberCard } from './page';
+import React from 'react';
+import { getSecureUrl } from '@/services/storage';
 
 const WhatsAppIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="text-green-500">
@@ -22,16 +24,39 @@ const WhatsAppIcon = () => (
 );
 
 const CrossIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-4 w-4">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-4 w-4">
         <path d="M12 2v20M5 7h14" />
     </svg>
 )
+
+const SecureImage = ({ src, alt, ...props }: React.ComponentProps<typeof Image>) => {
+    const [imageUrl, setImageUrl] = React.useState('');
+
+    React.useEffect(() => {
+        if (src) {
+            getSecureUrl(src as string).then(setImageUrl);
+        }
+    }, [src]);
+
+    if (!imageUrl) {
+        return <div className="w-full h-full bg-muted animate-pulse" />;
+    }
+
+    return <Image src={imageUrl} alt={alt} {...props} />;
+};
 
 
 export const MemberPageClient = ({ member }: { member: Member }) => {
     const { member: currentUser } = useAuthStore();
     const isAdmin = currentUser?.role === 'Admin';
     const isOwner = currentUser?.id === member.id;
+    const [memberPhotoUrl, setMemberPhotoUrl] = React.useState('');
+
+    React.useEffect(() => {
+        if (member.memberPhotoUrl) {
+            getSecureUrl(member.memberPhotoUrl).then(setMemberPhotoUrl);
+        }
+    }, [member.memberPhotoUrl]);
 
     if (!isAdmin && member.status === 'Inactive') {
         return (
@@ -92,7 +117,7 @@ export const MemberPageClient = ({ member }: { member: Member }) => {
             <Card className="overflow-hidden shadow-lg">
                 <CardHeader className="flex flex-col items-center gap-6 bg-primary/10 p-6 text-center sm:flex-row sm:text-left">
                     <Avatar className="h-24 w-24 border-4 border-background shadow-md">
-                        <AvatarImage src={member.memberPhotoUrl} alt={member.name} data-ai-hint="person portrait" />
+                        <AvatarImage src={memberPhotoUrl} alt={member.name} data-ai-hint="person portrait" />
                         <AvatarFallback className="text-3xl">{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                     </Avatar>
                     <div>
@@ -149,7 +174,7 @@ export const MemberPageClient = ({ member }: { member: Member }) => {
                         <TabsContent value="family" className="mt-6">
                             <div className="space-y-8">
                                 <div className="relative aspect-video w-full overflow-hidden rounded-lg">
-                                    <Image src={member.familyPhotoUrl || "https://placehold.co/600x400.png"} alt="Family photo" layout="fill" objectFit="cover" data-ai-hint="family photo" />
+                                    <SecureImage src={member.familyPhotoUrl || "https://placehold.co/600x400.png"} alt="Family photo" layout="fill" objectFit="cover" data-ai-hint="family photo" />
                                 </div>
                                  <div className="grid gap-4 md:grid-cols-2">
                                     {visibleFamilyMembers.length > 0 ? (

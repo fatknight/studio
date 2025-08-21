@@ -1,3 +1,4 @@
+
 import { type Member, type FamilyMember } from '@/lib/mock-data';
 import { notFound, redirect } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -13,6 +14,8 @@ import { getMemberById } from '@/services/members';
 import { RequestForm } from '@/components/members/request-form';
 import { AdminControls } from '@/components/admin/admin-controls';
 import { MemberPageClient } from './member-page-client';
+import React from 'react';
+import { getSecureUrl } from '@/services/storage';
 
 const WhatsAppIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="currentColor" className="text-green-500">
@@ -42,13 +45,27 @@ export const DetailItem = ({ icon: Icon, label, value, action, children }: { ico
     );
 };
 
+const FamilyMemberAvatar = ({ member }: { member: FamilyMember }) => {
+    const [imageUrl, setImageUrl] = React.useState('');
+
+    React.useEffect(() => {
+        if (member.memberPhotoUrl) {
+            getSecureUrl(member.memberPhotoUrl).then(setImageUrl);
+        }
+    }, [member.memberPhotoUrl]);
+
+    return (
+        <Avatar className="h-16 w-16 border">
+            <AvatarImage src={imageUrl} alt={member.name} data-ai-hint="person" />
+            <AvatarFallback>{member.name ? member.name.split(' ').map(n => n[0]).join('') : ''}</AvatarFallback>
+        </Avatar>
+    );
+}
+
 export const FamilyMemberCard = ({ member, isAdmin }: { member: FamilyMember, isAdmin?: boolean }) => (
     <Card>
         <CardHeader className="flex flex-row items-center gap-4">
-             <Avatar className="h-16 w-16 border">
-                <AvatarImage src={member.memberPhotoUrl} alt={member.name} data-ai-hint="person" />
-                <AvatarFallback>{member.name ? member.name.split(' ').map(n => n[0]).join('') : ''}</AvatarFallback>
-            </Avatar>
+             <FamilyMemberAvatar member={member} />
             <div>
                 <div className="flex items-center gap-2">
                     <CardTitle>{member.name}</CardTitle>
